@@ -1,0 +1,109 @@
+{
+  "type": "FeatureCollection",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "TUPA_ID": 1,
+        "NAME": "Pyhäkeron päivätupa",
+        "DESCRIPTION": "A cozy cottage for day trips",
+        "ACCESSORIES": "Takka, kaasuliesi, kaivo, kuivakäymälä ja puuvarasto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [23.72018736381, 68.342938678895]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "TUPA_ID": 2,
+        "NAME": "Sioskurun varaus- ja autiotupa",
+        "DESCRIPTION": "Reservation and wilderness cabin",
+        "ACCESSORIES": "Kamiina, kaasuliesi, kuivakäymälä ja puuvarasto."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [23.817099915815, 68.297859421311]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "TUPA_ID": 3,
+        "NAME": "Tappurin autiotupa",
+        "DESCRIPTION": "A secluded wilderness cabin",
+        "ACCESSORIES": "Kamiina, kaasuliesi ja puuvarasto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [23.868753161272, 68.282073126211]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "TUPA_ID": 4,
+        "NAME": "Hannukurun varaus- ja autiotupa",
+        "DESCRIPTION": "Cabin with reservation and wilderness amenities",
+        "ACCESSORIES": "Kamiina, kaasuliesi, kuivakäymälä ja puuvarasto"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [23.94787226772, 68.217888908707]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "TUPA_ID": 5,
+        "NAME": "Montellinmaja",
+        "DESCRIPTION": "Montellinmaja on poistunut autiotupakäytöstä. Tuvan vieressä on uusi kota tulisteluun. Lähin autiotupa on Nammalakurussa",
+        "ACCESSORIES": "Kamiina, kaasuliesi, kuivakäymälä ja puuvarasto"
+
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [24.040489361491, 68.138596972221]
+      }
+      
+    },
+    {
+        "type": "Feature",
+        "properties": {
+          "TUPA_ID": 6,
+          "NAME": "Nammalkurun autiotupa",
+          "DESCRIPTION": "Cabin with reservation and wilderness amenities",
+          "ACCESSORIES": "Kamiina, kaasuliesi, kuivakäymälä ja puuvarasto"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [ 24.056429225657, 68.129748721105]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "TUPA_ID": 7,
+          "NAME": "Rihmakurun autiotupa",
+          "DESCRIPTION": "Cabin with reservation and wilderness amenities"
+        },
+        "geometry": {
+          "type": "Point",
+          "coordinates": [ 24.050189495695, 68.108694319418]
+        }
+      }
+
+    
+      
+      
+      
+    
+  ]
+}
