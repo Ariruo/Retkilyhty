@@ -44,7 +44,9 @@ const [searchResults, setSearchResults] = useState([]);
   };
 
   return (
-    <div style={{ position: 'relative', width: '100vw', height: '100vh' }}>
+    <div>
+
+
 
 
       <Map
@@ -55,14 +57,16 @@ const [searchResults, setSearchResults] = useState([]);
           zoom: 10,
         }}
         mapStyle="mapbox://styles/ariru/cll6qcd1o00nd01pd9r1x0bwi"
-        style={{ width: "99vw", height: "90vh", position: "relative", top: 0, left: 0 }}
+        style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}
         >
-          <SearchBar className="absolute z-10"
-          searchQuery={searchQuery}
-          handleInputChange={handleInputChange}
-          handleSearch={handleSearch}
-          searchResults={searchResults}
-        />
+    <SearchBar className="absolute z-10"
+    searchQuery={searchQuery}
+    handleInputChange={handleInputChange}
+    handleSearch={handleSearch}
+    searchResults={searchResults}
+  />
+
+ 
 
 <Source id="hettadata" type="geojson" data={hetta}>
          <Layer

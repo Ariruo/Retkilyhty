@@ -1,15 +1,32 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 
 export default function SearchBar({ searchQuery, handleInputChange, handleSearch, searchResults }) {
-  return (
-    <div className="search-bar mapbox-search">
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+          if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
+            handleClearSearch();
+          }
+        };
+    
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, []);
+    
+      const handleClearSearch = () => {
+        // Clear the search results or reset the search query as needed
+      };
+  
+    return (
+    <div className="search-bar mapbox-search absolute z-10">
       <input
         type="text"
-        placeholder="Search for a park..."
+        placeholder="Etsi tupaa..."
         value={searchQuery}
         onChange={handleInputChange}
       />
-      <button onClick={handleSearch}>Search</button>
+      <button onClick={handleSearch}>Hae</button>
 
       {searchResults.length > 0 && (
         <div className="search-results">
