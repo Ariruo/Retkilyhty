@@ -8,6 +8,7 @@ import Coordinatecabin from "./Coordinatescabin";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import iso_karhunkierros from "../../assets/iso_karhunkierros";
 import SearchBar from "./SearchBar";
+import getUserCoordinates from "../service/getUserCoordinates";
 
 
 
@@ -17,6 +18,22 @@ export default function Mapp() {
 const [selectedPark, setSelectedPark] = useState(null);
 const [searchQuery, setSearchQuery] = useState("");
 const [searchResults, setSearchResults] = useState([]);
+const [viewState, setViewState] = useState({
+  longitude: 23.72018736381,
+  latitude: 68.342938678895,
+  zoom: 10,
+})
+
+
+useEffect(() => {
+  getUserCoordinates().then((coordinates) => {
+    setViewState({
+      longitude: coordinates.longitude,
+      latitude: coordinates.latitude,
+      zoom: 10,
+    });
+  });
+}, []);
 
 
   const closePopup = () => {
@@ -51,11 +68,9 @@ const [searchResults, setSearchResults] = useState([]);
 
       <Map
         mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
-        initialViewState={{
-          longitude: 23.72018736381,
-          latitude: 68.342938678895,
-          zoom: 10,
-        }}
+        {...viewState}
+        onMove={evt => setViewState(evt.viewState)}
+        
         mapStyle="mapbox://styles/ariru/cll6qcd1o00nd01pd9r1x0bwi"
         style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}
         >
