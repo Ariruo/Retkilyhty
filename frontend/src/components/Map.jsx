@@ -74,7 +74,7 @@ const [searchResults, setSearchResults] = useState([]);
           type="circle"
           paint={{
             'circle-radius': 2,
-            'circle-color': '#007cbf'
+            'circle-color': 'black'
           }}/>
       </Source>
 

@@ -1,25 +1,33 @@
 import React, { useRef, useEffect } from "react";
 
-export default function SearchBar({ searchQuery, handleInputChange, handleSearch, searchResults }) {
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-          if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
-            handleClearSearch();
-          }
-        };
-    
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => {
-          document.removeEventListener("mousedown", handleClickOutside);
-        };
-      }, []);
-    
-      const handleClearSearch = () => {
-        // Clear the search results or reset the search query as needed
-      };
-  
-    return (
-    <div className="search-bar mapbox-search absolute z-10">
+export default function SearchBar({
+  searchQuery,
+  handleInputChange,
+  handleSearch,
+  searchResults,
+  setSelectedPark
+}) {
+  const searchBarRef = useRef(null);
+
+  const handleClearSearch = () => {
+    handleInputChange("");
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
+        handleClearSearch();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [handleClearSearch]);
+
+  return (
+    <div ref={searchBarRef} className="search-bar mapbox-search absolute z-10">
       <input
         type="text"
         placeholder="Etsi tupaa..."
