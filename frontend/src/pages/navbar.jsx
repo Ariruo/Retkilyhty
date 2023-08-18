@@ -22,20 +22,13 @@ const Navbar = () => {
     };
   }, [isDropdownOpen]);
 
-  const handleSearchByCityClick = () => {
-    navigate('/search');
-    setIsDropdownOpen(false); // Close the dropdown when navigating to a different page
-  };
 
   const handleHomeClick = () => {
     navigate('/');
     setIsDropdownOpen(false); // Close the dropdown when navigating to a different page
   };
 
-  const handleMapClick = () => {
-    navigate('/map');
-    setIsDropdownOpen(false); // Close the dropdown when navigating to a different page
-  };
+
 
   const toggleDropdown = () => {
     setIsDropdownOpen((prevState) => !prevState);
@@ -45,7 +38,7 @@ const Navbar = () => {
     <nav className="bg-blue-500 py-4 font-sans rounded-b-lg">
       <div className="container mx-auto px-4 flex items-center justify-center">
         {/* Logo */}
-        <button onClick={handleHomeClick} className="text-white font-semibold text-xl focus:outline-none absolute left-1/2 transform -translate-x-1/2">Autiotuvat kartalla</button>
+        <button onClick={handleHomeClick} className="text-white font-semibold text-xl focus:outline-none absolute left-1/2 transform -translate-x-1/2">TrailTorch</button>
         
         {/* Dropdown */}
         <div className="relative ml-auto" ref={dropdownRef}>
@@ -58,15 +51,9 @@ const Navbar = () => {
                 <li>
                   <Link to="/" onClick={toggleDropdown} className="text-white hover:text-gray-200 transition duration-300 ease-in-out">Koti</Link>
                 </li>
-                <li>
-                  <button onClick={handleSearchByCityClick} className="text-white hover:text-gray-200 transition duration-300 ease-in-out focus:outline-none">Hae</button>
-                </li>
-                <li>
-                  <Link to="/map" onClick={handleMapClick} className="text-white hover:text-gray-200 transition duration-300 ease-in-out">Map</Link>
-                </li>
-                <li>
-                  <a href="#" className="text-white hover:text-gray-200 transition duration-300 ease-in-out">Tietoa</a>
-                </li>
+                
+               
+             
                 <li>
                   <a href="#" className="text-white hover:text-gray-200 transition duration-300 ease-in-out">Contact</a>
                 </li>

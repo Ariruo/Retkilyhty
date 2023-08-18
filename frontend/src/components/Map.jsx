@@ -145,13 +145,15 @@ useEffect(() => {
         )}
         <NavigationControl 
         position="bottom-right"
+        style={{margin: 10}}
          />
         <GeolocateControl
         positionOptions={{ enableHighAccuracy: true }}
         trackUserLocation={true}
         showUserHeading={true}
         showAccuracyCircle={false}
-        auto
+        showUserLocation={true}
+        
         
       />
   </Map>
