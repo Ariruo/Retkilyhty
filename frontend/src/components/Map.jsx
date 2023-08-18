@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Map, { Marker, Popup, Source, Layer, NavigationControl } from "react-map-gl";
+import Map, { Marker, Popup, Source, Layer, NavigationControl,GeolocateControl } from "react-map-gl";
 import * as tupaData from '../../assets/tupadata.json';
 import hetta from '../../assets/hetta'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,7 +21,7 @@ const [searchResults, setSearchResults] = useState([]);
 const [viewState, setViewState] = useState({
   longitude: 23.72018736381,
   latitude: 68.342938678895,
-  zoom: 10,
+  zoom: 13,
 })
 
 
@@ -30,7 +30,7 @@ useEffect(() => {
     setViewState({
       longitude: coordinates.longitude,
       latitude: coordinates.latitude,
-      zoom: 10,
+      zoom: 13,
     });
   });
 }, []);
@@ -146,6 +146,14 @@ useEffect(() => {
         <NavigationControl 
         position="bottom-right"
          />
+        <GeolocateControl
+        positionOptions={{ enableHighAccuracy: true }}
+        trackUserLocation={true}
+        showUserHeading={true}
+        showAccuracyCircle={false}
+        auto
+        
+      />
   </Map>
   
 
