@@ -72,7 +72,7 @@ useEffect(() => {
         onMove={evt => setViewState(evt.viewState)}
         
         mapStyle="mapbox://styles/ariru/cll6qcd1o00nd01pd9r1x0bwi"
-        style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}
+        style={{ width: "99vw", height: "90vh", position: "relative", top: 0, left: 0 }}
         >
     <SearchBar className="absolute z-10"
     searchQuery={searchQuery}
@@ -145,7 +145,10 @@ useEffect(() => {
         )}
         <NavigationControl 
         position="bottom-right"
-        style={{margin: 10}}
+        showCompass={true}
+        visualizePitch={true}
+        showZoom={true}
+        
          />
         <GeolocateControl
         positionOptions={{ enableHighAccuracy: true }}
