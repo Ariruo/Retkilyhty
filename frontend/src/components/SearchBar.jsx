@@ -2,7 +2,7 @@ import { useState } from "react";
 import * as tupaData from '../../assets/tupadata.json';
 import { FaSearch } from "react-icons/fa";
 
-const SearchBar = ({setResults}) => {
+const SearchBar = ({ setResults }) => {
   const [input, setInput] = useState("");
 
   const filterData = (value) => {
@@ -14,9 +14,7 @@ const SearchBar = ({setResults}) => {
         feature.properties.NAME.toLowerCase().includes(value.toLowerCase())
       );
     });
-    setResults(results); // Log filtered results to the console
-    
-    
+    setResults(results);
   };
 
   const handleChange = (value) => {
@@ -25,11 +23,13 @@ const SearchBar = ({setResults}) => {
   };
 
   return (
-    <div className="input-wrapper w-full h-10 border border-gray-300 rounded-lg px-3 shadow-md bg-white flex items-center">
-        <FaSearch id="search-icon" />
-      
+    <div className="input-wrapper absolute z-10 h-10 border rounded-md px-3 shadow-md bg-white flex items-center">
+      <div className="flex items-center p-1.5 pr-3 pt-2 rounded-md bg-gray-200">
+        <FaSearch className="text-gray-500" />
+      </div>
       <input
-        placeholder="Type to search..."
+        className="bg-transparent focus:outline-none text-gray-600 placeholder-gray-400 flex-grow"
+        placeholder="Search"
         value={input}
         onChange={(e) => handleChange(e.target.value)}
       />

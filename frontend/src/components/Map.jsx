@@ -11,6 +11,7 @@ import iso_karhunkierros from "../../assets/iso_karhunkierros";
 import getUserCoordinates from "../service/getUserCoordinates";
 import SearchBar from "./Searchbar";
 import SearchResultList from "./SearchResultList";
+import Button from "./Button";
 
 
 
@@ -22,7 +23,7 @@ const [selectedPark, setSelectedPark] = useState(null);
 const [viewState, setViewState] = useState({
   longitude: 23.72018736381,
   latitude: 68.342938678895,
-  zoom: 13,
+  zoom: 10,
 })
 
 
@@ -31,7 +32,7 @@ useEffect(() => {
     setViewState({
       longitude: selectedPark.geometry.coordinates[0],
       latitude: selectedPark.geometry.coordinates[1],
-      zoom: 13,
+      zoom: 10,
     });
   }
 }, [selectedPark]);
@@ -67,8 +68,7 @@ const handleFindClosestPark = () => {
  
   return (
     <div>
- <SearchBar setResults={setResults} />
- {results && results.length > 0 && <SearchResultList results={results} onResultClick={handleResultClick} />}
+ 
 
 
       <Map
@@ -81,7 +81,9 @@ const handleFindClosestPark = () => {
         >
 
 
-   
+<SearchBar setResults={setResults} />
+ <Button onClick={handleFindClosestPark}>Hae</Button>
+ {results && results.length > 0 && <SearchResultList results={results} onResultClick={handleResultClick} />}
  
  
 
