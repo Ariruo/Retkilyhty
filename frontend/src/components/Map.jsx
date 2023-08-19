@@ -85,7 +85,7 @@ const handleFindClosestPark = () => {
         >
 
 
-<SearchBar setResults={setResults} setInput={setInput} input={input} />
+<SearchBar setResults={setResults} setInput={setInput} input={input} setShowSearchResults={setShowSearchResults} />
 <Button onClick={handleFindClosestPark}>Hae</Button>
  {showSearchResults && results && results.length > 0 && <SearchResultList results={results} onResultClick={handleResultClick} />}
  

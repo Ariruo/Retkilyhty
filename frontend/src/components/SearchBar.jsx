@@ -2,7 +2,7 @@ import { useState } from "react";
 import * as tupaData from '../../assets/tupadata.json';
 import { FaSearch } from "react-icons/fa";
 
-const SearchBar = ({ setResults, setInput, input })  => {
+const SearchBar = ({ setResults, setInput, input, setShowSearchResults })  => {
  
 
   const filterData = (value) => {
@@ -20,6 +20,7 @@ const SearchBar = ({ setResults, setInput, input })  => {
   const handleChange = (value) => {
     setInput(value);
     filterData(value);
+    setShowSearchResults(value.length > 0);
   };
 
   return (
