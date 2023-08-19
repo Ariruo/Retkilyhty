@@ -19,6 +19,8 @@ export default function Mapp() {
 
 const [results, setResults] = useState([]);  
 const [selectedPark, setSelectedPark] = useState(null);
+const [input, setInput] = useState("");
+const [showSearchResults, setShowSearchResults] = useState(true);
 
 const [viewState, setViewState] = useState({
   longitude: 23.72018736381,
@@ -51,7 +53,7 @@ const handleFindClosestPark = () => {
   if (results.length > 0) {
     const closestPark = results[0]; // Assuming results are sorted by proximity
     setSelectedPark(closestPark);
-    console.log(closestPark);
+    
   }
 };
 
@@ -63,6 +65,8 @@ const handleFindClosestPark = () => {
 
   const handleResultClick = (park) => {
     setSelectedPark(park);
+    setInput("");
+    setShowSearchResults(false);
   };
 
  
@@ -81,9 +85,9 @@ const handleFindClosestPark = () => {
         >
 
 
-<SearchBar setResults={setResults} />
- <Button onClick={handleFindClosestPark}>Hae</Button>
- {results && results.length > 0 && <SearchResultList results={results} onResultClick={handleResultClick} />}
+<SearchBar setResults={setResults} setInput={setInput} input={input} />
+<Button onClick={handleFindClosestPark}>Hae</Button>
+ {showSearchResults && results && results.length > 0 && <SearchResultList results={results} onResultClick={handleResultClick} />}
  
  
 

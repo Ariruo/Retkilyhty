@@ -2,8 +2,8 @@ import { useState } from "react";
 import * as tupaData from '../../assets/tupadata.json';
 import { FaSearch } from "react-icons/fa";
 
-const SearchBar = ({ setResults }) => {
-  const [input, setInput] = useState("");
+const SearchBar = ({ setResults, setInput, input })  => {
+ 
 
   const filterData = (value) => {
     const results = tupaData.features.filter((feature) => {
@@ -34,7 +34,7 @@ const SearchBar = ({ setResults }) => {
         onChange={(e) => handleChange(e.target.value)}
       />
     </div>
-  );
+  )
 };
 
 export default SearchBar;
