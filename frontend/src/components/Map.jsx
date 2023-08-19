@@ -20,7 +20,7 @@ export default function Mapp() {
 const [results, setResults] = useState([]);  
 const [selectedPark, setSelectedPark] = useState(null);
 const [input, setInput] = useState("");
-const [showSearchResults, setShowSearchResults] = useState(true);
+const [showSearchResults, setShowSearchResults] = useState(false);
 
 const [viewState, setViewState] = useState({
   longitude: 23.72018736381,
@@ -28,12 +28,25 @@ const [viewState, setViewState] = useState({
   zoom: 10,
 })
 
+useEffect(() => {
+  fetch("https://tulikartta.fi/api-json.php?tyyppi=autiotupa")
+    .then((response) => response.json())
+    .then((data) => {
+      // Assuming the fetched data is in GeoJSON format and contains features
+      const parks = data.features || [];
+      setResults(parks);
+    })
+    .catch((error) => {
+      console.error("Error fetching data:", error);
+    });
+}, []);
+
 
 useEffect(() => {
   if (selectedPark) {
     setViewState({
-      longitude: selectedPark.geometry.coordinates[0],
-      latitude: selectedPark.geometry.coordinates[1],
+      longitude: selectedPark.geometry.coordinates[1],
+      latitude: selectedPark.geometry.coordinates[0],
       zoom: 10,
     });
   }
@@ -53,6 +66,8 @@ const handleFindClosestPark = () => {
   if (results.length > 0) {
     const closestPark = results[0]; // Assuming results are sorted by proximity
     setSelectedPark(closestPark);
+    setInput("");
+    setShowSearchResults(false);
     
   }
 };
@@ -111,11 +126,11 @@ const handleFindClosestPark = () => {
           }}/>
       </Source>
 
-{tupaData.features.map(park => (
+  {results.map((park) => (
   <Marker
     key={park.properties.TUPA_ID}
-    latitude={park.geometry.coordinates[1]}
-    longitude={park.geometry.coordinates[0]}
+    latitude={park.geometry.coordinates[0]}
+    longitude={park.geometry.coordinates[1]}
     offsetTop={-20}
   >
      <button
@@ -142,12 +157,13 @@ const handleFindClosestPark = () => {
             <button className="close-button" onClick={closePopup}>
             <FontAwesomeIcon icon={faTimes} />
           </button>
-            <h2 className="text-lg font-semibold">{selectedPark.properties.NAME}</h2>
-            <p className="mt-1">Varusteet: {selectedPark.properties.ACCESSORIES}</p>
+            <h2 className="text-lg font-semibold">{selectedPark.properties.name}</h2>
+            <p className="mt-1"> {selectedPark.properties.tyyppi}</p>
+            <p className="mt-1"> Maakunta: {selectedPark.properties.maakunta}</p>
           
             <Coordinatecabin 
-            latitude={selectedPark.geometry.coordinates[1]} 
-            longitude={selectedPark.geometry.coordinates[0]}
+            latitude={selectedPark.geometry.coordinates[0]} 
+            longitude={selectedPark.geometry.coordinates[1]}
           />
           </div>
         )}
