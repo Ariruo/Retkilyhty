@@ -67,8 +67,8 @@ const handleFindClosestPark = () => {
  
   return (
     <div>
-
-
+ <SearchBar setResults={setResults} />
+ {results && results.length > 0 && <SearchResultList results={results} onResultClick={handleResultClick} />}
 
 
       <Map
@@ -164,9 +164,8 @@ const handleFindClosestPark = () => {
   </Map>
   
 
-  <SearchBar setResults={setResults} />
-  <SearchResultList results={results} onResultClick={handleResultClick} />
-  <button onClick={handleFindClosestPark}>Find Closest Park</button>
+  
+
     </div>
   );
 }

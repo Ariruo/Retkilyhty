@@ -1,7 +1,8 @@
 import { useState } from "react";
 import * as tupaData from '../../assets/tupadata.json';
+import { FaSearch } from "react-icons/fa";
 
-const SearchBar2 = ({setResults}) => {
+const SearchBar = ({setResults}) => {
   const [input, setInput] = useState("");
 
   const filterData = (value) => {
@@ -24,7 +25,8 @@ const SearchBar2 = ({setResults}) => {
   };
 
   return (
-    <div className="input-wrapper">
+    <div className="input-wrapper w-full h-10 border border-gray-300 rounded-lg px-3 shadow-md bg-white flex items-center">
+        <FaSearch id="search-icon" />
       
       <input
         placeholder="Type to search..."
@@ -35,4 +37,4 @@ const SearchBar2 = ({setResults}) => {
   );
 };
 
-export default SearchBar2;
+export default SearchBar;
