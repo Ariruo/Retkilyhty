@@ -1,54 +1,38 @@
-import React, { useRef, useEffect } from "react";
+import { useState } from "react";
+import * as tupaData from '../../assets/tupadata.json';
 
-export default function SearchBar({
-  searchQuery,
-  handleInputChange,
-  handleSearch,
-  searchResults,
-  setSelectedPark
-}) {
-  const searchBarRef = useRef(null);
+const SearchBar2 = ({setResults}) => {
+  const [input, setInput] = useState("");
 
-  const handleClearSearch = () => {
-    handleInputChange("");
+  const filterData = (value) => {
+    const results = tupaData.features.filter((feature) => {
+      return (
+        value &&
+        feature.properties &&
+        feature.properties.NAME &&
+        feature.properties.NAME.toLowerCase().includes(value.toLowerCase())
+      );
+    });
+    setResults(results); // Log filtered results to the console
+    
+    
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
-        handleClearSearch();
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [handleClearSearch]);
+  const handleChange = (value) => {
+    setInput(value);
+    filterData(value);
+  };
 
   return (
-    <div ref={searchBarRef} className="search-bar mapbox-search absolute z-10">
+    <div className="input-wrapper">
+      
       <input
-        type="text"
-        placeholder="Etsi tupaa..."
-        value={searchQuery}
-        onChange={handleInputChange}
+        placeholder="Type to search..."
+        value={input}
+        onChange={(e) => handleChange(e.target.value)}
       />
-      <button onClick={handleSearch}>Hae</button>
-
-      {searchResults.length > 0 && (
-        <div className="search-results">
-          {searchResults.map((park) => (
-            <div
-              key={park.properties.TUPA_ID}
-              className="search-result"
-              onClick={() => setSelectedPark(park)}
-            >
-              {park.properties.NAME}
-            </div>
-          ))}
-        </div>
-      )}
     </div>
   );
-}
+};
+
+export default SearchBar2;

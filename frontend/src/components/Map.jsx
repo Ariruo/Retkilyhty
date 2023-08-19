@@ -7,23 +7,34 @@ import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import Coordinatecabin from "./Coordinatescabin";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import iso_karhunkierros from "../../assets/iso_karhunkierros";
-import SearchBar from "./SearchBar";
+
 import getUserCoordinates from "../service/getUserCoordinates";
+import SearchBar from "./Searchbar";
+import SearchResultList from "./SearchResultList";
 
 
 
 export default function Mapp() {
 
-  
+const [results, setResults] = useState([]);  
 const [selectedPark, setSelectedPark] = useState(null);
-const [searchQuery, setSearchQuery] = useState("");
-const [searchResults, setSearchResults] = useState([]);
+
 const [viewState, setViewState] = useState({
   longitude: 23.72018736381,
   latitude: 68.342938678895,
   zoom: 13,
 })
 
+
+useEffect(() => {
+  if (selectedPark) {
+    setViewState({
+      longitude: selectedPark.geometry.coordinates[0],
+      latitude: selectedPark.geometry.coordinates[1],
+      zoom: 13,
+    });
+  }
+}, [selectedPark]);
 
 useEffect(() => {
   getUserCoordinates().then((coordinates) => {
@@ -35,31 +46,25 @@ useEffect(() => {
   });
 }, []);
 
+const handleFindClosestPark = () => {
+  if (results.length > 0) {
+    const closestPark = results[0]; // Assuming results are sorted by proximity
+    setSelectedPark(closestPark);
+    console.log(closestPark);
+  }
+};
+
+
 
   const closePopup = () => {
     setSelectedPark(null);
   };
 
-  const handleSearch = () => {
-    const foundPark = tupaData.features.find(
-      (park) =>
-        park.properties.NAME.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    if (foundPark) {
-      setSelectedPark(foundPark);
-    }
+  const handleResultClick = (park) => {
+    setSelectedPark(park);
   };
 
-  const handleInputChange = (event) => {
-    const inputValue = event.target.value;
-    setSearchQuery(inputValue);
-
-    const results = tupaData.features.filter((park) =>
-      park.properties.NAME.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    setSearchResults(results);
-  };
-
+ 
   return (
     <div>
 
@@ -74,13 +79,10 @@ useEffect(() => {
         mapStyle="mapbox://styles/ariru/cll6qcd1o00nd01pd9r1x0bwi"
         style={{ width: "99vw", height: "90vh", position: "relative", top: 0, left: 0 }}
         >
-    <SearchBar className="absolute z-10"
-    searchQuery={searchQuery}
-    handleInputChange={handleInputChange}
-    handleSearch={handleSearch}
-    searchResults={searchResults}
-  />
 
+
+   
+ 
  
 
 <Source id="hettadata" type="geojson" data={hetta}>
@@ -162,7 +164,9 @@ useEffect(() => {
   </Map>
   
 
- 
+  <SearchBar setResults={setResults} />
+  <SearchResultList results={results} onResultClick={handleResultClick} />
+  <button onClick={handleFindClosestPark}>Find Closest Park</button>
     </div>
   );
 }
