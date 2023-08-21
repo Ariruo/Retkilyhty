@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Map, { Marker, Popup, Source, Layer, NavigationControl,GeolocateControl } from "react-map-gl";
-import * as tupaData from '../../assets/tupadata.json';
+
 import hetta from '../../assets/hetta'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -29,7 +29,7 @@ const [viewState, setViewState] = useState({
 })
 
 useEffect(() => {
-  fetch("https://tulikartta.fi/api-json.php?tyyppi=autiotupa")
+  fetch("http://localhost:9000/api/allcabinspoints")
     .then((response) => response.json())
     .then((data) => {
       // Assuming the fetched data is in GeoJSON format and contains features
@@ -126,9 +126,9 @@ const handleFindClosestPark = () => {
           }}/>
       </Source>
 
-  {results.map((park) => (
+  {results.map((park, index) => (
   <Marker
-    key={park.properties.TUPA_ID}
+  key={index}
     latitude={park.geometry.coordinates[0]}
     longitude={park.geometry.coordinates[1]}
     offsetTop={-20}

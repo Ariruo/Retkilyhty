@@ -1,20 +1,30 @@
-import { useState } from "react";
-import * as tupaData from '../../assets/tupadata.json';
+import { useState, useEffect } from "react";
+
+
 import { FaSearch } from "react-icons/fa";
 
 const SearchBar = ({ setResults, setInput, input, setShowSearchResults })  => {
- 
+  
 
   const filterData = (value) => {
-    const results = tupaData.features.filter((feature) => {
-      return (
-        value &&
-        feature.properties &&
-        feature.properties.NAME &&
-        feature.properties.NAME.toLowerCase().includes(value.toLowerCase())
-      );
-    });
-    setResults(results);
+    fetch("http://localhost:9000/api/allcabinspoints")
+      .then((response) => response.json())
+      .then((data) => {
+        const results = data.features.filter((feature) => {
+          return (
+            value &&
+            feature.properties &&
+            feature.properties.name &&
+            feature.properties.name.toLowerCase().includes(value.toLowerCase())
+          );
+        });
+        setResults(results);
+        console.log(data)
+        console.log(results);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
   };
 
   const handleChange = (value) => {

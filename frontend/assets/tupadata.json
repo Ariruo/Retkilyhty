@@ -13,10 +13,7 @@
         "TUPA_ID": 1,
         "NAME": "Pyhäkeron päivätupa",
         "DESCRIPTION": "A cozy cottage for day trips",
-        "ACCESSORIES": "Takka, kaasuliesi, kaivo, kuivakäymälä ja puuvarasto",
-        "SLOTS": "5",
-        "REGION": "Pohjois-Suomi",
-        "PARK" : "Pallas-Yllästunturin kansallispuisto"
+        "ACCESSORIES": "Takka, kaasuliesi, kaivo, kuivakäymälä ja puuvarasto"
       },
       "geometry": {
         "type": "Point",
@@ -29,11 +26,7 @@
         "TUPA_ID": 2,
         "NAME": "Sioskurun varaus- ja autiotupa",
         "DESCRIPTION": "Reservation and wilderness cabin",
-        "ACCESSORIES": "Kamiina, kaasuliesi, kuivakäymälä ja puuvarasto.",
-        "SLOTS": "8",
-        "REGION": "Pohjois-Suomi",
-        "PARK" : "Pallas-Yllästunturin kansallispuisto"
-        
+        "ACCESSORIES": "Kamiina, kaasuliesi, kuivakäymälä ja puuvarasto."
       },
       "geometry": {
         "type": "Point",
@@ -46,10 +39,7 @@
         "TUPA_ID": 3,
         "NAME": "Tappurin autiotupa",
         "DESCRIPTION": "A secluded wilderness cabin",
-        "ACCESSORIES": "Kamiina, kaasuliesi ja puuvarasto",
-        "SLOTS": "8",
-        "REGION": "Pohjois-Suomi",
-        "PARK" : "Pallas-Yllästunturin kansallispuisto"
+        "ACCESSORIES": "Kamiina, kaasuliesi ja puuvarasto"
       },
       "geometry": {
         "type": "Point",
@@ -60,30 +50,37 @@
       "type": "Feature",
       "properties": {
         "TUPA_ID": 4,
-        "NAME": "Hannukurun autiotupa",
+        "NAME": "Hannukurun varaus- ja autiotupa",
         "DESCRIPTION": "Cabin with reservation and wilderness amenities",
-        "ACCESSORIES": "Kamiina, kaasuliesi, kuivakäymälä ja puuvarasto",
-        "SLOTS": "24",
-        "REGION": "Pohjois-Suomi",
-        "PARK" : "Pallas-Yllästunturin kansallispuisto"
-        
+        "ACCESSORIES": "Kamiina, kaasuliesi, kuivakäymälä ja puuvarasto"
       },
       "geometry": {
         "type": "Point",
         "coordinates": [23.94787226772, 68.217888908707]
       }
     },
-    
+    {
+      "type": "Feature",
+      "properties": {
+        "TUPA_ID": 5,
+        "NAME": "Montellinmaja",
+        "DESCRIPTION": "Montellinmaja on poistunut autiotupakäytöstä. Tuvan vieressä on uusi kota tulisteluun. Lähin autiotupa on Nammalakurussa",
+        "ACCESSORIES": "Kamiina, kaasuliesi, kuivakäymälä ja puuvarasto"
+
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [24.040489361491, 68.138596972221]
+      }
+      
+    },
     {
         "type": "Feature",
         "properties": {
           "TUPA_ID": 6,
           "NAME": "Nammalkurun autiotupa",
           "DESCRIPTION": "Cabin with reservation and wilderness amenities",
-          "ACCESSORIES": "Kamiina, kaasuliesi, kuivakäymälä ja puuvarasto",
-          "SLOTS": "20",       
-          "REGION": "Pohjois-Suomi",
-          "PARK" : "Pallas-Yllästunturin kansallispuisto"
+          "ACCESSORIES": "Kamiina, kaasuliesi, kuivakäymälä ja puuvarasto"
         },
         "geometry": {
           "type": "Point",
@@ -95,9 +92,7 @@
         "properties": {
           "TUPA_ID": 7,
           "NAME": "Rihmakurun autiotupa",
-          "DESCRIPTION": "Cabin with reservation and wilderness amenities",
-          "REGION": "Pohjois-Suomi",
-          "PARK" : "Pallas-Yllästunturin kansallispuisto"
+          "DESCRIPTION": "Cabin with reservation and wilderness amenities"
         },
         "geometry": {
           "type": "Point",

@@ -6,7 +6,7 @@ function SearchResultList({ results, onResultClick }) {
     style={{ top: "24px" }}>
       {results.map((result, id) => (
         <div key={id} onClick={() => onResultClick(result)} className="px-3 py-2 cursor-pointer hover:bg-gray-100">
-          {result.properties.NAME}
+          {result.properties.name}
         </div>
       ))}
     </div>
