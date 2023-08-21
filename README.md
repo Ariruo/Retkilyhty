@@ -14,7 +14,7 @@ Note: This project is a work in progress. Additional features and improvements a
 ## Features
 
 - View a map with markers representing cabin locations.
-- Click on a marker to view more information about a specific cabin.
+- Click on a marker to view more information about a specific cabin. You can also see the current weather information regarding the cabin
 - Search for cabins based on name.
 - Responsive design for a seamless experience on various devices.
 
