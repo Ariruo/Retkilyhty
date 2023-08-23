@@ -1,17 +1,18 @@
 import React, { useState, useEffect } from "react";
 import Map, { Marker, Popup, Source, Layer, NavigationControl,GeolocateControl } from "react-map-gl";
 
-import hetta from '../../assets/hetta'
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import Coordinatecabin from "./Coordinatescabin";
-import 'mapbox-gl/dist/mapbox-gl.css';
-import iso_karhunkierros from "../../assets/iso_karhunkierros";
+
+
 
 import getUserCoordinates from "../service/getUserCoordinates";
 import SearchBar from "./Searchbar";
 import SearchResultList from "./SearchResultList";
 import Button from "./Button";
+
 
 
 
@@ -21,7 +22,8 @@ const [results, setResults] = useState([]);
 const [selectedPark, setSelectedPark] = useState(null);
 const [input, setInput] = useState("");
 const [showSearchResults, setShowSearchResults] = useState(false);
-
+const [hoveredPark, setHoveredPark] = useState(null);
+const [hoveredCoordinates, setHoveredCoordinates] = useState(null);
 const [viewState, setViewState] = useState({
   longitude: 23.72018736381,
   latitude: 68.342938678895,
@@ -62,6 +64,15 @@ useEffect(() => {
   });
 }, []);
 
+const handleMarkerHover = (event, park) => {
+  event.preventDefault();
+  setHoveredPark(park);
+};
+
+const handleMarkerLeave = () => {
+  setHoveredPark(null);
+};
+
 const handleFindClosestPark = () => {
   if (results.length > 0) {
     const closestPark = results[0]; // Assuming results are sorted by proximity
@@ -95,7 +106,7 @@ const handleFindClosestPark = () => {
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         
-        mapStyle="mapbox://styles/ariru/cll6qcd1o00nd01pd9r1x0bwi"
+        mapStyle="mapbox://styles/mapbox/outdoors-v12"
         style={{ width: "99vw", height: "90vh", position: "relative", top: 0, left: 0 }}
         >
 
@@ -106,25 +117,7 @@ const handleFindClosestPark = () => {
  
  
 
-<Source id="hettadata" type="geojson" data={hetta}>
-         <Layer
-          id="hettapoint"
-          type="circle"
-          paint={{
-            'circle-radius': 2,
-            'circle-color': 'black'
-          }}/>
-      </Source>
 
-      <Source id="karhunkierrosdata" type="geojson" data={iso_karhunkierros}>
-         <Layer
-          id="karhunkierrospoint"
-          type="circle"
-          paint={{
-            'circle-radius': 2,
-            'circle-color': '#007cbf'
-          }}/>
-      </Source>
 
   {results.map((park, index) => (
   <Marker
@@ -134,25 +127,53 @@ const handleFindClosestPark = () => {
     offsetTop={-20}
   >
      <button
-    className=""
-  
-    onClick={e => {
-      e.preventDefault();
-      setSelectedPark(park);
-    }}
-  >
-    <img
-      src="/cottage.svg"
-      alt="cottage icon"
-      className={`w-4 h-4 `}
-    />
+            className=""
+            onMouseEnter={(e) => handleMarkerHover(e, park)}
+            onMouseLeave={handleMarkerLeave}
+            onClick={(e) => {
+              e.preventDefault();
+              setSelectedPark(park);
+            }}
+          >
+            <img
+              src="/cottage.svg"
+              alt="cottage icon"
+              className={`w-4 h-4 `}
+            />
+          </button>
+        </Marker>
+      ))}
+
+       {hoveredPark && (
+        <div className="custom-popup absolute z-10 bg-white border p-4">
    
-    </button>
-    
-    </Marker>
-    ))}
+          <div>{hoveredPark.properties.name}</div>
+          <div>{hoveredPark.properties.tyyppi}</div>
+       </div>
+      )}
  
  {selectedPark && (
+            <Popup 
+            latitude={selectedPark.geometry.coordinates[0]}
+            longitude={selectedPark.geometry.coordinates[1]}
+            anchor="bottom"
+            closeOnClick={false}
+            onClose={() => {
+              setSelectedPark(null);
+            }}
+          
+            >
+           <h2 className="text-lg font-semibold">{selectedPark.properties.name}</h2>
+            <p className="mt-1"> {selectedPark.properties.tyyppi}</p>
+            <p className="mt-1"> Maakunta: {selectedPark.properties.maakunta}</p>
+            <Coordinatecabin
+            latitude={selectedPark.geometry.coordinates[0]}
+            longitude={selectedPark.geometry.coordinates[1]}
+            />
+          </Popup>)}
+
+
+          {/* {selectedPark && (
           <div className="custom-popup absolute z-10 bg-white border p-4">
             <button className="close-button" onClick={closePopup}>
             <FontAwesomeIcon icon={faTimes} />
@@ -166,7 +187,8 @@ const handleFindClosestPark = () => {
             longitude={selectedPark.geometry.coordinates[1]}
           />
           </div>
-        )}
+             )} */}
+       
         <NavigationControl 
         position="bottom-right"
         showCompass={true}
@@ -183,9 +205,13 @@ const handleFindClosestPark = () => {
         
         
       />
-  </Map>
-  
 
+
+
+
+  </Map>
+
+  
   
 
     </div>
