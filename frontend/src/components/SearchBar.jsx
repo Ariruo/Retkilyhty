@@ -1,33 +1,24 @@
 import { useState, useEffect } from "react";
+import axios from "axios";
 
 
 import { FaSearch } from "react-icons/fa";
 
 const SearchBar = ({ setResults, setInput, input, setShowSearchResults })  => {
   
-
-  const filterData = (value) => {
-    fetch("http://localhost:9000/api/allcabinspoints")
-      .then((response) => response.json())
-      .then((data) => {
-        const results = data.features.filter((feature) => {
-          return (
-            value &&
-            feature.properties &&
-            feature.properties.name &&
-            feature.properties.name.toLowerCase().includes(value.toLowerCase())
-          );
-        });
-        setResults(results);
-        console.log(data)
-        console.log(results);
-      })
-      .catch((error) => {
+    const filterData = async (value) => {
+      try {
+        const response = await axios.get(`http://localhost:9000/api/allcabinspointsfiltered?search=${value}`);
+        console.log("API Response:", response.data.features);
+        setResults(response.data.features);
+        setShowSearchResults(value.length > 0);
+      } catch (error) {
         console.error("Error fetching data:", error);
-      });
-  };
+      }
+    };
 
   const handleChange = (value) => {
+    console.log("Search Value:", value);
     setInput(value);
     filterData(value);
     setShowSearchResults(value.length > 0);

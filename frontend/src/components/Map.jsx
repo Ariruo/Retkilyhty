@@ -173,21 +173,7 @@ const handleFindClosestPark = () => {
           </Popup>)}
 
 
-          {/* {selectedPark && (
-          <div className="custom-popup absolute z-10 bg-white border p-4">
-            <button className="close-button" onClick={closePopup}>
-            <FontAwesomeIcon icon={faTimes} />
-          </button>
-            <h2 className="text-lg font-semibold">{selectedPark.properties.name}</h2>
-            <p className="mt-1"> {selectedPark.properties.tyyppi}</p>
-            <p className="mt-1"> Maakunta: {selectedPark.properties.maakunta}</p>
-          
-            <Coordinatecabin 
-            latitude={selectedPark.geometry.coordinates[0]} 
-            longitude={selectedPark.geometry.coordinates[1]}
-          />
-          </div>
-             )} */}
+    
        
         <NavigationControl 
         position="bottom-right"
