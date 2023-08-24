@@ -1,29 +1,25 @@
 import React, { useState, useEffect } from "react";
 import Map, { Marker, Popup, Source, Layer, NavigationControl,GeolocateControl } from "react-map-gl";
-
-
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import Coordinatecabin from "./Coordinatescabin";
-
-
-
 import getUserCoordinates from "../service/getUserCoordinates";
 import SearchBar from "./Searchbar";
 import SearchResultList from "./SearchResultList";
 import Button from "./Button";
+import axios from "axios";
 
 
 
 
 export default function Mapp() {
 
-const [results, setResults] = useState([]);  
+const [originalData , setOriginaldata] = useState([]);
+const [FilteredData, setFilteredData] = useState([]);  
 const [selectedPark, setSelectedPark] = useState(null);
 const [input, setInput] = useState("");
 const [showSearchResults, setShowSearchResults] = useState(false);
 const [hoveredPark, setHoveredPark] = useState(null);
-const [hoveredCoordinates, setHoveredCoordinates] = useState(null);
 const [viewState, setViewState] = useState({
   longitude: 23.72018736381,
   latitude: 68.342938678895,
@@ -31,12 +27,12 @@ const [viewState, setViewState] = useState({
 })
 
 useEffect(() => {
-  fetch("http://localhost:9000/api/allcabinspoints")
-    .then((response) => response.json())
-    .then((data) => {
+  axios.get("http://localhost:9000/api/allcabinspoints")
+    .then((response) => {
       // Assuming the fetched data is in GeoJSON format and contains features
-      const parks = data.features || [];
-      setResults(parks);
+      const parks = response.data.features || [];
+      setFilteredData(parks);
+      setOriginaldata(parks);
     })
     .catch((error) => {
       console.error("Error fetching data:", error);
@@ -44,15 +40,18 @@ useEffect(() => {
 }, []);
 
 
+// useEffect(() => {
+//   if (selectedPark) {
+//     setViewState({
+//       longitude: selectedPark.geometry.coordinates[1],
+//       latitude: selectedPark.geometry.coordinates[0],
+//       zoom: 10,
+//     });
+//   }
+// }, [selectedPark]);
 useEffect(() => {
-  if (selectedPark) {
-    setViewState({
-      longitude: selectedPark.geometry.coordinates[1],
-      latitude: selectedPark.geometry.coordinates[0],
-      zoom: 10,
-    });
-  }
-}, [selectedPark]);
+  console.log("Updated viewState:", viewState);
+}, [viewState]);
 
 useEffect(() => {
   getUserCoordinates().then((coordinates) => {
@@ -74,12 +73,17 @@ const handleMarkerLeave = () => {
 };
 
 const handleFindClosestPark = () => {
-  if (results.length > 0) {
-    const closestPark = results[0]; // Assuming results are sorted by proximity
+  if (FilteredData.length > 0) {
+    const closestPark = FilteredData[0]; // Assuming results are sorted by proximity
     setSelectedPark(closestPark);
     setInput("");
     setShowSearchResults(false);
-    
+    setViewState({
+      longitude: closestPark.geometry.coordinates[1], // Update view state only on search
+      latitude: closestPark.geometry.coordinates[0],
+      zoom: 10,
+    });
+   console.log(viewState)
   }
 };
 
@@ -90,9 +94,17 @@ const handleFindClosestPark = () => {
   };
 
   const handleResultClick = (park) => {
+    
+    
+    console.log(park);
     setSelectedPark(park);
     setInput("");
     setShowSearchResults(false);
+    setViewState({
+      longitude: park.geometry.coordinates[1],
+      latitude: park.geometry.coordinates[0],
+      zoom: 10,
+    });
   };
 
  
@@ -111,15 +123,11 @@ const handleFindClosestPark = () => {
         >
 
 
-<SearchBar setResults={setResults} setInput={setInput} input={input} setShowSearchResults={setShowSearchResults} />
+<SearchBar setResults={setFilteredData} setInput={setInput} input={input} setShowSearchResults={setShowSearchResults} />
 <Button onClick={handleFindClosestPark}>Hae</Button>
- {showSearchResults && results && results.length > 0 && <SearchResultList results={results} onResultClick={handleResultClick} />}
+ {showSearchResults && FilteredData && FilteredData.length > 0 && <SearchResultList results={FilteredData} onResultClick={handleResultClick} />}
  
- 
-
-
-
-  {results.map((park, index) => (
+  {originalData.map((park, index) => (
   <Marker
   key={index}
     latitude={park.geometry.coordinates[0]}
@@ -160,6 +168,7 @@ const handleFindClosestPark = () => {
             closeOnClick={false}
             onClose={() => {
               setSelectedPark(null);
+            
             }}
           
             >
