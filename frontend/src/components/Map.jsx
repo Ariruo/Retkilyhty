@@ -7,6 +7,7 @@ import getUserCoordinates from "../service/getUserCoordinates";
 import SearchBar from "./Searchbar";
 import SearchResultList from "./SearchResultList";
 import Button from "./Button";
+import fetchData from "../api/fetch";
 import axios from "axios";
 
 
@@ -14,6 +15,9 @@ import axios from "axios";
 
 export default function Mapp() {
 
+const [showCabins, setShowCabins] = useState(true);
+const [showVaraustupas, setShowVaraustupas] = useState(false);
+const [reservationData, setReservationData] = useState([]); 
 const [originalData , setOriginaldata] = useState([]);
 const [FilteredData, setFilteredData] = useState([]);  
 const [selectedPark, setSelectedPark] = useState(null);
@@ -27,31 +31,21 @@ const [viewState, setViewState] = useState({
 })
 
 useEffect(() => {
-  axios.get("http://localhost:9000/api/allcabinspoints")
-    .then((response) => {
-      // Assuming the fetched data is in GeoJSON format and contains features
-      const parks = response.data.features || [];
+  fetchData('http://localhost:9000/api/allcabinspoints')
+    .then((parks) => {
       setFilteredData(parks);
       setOriginaldata(parks);
-    })
-    .catch((error) => {
-      console.error("Error fetching data:", error);
     });
 }, []);
 
-
 // useEffect(() => {
-//   if (selectedPark) {
-//     setViewState({
-//       longitude: selectedPark.geometry.coordinates[1],
-//       latitude: selectedPark.geometry.coordinates[0],
-//       zoom: 10,
+//   fetchData('http://localhost:9000/api/allvaraustupapoints')
+//     .then((parks) => {
+//       setReservationData(parks);
+      
 //     });
-//   }
-// }, [selectedPark]);
-useEffect(() => {
-  console.log("Updated viewState:", viewState);
-}, [viewState]);
+// }, []);
+
 
 useEffect(() => {
   getUserCoordinates().then((coordinates) => {
@@ -74,12 +68,12 @@ const handleMarkerLeave = () => {
 
 const handleFindClosestPark = () => {
   if (FilteredData.length > 0) {
-    const closestPark = FilteredData[0]; // Assuming results are sorted by proximity
+    const closestPark = FilteredData[0]; 
     setSelectedPark(closestPark);
     setInput("");
     setShowSearchResults(false);
     setViewState({
-      longitude: closestPark.geometry.coordinates[1], // Update view state only on search
+      longitude: closestPark.geometry.coordinates[1], 
       latitude: closestPark.geometry.coordinates[0],
       zoom: 10,
     });
@@ -89,14 +83,10 @@ const handleFindClosestPark = () => {
 
 
 
-  const closePopup = () => {
-    setSelectedPark(null);
-  };
-
   const handleResultClick = (park) => {
     
     
-    console.log(park);
+    
     setSelectedPark(park);
     setInput("");
     setShowSearchResults(false);
@@ -107,6 +97,25 @@ const handleFindClosestPark = () => {
     });
   };
 
+
+  const toggleCabins = () => {
+    setShowCabins(!showCabins);
+  };
+  
+  const toggleVaraustupas = async () => {
+    setShowVaraustupas(!showVaraustupas);
+
+    if (!showVaraustupas) {
+      try {
+       const parks = await fetchData('http://localhost:9000/api/allvaraustupapoints')
+        
+        setReservationData(parks);
+        
+      } catch (error) {
+        console.error('Error fetching varaustupa data:', error);
+      }
+    }
+  }
  
   return (
     <div>
@@ -127,7 +136,7 @@ const handleFindClosestPark = () => {
 <Button onClick={handleFindClosestPark}>Hae</Button>
  {showSearchResults && FilteredData && FilteredData.length > 0 && <SearchResultList results={FilteredData} onResultClick={handleResultClick} />}
  
-  {originalData.map((park, index) => (
+ {showCabins && originalData.map((park, index) => (
   <Marker
   key={index}
     latitude={park.geometry.coordinates[0]}
@@ -144,9 +153,10 @@ const handleFindClosestPark = () => {
             }}
           >
             <img
-              src="/cottage.svg"
+              src={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
               alt="cottage icon"
-              className={`w-4 h-4 `}
+              
+              
             />
           </button>
         </Marker>
@@ -155,10 +165,37 @@ const handleFindClosestPark = () => {
        {hoveredPark && (
         <div className="custom-popup absolute z-10 bg-white border p-4">
    
-          <div>{hoveredPark.properties.name}</div>
-          <div>{hoveredPark.properties.tyyppi}</div>
+          <div>{hoveredPark.properties.name} ({hoveredPark.properties.tyyppi})</div>
+         
        </div>
       )}
+
+{showVaraustupas && reservationData.map((park, index) => (
+  <Marker
+  key={index}
+    latitude={park.geometry.coordinates[0]}
+    longitude={park.geometry.coordinates[1]}
+    offsetTop={-20}
+  >
+     <button
+            className=""
+            onMouseEnter={(e) => handleMarkerHover(e, park)}
+            onMouseLeave={handleMarkerLeave}
+            onClick={(e) => {
+              e.preventDefault();
+              setSelectedPark(park);
+            }}
+          >
+            <img
+              src={`https://api.geoapify.com/v1/icon/?type=material&color=%231d04ff&size=small&icon=cabin&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+              alt="cottage icon"
+              
+              
+            />
+          </button>
+        </Marker>
+      ))}
+
  
  {selectedPark && (
             <Popup 
@@ -168,9 +205,7 @@ const handleFindClosestPark = () => {
             closeOnClick={false}
             onClose={() => {
               setSelectedPark(null);
-            
             }}
-          
             >
            <h2 className="text-lg font-semibold">{selectedPark.properties.name}</h2>
             <p className="mt-1"> {selectedPark.properties.tyyppi}</p>
@@ -189,26 +224,32 @@ const handleFindClosestPark = () => {
         showCompass={true}
         visualizePitch={true}
         showZoom={true}
-        
-         />
+        />
         <GeolocateControl
         positionOptions={{ enableHighAccuracy: true }}
         trackUserLocation={true}
         showUserHeading={true}
         showAccuracyCircle={false}
         showUserLocation={true}
-        
-        
-      />
+        />
+      </Map>
+      <label>
+  <input
+    type="checkbox"
+    checked={showCabins}
+    onChange={toggleCabins}
+  />
+  Show Cabins
+</label>
 
-
-
-
-  </Map>
-
-  
-  
-
+<label>
+  <input
+    type="checkbox"
+    checked={showVaraustupas}
+    onChange={toggleVaraustupas}
+  />
+  Show Varaustupas
+</label>
     </div>
   );
 }

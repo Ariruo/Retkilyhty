@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import WeatherIcon from './Weathericon';
+import axios from 'axios';
 
 const Coordinatecabin = ({ latitude, longitude }) => {
   const [temperature, setTemperature] = useState('');
@@ -15,16 +16,13 @@ const Coordinatecabin = ({ latitude, longitude }) => {
   useEffect(() => {
     const fetchWeatherByCoordinates = async () => {
       try {
-        const response = await fetch(
+        const response = await axios.get(
           `http://localhost:9000/api/weatherbycoordinates?lon=${longitude}&lat=${latitude}`
         );
 
-        if (!response.ok) {
-          throw new Error('Failed to fetch weather data.');
-        }
+        const data = response.data;
 
-        const data = await response.json();
-        console.log('Current weather data:', data);
+        
 
         setTemperature(data?.main?.temp || '');
         setDescription(data?.weather[0]?.description || '');

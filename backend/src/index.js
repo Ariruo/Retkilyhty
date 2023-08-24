@@ -44,6 +44,16 @@ const fetchPointData = async () => {
     throw new Error('Error fetching cabin data');
   }
 };
+const fetchPointDatavaraus = async () => {
+  try {
+    const endpoint = `${cabinsURL}/api-json.php?tyyppi=Varaustupa&maakunta`;
+    const response = await fetch(endpoint);
+    return response.json();
+  } catch (error) {
+    console.error('Error fetching cabin data:', error);
+    throw new Error('Error fetching cabin data');
+  }
+};
 
 const fetchPointDataByProvince = async (tyyppi, maakunta) => {
   try {
@@ -86,27 +96,17 @@ router.get('/api/forecastbycoordinates', async ctx => {
 
 //////////////////////////////////////////////////////////////// MAPDATA  //////////////////////////////////////////////////////////////////
 
-router.get('/api/allcabinspoints', async ctx => {
-  try {
-     
-    const cabinsData = await fetchPointData();
-    ctx.type = 'application/json; charset=utf-8';
-    ctx.body = cabinsData.features ? cabinsData : {};
-  } catch (error) {
-    console.error('Error fetching cabin data:', error);
-    ctx.throw(500, 'Internal Server Error');
-  }
-});
 
-router.get('/api/allcabinspointsfiltered', async ctx => {
+
+router.get('/api/allcabinspoints', async ctx => {
   try {
     const search = ctx.request.query.search || ''; // Get the search query parameter
     const cabinsData = await fetchPointData();
     ctx.type = 'application/json; charset=utf-8';
 
-    // Apply your custom filtering logic here
+    
     const filteredData = cabinsData.features.filter(feature => {
-      // Customize the condition based on your filtering requirements
+     
       return (
         feature.properties &&
         feature.properties.name &&
@@ -114,12 +114,37 @@ router.get('/api/allcabinspointsfiltered', async ctx => {
       );
     });
 
-    ctx.body = { features: filteredData }; // Return the filtered data
+    ctx.body = { features: filteredData }; 
   } catch (error) {
     console.error('Error fetching cabin data:', error);
     ctx.throw(500, 'Internal Server Error');
   }
 });
+
+
+router.get('/api/allvaraustupapoints', async ctx => {
+  try {
+    const search = ctx.request.query.search || ''; // Get the search query parameter
+    const cabinsData = await fetchPointDatavaraus();
+    ctx.type = 'application/json; charset=utf-8';
+
+    
+    const filteredData = cabinsData.features.filter(feature => {
+     
+      return (
+        feature.properties &&
+        feature.properties.name &&
+        feature.properties.name.toLowerCase().includes(search.toLowerCase())
+      );
+    });
+
+    ctx.body = { features: filteredData }; 
+  } catch (error) {
+    console.error('Error fetching cabin data:', error);
+    ctx.throw(500, 'Internal Server Error');
+  }
+});
+
 
 
 router.get('/api/fetchpointdatabyprovince', async ctx => {

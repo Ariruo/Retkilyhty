@@ -1,16 +1,13 @@
-const baseURL = 'http://localhost:9000/api';
+import axios from 'axios';
 
-const getWeatherFromApi = async (city) => {
+const fetchData = async (url) => {
   try {
-    const response = await fetch(`${baseURL}/weatherbycity?city=${city}`);
-    return response.json();
+    const response = await axios.get(url);
+    return response.data.features || [];
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching data:', error);
+    return [];
   }
-  return {};
 };
 
-
-
-
-export default getWeatherFromApi
+export default fetchData;

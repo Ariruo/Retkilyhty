@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+
 import axios from "axios";
 
 
@@ -8,8 +8,8 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults })  => {
   
     const filterData = async (value) => {
       try {
-        const response = await axios.get(`http://localhost:9000/api/allcabinspointsfiltered?search=${value}`);
-        console.log("API Response:", response.data.features);
+        const response = await axios.get(`http://localhost:9000/api/allcabinspoints?search=${value}`);
+        
         setResults(response.data.features);
         setShowSearchResults(value.length > 0);
       } catch (error) {
