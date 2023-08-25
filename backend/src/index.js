@@ -34,19 +34,10 @@ const fetchForecastByCoordinates = async (lon, lat) => {
   return response ? response.json() : {};
 };
 
-const fetchPointData = async () => {
+
+const fetchData = async (tyyppi) => {
   try {
-    const endpoint = `${cabinsURL}/api-json.php?tyyppi=autiotupa&maakunta`;
-    const response = await fetch(endpoint);
-    return response.json();
-  } catch (error) {
-    console.error('Error fetching cabin data:', error);
-    throw new Error('Error fetching cabin data');
-  }
-};
-const fetchPointDatavaraus = async () => {
-  try {
-    const endpoint = `${cabinsURL}/api-json.php?tyyppi=Varaustupa&maakunta`;
+    const endpoint = `${cabinsURL}/api-json.php?tyyppi=${tyyppi}&maakunta`;
     const response = await fetch(endpoint);
     return response.json();
   } catch (error) {
@@ -55,17 +46,27 @@ const fetchPointDatavaraus = async () => {
   }
 };
 
-const fetchPointDataByProvince = async (tyyppi, maakunta) => {
+
+const filterAndRespond = async (ctx, type) => {
   try {
-    const endpoint = `${cabinsURL}/api-json.php?tyyppi=${tyyppi}&maakunta=${maakunta}`;
-    const response = await fetch(endpoint);
-    return response.json();
+    const search = ctx.request.query.search || '';
+    const cabinsData = await fetchData(type);
+    ctx.type = 'application/json; charset=utf-8';
+
+    const filteredData = cabinsData.features.filter(feature => {
+      return (
+        feature.properties &&
+        feature.properties.name &&
+        feature.properties.name.toLowerCase().includes(search.toLowerCase())
+      );
+    });
+
+    ctx.body = { features: filteredData };
   } catch (error) {
     console.error('Error fetching cabin data:', error);
-    throw new Error('Error fetching cabin data');
+    ctx.throw(500, 'Internal Server Error');
   }
 };
-
 
 
 
@@ -99,71 +100,62 @@ router.get('/api/forecastbycoordinates', async ctx => {
 
 
 router.get('/api/allcabinspoints', async ctx => {
-  try {
-    const search = ctx.request.query.search || ''; // Get the search query parameter
-    const cabinsData = await fetchPointData();
-    ctx.type = 'application/json; charset=utf-8';
-
-    
-    const filteredData = cabinsData.features.filter(feature => {
-     
-      return (
-        feature.properties &&
-        feature.properties.name &&
-        feature.properties.name.toLowerCase().includes(search.toLowerCase())
-      );
-    });
-
-    ctx.body = { features: filteredData }; 
-  } catch (error) {
-    console.error('Error fetching cabin data:', error);
-    ctx.throw(500, 'Internal Server Error');
-  }
+  await filterAndRespond(ctx, 'Autiotupa');
 });
-
 
 router.get('/api/allvaraustupapoints', async ctx => {
-  try {
-    const search = ctx.request.query.search || ''; // Get the search query parameter
-    const cabinsData = await fetchPointDatavaraus();
-    ctx.type = 'application/json; charset=utf-8';
+  await filterAndRespond(ctx, 'Varaustupa');
+});
 
-    
-    const filteredData = cabinsData.features.filter(feature => {
-     
-      return (
-        feature.properties &&
-        feature.properties.name &&
-        feature.properties.name.toLowerCase().includes(search.toLowerCase())
-      );
-    });
+router.get('/api/allnuotiopaikkapoints', async ctx => {
+  await filterAndRespond(ctx, 'Nuotiopaikka');
+});
 
-    ctx.body = { features: filteredData }; 
-  } catch (error) {
-    console.error('Error fetching cabin data:', error);
-    ctx.throw(500, 'Internal Server Error');
-  }
+router.get('/api/alllaavupoints', async ctx => {
+  await filterAndRespond(ctx, 'Laavu');
+});
+
+router.get('/api/allkotapoints', async ctx => {
+  await filterAndRespond(ctx, 'Kota');
+});
+
+router.get('/api/allpäivätupapoints', async ctx => {
+  await filterAndRespond(ctx, 'Päivätupa');
+});
+
+router.get('/api/allkammipoints', async ctx => {
+  await filterAndRespond(ctx, 'Kammi');
+});
+
+router.get('/api/allsaunapoints', async ctx => {
+  await filterAndRespond(ctx, 'Sauna');
+});
+
+router.get('/api/alllintutornipoints', async ctx => {
+  await filterAndRespond(ctx, 'Lintutorni');
+});
+
+router.get('/api/allnähtävyyspoints', async ctx => {
+  await filterAndRespond(ctx, 'Nähtävyys');
+});
+
+router.get('/api/allluolaspoints', async ctx => {
+  await filterAndRespond(ctx, 'Luola');
+});
+
+router.get('/api/alllähdepoints', async ctx => {
+  await filterAndRespond(ctx, 'Lähde');
 });
 
 
 
-router.get('/api/fetchpointdatabyprovince', async ctx => {
-  const { tyyppi, maakunta } = ctx.request.query;
 
-  if (tyyppi && maakunta) {
-    try {
-      const cabinsData = await fetchPointDataByProvince(tyyppi, maakunta);
-      ctx.type = 'application/json; charset=utf-8';
-      ctx.body = cabinsData.features ? cabinsData : {};
-    } catch (error) {
-      console.error('Error fetching cabin data:', error);
-      ctx.throw(500, 'Internal Server Error');
-    }
-  } else {
-    ctx.status = 400;
-    ctx.body = 'Bad Request: Both "tyyppi" and "maakunta" parameters are required.';
-  }
-});
+
+
+
+
+
+
 
 app.use(router.routes());
 app.use(router.allowedMethods());

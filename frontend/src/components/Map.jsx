@@ -16,7 +16,7 @@ import axios from "axios";
 export default function Mapp() {
 
 const [showCabins, setShowCabins] = useState(true);
-const [showVaraustupas, setShowVaraustupas] = useState(false);
+const [showVaraustupas, setShowVaraustupas] = useState(true);
 const [reservationData, setReservationData] = useState([]); 
 const [originalData , setOriginaldata] = useState([]);
 const [FilteredData, setFilteredData] = useState([]);  
