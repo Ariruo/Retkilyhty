@@ -8,16 +8,16 @@ import SearchBar from "./Searchbar";
 import SearchResultList from "./SearchResultList";
 import Button from "./Button";
 import fetchData from "../api/fetch";
-import axios from "axios";
+import CustomMarker from "./CustomMarker";
+import useToggleAndFetchData from "../service/toggleAndFetchData";
 
 
 
 
 export default function Mapp() {
 
+
 const [showCabins, setShowCabins] = useState(true);
-const [showVaraustupas, setShowVaraustupas] = useState(true);
-const [reservationData, setReservationData] = useState([]); 
 const [originalData , setOriginaldata] = useState([]);
 const [FilteredData, setFilteredData] = useState([]);  
 const [selectedPark, setSelectedPark] = useState(null);
@@ -29,6 +29,14 @@ const [viewState, setViewState] = useState({
   latitude: 68.342938678895,
   zoom: 10,
 })
+const [showVaraustupas, varaustupaData, toggleVaraustupas] = useToggleAndFetchData(
+  false,
+  async () => await fetchData('http://localhost:9000/api/allvaraustupapoints')
+);
+const [showNuotipaikka, nuotiopaikkaData, toggleNuotipaikka] = useToggleAndFetchData(
+  false,
+  async () => await fetchData('http://localhost:9000/api/allnuotiopaikkapoints')
+);
 
 useEffect(() => {
   fetchData('http://localhost:9000/api/allcabinspoints')
@@ -38,13 +46,9 @@ useEffect(() => {
     });
 }, []);
 
-// useEffect(() => {
-//   fetchData('http://localhost:9000/api/allvaraustupapoints')
-//     .then((parks) => {
-//       setReservationData(parks);
-      
-//     });
-// }, []);
+
+
+
 
 
 useEffect(() => {
@@ -56,6 +60,8 @@ useEffect(() => {
     });
   });
 }, []);
+
+
 
 const handleMarkerHover = (event, park) => {
   event.preventDefault();
@@ -77,7 +83,7 @@ const handleFindClosestPark = () => {
       latitude: closestPark.geometry.coordinates[0],
       zoom: 10,
     });
-   console.log(viewState)
+   
   }
 };
 
@@ -102,21 +108,15 @@ const handleFindClosestPark = () => {
     setShowCabins(!showCabins);
   };
   
-  const toggleVaraustupas = async () => {
-    setShowVaraustupas(!showVaraustupas);
+  
+  
 
-    if (!showVaraustupas) {
-      try {
-       const parks = await fetchData('http://localhost:9000/api/allvaraustupapoints')
-        
-        setReservationData(parks);
-        
-      } catch (error) {
-        console.error('Error fetching varaustupa data:', error);
-      }
-    }
-  }
- 
+  const renderCheckbox = (label, checked, onChange) => (
+    <label>
+      <input type="checkbox" checked={checked} onChange={onChange} />
+      {label}
+    </label>
+  );
   return (
     <div>
  
@@ -136,33 +136,7 @@ const handleFindClosestPark = () => {
 <Button onClick={handleFindClosestPark}>Hae</Button>
  {showSearchResults && FilteredData && FilteredData.length > 0 && <SearchResultList results={FilteredData} onResultClick={handleResultClick} />}
  
- {showCabins && originalData.map((park, index) => (
-  <Marker
-  key={index}
-    latitude={park.geometry.coordinates[0]}
-    longitude={park.geometry.coordinates[1]}
-    offsetTop={-20}
-  >
-     <button
-            className=""
-            onMouseEnter={(e) => handleMarkerHover(e, park)}
-            onMouseLeave={handleMarkerLeave}
-            onClick={(e) => {
-              e.preventDefault();
-              setSelectedPark(park);
-            }}
-          >
-            <img
-              src={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
-              alt="cottage icon"
-              
-              
-            />
-          </button>
-        </Marker>
-      ))}
-
-       {hoveredPark && (
+ {hoveredPark && (
         <div className="custom-popup absolute z-10 bg-white border p-4">
    
           <div>{hoveredPark.properties.name} ({hoveredPark.properties.tyyppi})</div>
@@ -170,31 +144,49 @@ const handleFindClosestPark = () => {
        </div>
       )}
 
-{showVaraustupas && reservationData.map((park, index) => (
-  <Marker
+
+{showCabins && originalData.map((park, index) => (
+<CustomMarker
+key={index}
+latitude={park.geometry.coordinates[0]}
+longitude={park.geometry.coordinates[1]}
+handleMarkerHover={handleMarkerHover}
+setSelectedPark={setSelectedPark}
+handleMarkerLeave={handleMarkerLeave}
+park={park}
+iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+/>
+ ))}
+
+{showVaraustupas && varaustupaData.map((park, index) => (
+  <CustomMarker
   key={index}
+  latitude={park.geometry.coordinates[0]}
+  longitude={park.geometry.coordinates[1]}
+  handleMarkerHover={handleMarkerHover}
+  setSelectedPark={setSelectedPark}
+  handleMarkerLeave={handleMarkerLeave}
+  park={park}
+  iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%231d04ff&size=small&icon=cabin&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+  />
+   ))}
+ 
+             
+ 
+{showNuotipaikka && nuotiopaikkaData.map((park, index) => (
+    <CustomMarker
+    key={index}
     latitude={park.geometry.coordinates[0]}
     longitude={park.geometry.coordinates[1]}
-    offsetTop={-20}
-  >
-     <button
-            className=""
-            onMouseEnter={(e) => handleMarkerHover(e, park)}
-            onMouseLeave={handleMarkerLeave}
-            onClick={(e) => {
-              e.preventDefault();
-              setSelectedPark(park);
-            }}
-          >
-            <img
-              src={`https://api.geoapify.com/v1/icon/?type=material&color=%231d04ff&size=small&icon=cabin&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
-              alt="cottage icon"
-              
-              
-            />
-          </button>
-        </Marker>
-      ))}
+    handleMarkerHover={handleMarkerHover}
+    setSelectedPark={setSelectedPark}
+    handleMarkerLeave={handleMarkerLeave}
+    park={park}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=fire&iconType=awesome&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    />
+     ))}
+  
+ 
 
  
  {selectedPark && (
@@ -233,23 +225,12 @@ const handleFindClosestPark = () => {
         showUserLocation={true}
         />
       </Map>
-      <label>
-  <input
-    type="checkbox"
-    checked={showCabins}
-    onChange={toggleCabins}
-  />
-  Show Cabins
-</label>
+      
+{renderCheckbox("Show Cabins", showCabins, toggleCabins)}
+{renderCheckbox("Show Varaustupas", showVaraustupas, toggleVaraustupas)}
+{renderCheckbox("Show Nuotipaikka", showNuotipaikka, toggleNuotipaikka)}
 
-<label>
-  <input
-    type="checkbox"
-    checked={showVaraustupas}
-    onChange={toggleVaraustupas}
-  />
-  Show Varaustupas
-</label>
+
     </div>
   );
 }
