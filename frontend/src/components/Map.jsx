@@ -39,7 +39,7 @@ const [showSauna, saunaData, toggleSauna] = useToggleAndFetchData(false,async ()
 const [showLintutorni, lintutorniData, toggleLintutorni] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllintutornipoints'));
 const [showNahtavyys , nahtavyysData, toggleNahtavyys] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allnahtavyyspoints'));
 const [showLuola , luolaData, toggleLuola] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allluolapoints'));
-const [showLahde , lahdeData, toggleLahde] = useToggleAndFetchData(true,async () => await fetchData('http://localhost:9000/api/alllahdepoints'));
+const [showLahde , lahdeData, toggleLahde] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllahdepoints'));
 
 
 
@@ -118,7 +118,7 @@ const handleFindClosestPark = () => {
   
 
   const renderCheckbox = (label, checked, onChange) => (
-    <label>
+    <label className="block checkbox-container mb-2">
       <input type="checkbox" checked={checked} onChange={onChange} />
       {label}
     </label>
@@ -142,6 +142,23 @@ const handleFindClosestPark = () => {
 <Button onClick={handleFindClosestPark}>Hae</Button>
  {showSearchResults && FilteredData && FilteredData.length > 0 && <SearchResultList results={FilteredData} onResultClick={handleResultClick} />}
  
+ 
+ <div className="absolute z-10 left-0 bottom-0 p-4 m-4 bg-gray-100 rounded-tl-lg bg-transparent">
+{renderCheckbox("Autiotupa", showCabins, toggleCabins)}
+{renderCheckbox("Varaustupas", showVaraustupas, toggleVaraustupas)}
+{renderCheckbox("Nuotipaikka", showNuotipaikka, toggleNuotipaikka)}
+{renderCheckbox("Kota", showKota, toggleKota)}
+{renderCheckbox("Laavu", showLaavu, toggleLaavu)}
+{renderCheckbox("Päivätupa", showPaivatupa, togglePaivatupa)}
+{renderCheckbox("Kammi", showKammi, toggleKammi)}
+{renderCheckbox("Sauna", showSauna, toggleSauna)}
+{renderCheckbox("Lintutorni", showLintutorni, toggleLintutorni)}
+{renderCheckbox("Nähtävyys", showNahtavyys, toggleNahtavyys)}
+{renderCheckbox("Luola", showLuola, toggleLuola)}
+{renderCheckbox("Lähde", showLahde, toggleLahde)}
+
+</div>
+
  {hoveredPark && (
         <div className="custom-popup absolute z-10 bg-white border p-4">
    
@@ -360,18 +377,6 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
         />
       </Map>
 
-{renderCheckbox("Show Cabins", showCabins, toggleCabins)}
-{renderCheckbox("Show Varaustupas", showVaraustupas, toggleVaraustupas)}
-{renderCheckbox("Show Nuotipaikka", showNuotipaikka, toggleNuotipaikka)}
-{renderCheckbox("Show Kota", showKota, toggleKota)}
-{renderCheckbox("Show Laavu", showLaavu, toggleLaavu)}
-{renderCheckbox("Show Päivätupa", showPaivatupa, togglePaivatupa)}
-{renderCheckbox("Show Kammi", showKammi, toggleKammi)}
-{renderCheckbox("Show Sauna", showSauna, toggleSauna)}
-{renderCheckbox("Show Lintutorni", showLintutorni, toggleLintutorni)}
-{renderCheckbox("Show Nähtävyys", showNahtavyys, toggleNahtavyys)}
-{renderCheckbox("Show Luola", showLuola, toggleLuola)}
-{renderCheckbox("Show Lähde", showLahde, toggleLahde)}
 
 
 
