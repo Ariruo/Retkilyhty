@@ -9,7 +9,7 @@ import SearchResultList from "./SearchResultList";
 import Button from "./Button";
 import fetchData from "../api/fetch";
 import CustomMarker from "./CustomMarker";
-import useToggleAndFetchData from "../service/toggleAndFetchData";
+import useToggleAndFetchData from "../hooks/toggleAndFetchData";
 
 
 
@@ -29,14 +29,20 @@ const [viewState, setViewState] = useState({
   latitude: 68.342938678895,
   zoom: 10,
 })
-const [showVaraustupas, varaustupaData, toggleVaraustupas] = useToggleAndFetchData(
-  false,
-  async () => await fetchData('http://localhost:9000/api/allvaraustupapoints')
-);
-const [showNuotipaikka, nuotiopaikkaData, toggleNuotipaikka] = useToggleAndFetchData(
-  false,
-  async () => await fetchData('http://localhost:9000/api/allnuotiopaikkapoints')
-);
+const [showVaraustupas, varaustupaData, toggleVaraustupas] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allvaraustupapoints'));
+const [showNuotipaikka, nuotiopaikkaData, toggleNuotipaikka] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allnuotiopaikkapoints'));
+const [showKota, kotaData, toggleKota] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allkotapoints'));
+const [showLaavu, laavuData, toggleLaavu] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllaavupoints'));
+const [showPaivatupa, paivatupaData, togglePaivatupa] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allpaivatupapoints'));
+const [showKammi, kammiData, toggleKammi] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allkammipoints'));
+const [showSauna, saunaData, toggleSauna] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allsaunapoints'));
+const [showLintutorni, lintutorniData, toggleLintutorni] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllintutornipoints'));
+const [showNahtavyys , nahtavyysData, toggleNahtavyys] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allnahtavyyspoints'));
+const [showLuola , luolaData, toggleLuola] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allluolapoints'));
+const [showLahde , lahdeData, toggleLahde] = useToggleAndFetchData(true,async () => await fetchData('http://localhost:9000/api/alllahdepoints'));
+
+
+
 
 useEffect(() => {
   fetchData('http://localhost:9000/api/allcabinspoints')
@@ -185,6 +191,134 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=fire&iconType=awesome&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
     />
      ))}
+
+{showKota && kotaData.map((park, index) => (
+    <CustomMarker
+    key={index}
+    latitude={park.geometry.coordinates[0]}
+    longitude={park.geometry.coordinates[1]}
+    handleMarkerHover={handleMarkerHover}
+    setSelectedPark={setSelectedPark}
+    handleMarkerLeave={handleMarkerLeave}
+    park={park}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    />
+     ))}
+
+{showLaavu && laavuData.map((park, index) => (
+    <CustomMarker
+    key={index}
+    latitude={park.geometry.coordinates[0]}
+    longitude={park.geometry.coordinates[1]}
+    handleMarkerHover={handleMarkerHover}
+    setSelectedPark={setSelectedPark}
+    handleMarkerLeave={handleMarkerLeave}
+    park={park}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%231ec69f&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    />
+     ))}
+
+{showPaivatupa && paivatupaData.map((park, index) => (
+    <CustomMarker
+    key={index}
+    latitude={park.geometry.coordinates[0]}
+    longitude={park.geometry.coordinates[1]}
+    handleMarkerHover={handleMarkerHover}
+    setSelectedPark={setSelectedPark}
+    handleMarkerLeave={handleMarkerLeave}
+    park={park}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+  
+    />
+      ))}
+
+{showKammi && kammiData.map((park, index) => (
+    <CustomMarker
+    key={index}
+    latitude={park.geometry.coordinates[0]}
+    longitude={park.geometry.coordinates[1]}
+    handleMarkerHover={handleMarkerHover}
+    setSelectedPark={setSelectedPark}
+    handleMarkerLeave={handleMarkerLeave}
+    park={park}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+  
+    />
+      ))}
+
+{showSauna && saunaData.map((park, index) => (
+    <CustomMarker
+    key={index}
+    latitude={park.geometry.coordinates[0]}
+    longitude={park.geometry.coordinates[1]}
+    handleMarkerHover={handleMarkerHover}
+    setSelectedPark={setSelectedPark}
+    handleMarkerLeave={handleMarkerLeave}
+    park={park}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+  
+    />
+      ))}
+
+{showLintutorni && lintutorniData.map((park, index) => (
+    <CustomMarker
+    key={index}
+    latitude={park.geometry.coordinates[0]}
+    longitude={park.geometry.coordinates[1]}
+    handleMarkerHover={handleMarkerHover}
+    setSelectedPark={setSelectedPark}
+    handleMarkerLeave={handleMarkerLeave}
+    park={park}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+  
+    />
+      ))}
+
+{showNahtavyys && nahtavyysData.map((park, index) => (
+    <CustomMarker
+    key={index}
+    latitude={park.geometry.coordinates[0]}
+    longitude={park.geometry.coordinates[1]}
+    handleMarkerHover={handleMarkerHover}
+    setSelectedPark={setSelectedPark}
+    handleMarkerLeave={handleMarkerLeave}
+    park={park}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+  
+    />
+      ))}
+
+{showLuola && luolaData.map((park, index) => (
+    <CustomMarker
+    key={index}
+    latitude={park.geometry.coordinates[0]}
+    longitude={park.geometry.coordinates[1]}
+    handleMarkerHover={handleMarkerHover}
+    setSelectedPark={setSelectedPark}
+    handleMarkerLeave={handleMarkerLeave}
+    park={park}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+  
+    />
+      ))}
+
+{showLahde && lahdeData.map((park, index) => (
+    <CustomMarker
+    key={index}
+    latitude={park.geometry.coordinates[0]}
+    longitude={park.geometry.coordinates[1]}
+    handleMarkerHover={handleMarkerHover}
+    setSelectedPark={setSelectedPark}
+    handleMarkerLeave={handleMarkerLeave}
+    park={park}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+  
+    />
+      ))}
+
+
+
+
   
  
 
@@ -225,10 +359,20 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
         showUserLocation={true}
         />
       </Map>
-      
+
 {renderCheckbox("Show Cabins", showCabins, toggleCabins)}
 {renderCheckbox("Show Varaustupas", showVaraustupas, toggleVaraustupas)}
 {renderCheckbox("Show Nuotipaikka", showNuotipaikka, toggleNuotipaikka)}
+{renderCheckbox("Show Kota", showKota, toggleKota)}
+{renderCheckbox("Show Laavu", showLaavu, toggleLaavu)}
+{renderCheckbox("Show Päivätupa", showPaivatupa, togglePaivatupa)}
+{renderCheckbox("Show Kammi", showKammi, toggleKammi)}
+{renderCheckbox("Show Sauna", showSauna, toggleSauna)}
+{renderCheckbox("Show Lintutorni", showLintutorni, toggleLintutorni)}
+{renderCheckbox("Show Nähtävyys", showNahtavyys, toggleNahtavyys)}
+{renderCheckbox("Show Luola", showLuola, toggleLuola)}
+{renderCheckbox("Show Lähde", showLahde, toggleLahde)}
+
 
 
     </div>

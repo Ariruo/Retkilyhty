@@ -111,15 +111,17 @@ router.get('/api/allnuotiopaikkapoints', async ctx => {
   await filterAndRespond(ctx, 'Nuotiopaikka');
 });
 
-router.get('/api/alllaavupoints', async ctx => {
-  await filterAndRespond(ctx, 'Laavu');
-});
 
 router.get('/api/allkotapoints', async ctx => {
   await filterAndRespond(ctx, 'Kota');
 });
 
-router.get('/api/allpäivätupapoints', async ctx => {
+router.get('/api/alllaavupoints', async ctx => {
+  await filterAndRespond(ctx, 'Laavu');
+});
+
+
+router.get('/api/allpaivatupapoints', async ctx => {
   await filterAndRespond(ctx, 'Päivätupa');
 });
 
@@ -135,15 +137,15 @@ router.get('/api/alllintutornipoints', async ctx => {
   await filterAndRespond(ctx, 'Lintutorni');
 });
 
-router.get('/api/allnähtävyyspoints', async ctx => {
+router.get('/api/allnahtavyyspoints', async ctx => {
   await filterAndRespond(ctx, 'Nähtävyys');
 });
 
-router.get('/api/allluolaspoints', async ctx => {
+router.get('/api/allluolapoints', async ctx => {
   await filterAndRespond(ctx, 'Luola');
 });
 
-router.get('/api/alllähdepoints', async ctx => {
+router.get('/api/alllahdepoints', async ctx => {
   await filterAndRespond(ctx, 'Lähde');
 });
 
