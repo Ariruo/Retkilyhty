@@ -17,6 +17,9 @@ import useToggleAndFetchData from "../hooks/toggleAndFetchData";
 export default function Mapp() {
 
 
+  const MapID = import.meta.env.VITE_MAPBOX_TOKEN || process.env.MAPID;
+
+
 const [showCabins, setShowCabins] = useState(true);
 const [originalData , setOriginaldata] = useState([]);
 const [FilteredData, setFilteredData] = useState([]);  
@@ -129,7 +132,7 @@ const handleFindClosestPark = () => {
 
 
       <Map
-        mapboxAccessToken={import.meta.env.VITE_MAPBOX_TOKEN}
+        mapboxAccessToken={MapID}
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         

@@ -9,7 +9,7 @@ services:
         environment:
             APPID: "< api key here >"
             MAP_ENDPOINT: "http://api.openweathermap.org/data/2.5"
-            TARGET_CITY: "Helsinki,fi"
+            
         ports:
             - "9000:9000"
         volumes:
@@ -21,6 +21,9 @@ services:
         build:
             dockerfile: Dockerfile.frontend
             context: ./frontend
+        environment:
+            MAPID: "< api key here >"
+
         ports:
             - "8000:8000"
         volumes:
