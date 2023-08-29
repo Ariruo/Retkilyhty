@@ -7,7 +7,7 @@ services:
             dockerfile: Dockerfile.backend
             context: ./backend
         environment:
-            APPID: "< api key here >"
+            APPID: "your apki key"
             MAP_ENDPOINT: "http://api.openweathermap.org/data/2.5"
             
         ports:
@@ -22,7 +22,8 @@ services:
             dockerfile: Dockerfile.frontend
             context: ./frontend
         environment:
-            MAPID: "< api key here >"
+            MAPID: "your api key"
+            GeoAPI: "your api key"
 
         ports:
             - "8000:8000"

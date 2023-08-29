@@ -55,8 +55,8 @@ const Coordinatecabin = ({ latitude, longitude }) => {
       
       <p>Näkyvyys {visibility} meters</p>
       <p>Tuuli {windSpeed} m/s</p>
-      <p>Aurinko laskee {sunrise}</p>
-      <p>Aurinko nousee {sunset}</p>
+      <p>Aurinko nousee {sunrise}</p>
+      <p>Aurinko lasee {sunset}</p>
       <p>Klo {updatedAt}</p>
       
       {error && <p>{error}</p>}

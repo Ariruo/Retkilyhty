@@ -18,7 +18,7 @@ export default function Mapp() {
 
 
   const MapID = import.meta.env.VITE_MAPBOX_TOKEN || process.env.MAPID;
-
+  const GeoAPI = import.meta.env.VITE_GEOAPI_TOKEN || process.env.GEOAPI;
 
 const [showCabins, setShowCabins] = useState(true);
 const [originalData , setOriginaldata] = useState([]);
@@ -180,7 +180,7 @@ handleMarkerHover={handleMarkerHover}
 setSelectedPark={setSelectedPark}
 handleMarkerLeave={handleMarkerLeave}
 park={park}
-iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
 />
  ))}
 
@@ -193,7 +193,7 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
   setSelectedPark={setSelectedPark}
   handleMarkerLeave={handleMarkerLeave}
   park={park}
-  iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%231d04ff&size=small&icon=cabin&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+  iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%231d04ff&size=small&icon=cabin&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
   />
    ))}
  
@@ -208,7 +208,7 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     setSelectedPark={setSelectedPark}
     handleMarkerLeave={handleMarkerLeave}
     park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=fire&iconType=awesome&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=fire&iconType=awesome&apiKey=${GeoAPI}`}
     />
      ))}
 
@@ -221,7 +221,7 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     setSelectedPark={setSelectedPark}
     handleMarkerLeave={handleMarkerLeave}
     park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
     />
      ))}
 
@@ -234,7 +234,7 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     setSelectedPark={setSelectedPark}
     handleMarkerLeave={handleMarkerLeave}
     park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%231ec69f&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%231ec69f&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
     />
      ))}
 
@@ -247,7 +247,7 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     setSelectedPark={setSelectedPark}
     handleMarkerLeave={handleMarkerLeave}
     park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
   
     />
       ))}
@@ -261,7 +261,7 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     setSelectedPark={setSelectedPark}
     handleMarkerLeave={handleMarkerLeave}
     park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
   
     />
       ))}
@@ -275,7 +275,7 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     setSelectedPark={setSelectedPark}
     handleMarkerLeave={handleMarkerLeave}
     park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
   
     />
       ))}
@@ -289,7 +289,7 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     setSelectedPark={setSelectedPark}
     handleMarkerLeave={handleMarkerLeave}
     park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
   
     />
       ))}
@@ -303,7 +303,7 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     setSelectedPark={setSelectedPark}
     handleMarkerLeave={handleMarkerLeave}
     park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
   
     />
       ))}
@@ -317,7 +317,7 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     setSelectedPark={setSelectedPark}
     handleMarkerLeave={handleMarkerLeave}
     park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
   
     />
       ))}
@@ -331,7 +331,7 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     setSelectedPark={setSelectedPark}
     handleMarkerLeave={handleMarkerLeave}
     park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${import.meta.env.VITE_GEOAPI_TOKEN}`}
+    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
   
     />
       ))}
