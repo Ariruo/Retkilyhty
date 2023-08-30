@@ -26,12 +26,12 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults })  => {
 
   return (
     <div className="input-wrapper absolute z-10 h-10 border rounded-md px-3 shadow-md bg-white flex items-center">
-      <div className="flex items-center p-1.5 pr-3 pt-2 rounded-md bg-gray-200">
+      <div className="flex items-center p-1.5 pr-3 pt-2 rounded-md">
         <FaSearch className="text-gray-500" />
       </div>
       <input
         className="bg-transparent focus:outline-none text-gray-600 placeholder-gray-400 flex-grow"
-        placeholder="Search"
+        placeholder="Etsi autiotupia"
         value={input}
         onChange={(e) => handleChange(e.target.value)}
       />

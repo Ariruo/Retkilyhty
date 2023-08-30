@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, lazy, Suspense  } from "react";
 import Map, { Marker, Popup, Source, Layer, NavigationControl,GeolocateControl } from "react-map-gl";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
@@ -27,6 +27,7 @@ const [selectedPark, setSelectedPark] = useState(null);
 const [input, setInput] = useState("");
 const [showSearchResults, setShowSearchResults] = useState(false);
 const [hoveredPark, setHoveredPark] = useState(null);
+const [showCheckboxes, setShowCheckboxes] = useState(false);
 const [viewState, setViewState] = useState({
   longitude: 23.72018736381,
   latitude: 68.342938678895,
@@ -43,6 +44,11 @@ const [showLintutorni, lintutorniData, toggleLintutorni] = useToggleAndFetchData
 const [showNahtavyys , nahtavyysData, toggleNahtavyys] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allnahtavyyspoints'));
 const [showLuola , luolaData, toggleLuola] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allluolapoints'));
 const [showLahde , lahdeData, toggleLahde] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllahdepoints'));
+
+
+
+
+
 
 
 
@@ -142,11 +148,13 @@ const handleFindClosestPark = () => {
 
 
 <SearchBar setResults={setFilteredData} setInput={setInput} input={input} setShowSearchResults={setShowSearchResults} />
-<Button onClick={handleFindClosestPark}>Hae</Button>
+<Button onClick={handleFindClosestPark}  style={{ left: "220px", top: "3px" }}>Hae</Button>
  {showSearchResults && FilteredData && FilteredData.length > 0 && <SearchResultList results={FilteredData} onResultClick={handleResultClick} />}
  
  
- <div className="absolute z-10 left-0 bottom-0 p-4 m-4 bg-gray-100 rounded-tl-lg bg-transparent">
+ <Button onClick={() => setShowCheckboxes(!showCheckboxes)} style={{ left: "300px", top: "3px" }}>Valikko</Button>
+        {showCheckboxes && (
+          <div className="absolute z-10 left-0 bottom-0 p-4 m-4 bg-gray-100 rounded-tl-lg bg-transparent" >
 {renderCheckbox("Autiotupa", showCabins, toggleCabins)}
 {renderCheckbox("Varaustupas", showVaraustupas, toggleVaraustupas)}
 {renderCheckbox("Nuotipaikka", showNuotipaikka, toggleNuotipaikka)}
@@ -160,18 +168,24 @@ const handleFindClosestPark = () => {
 {renderCheckbox("Luola", showLuola, toggleLuola)}
 {renderCheckbox("Lähde", showLahde, toggleLahde)}
 
-</div>
+</div>  )}
 
- {hoveredPark && (
-        <div className="custom-popup absolute z-10 bg-white border p-4">
-   
-          <div>{hoveredPark.properties.name} ({hoveredPark.properties.tyyppi})</div>
-         
-       </div>
-      )}
-
+{hoveredPark && (
+          <Popup
+            latitude={hoveredPark.geometry.coordinates[0]}
+            longitude={hoveredPark.geometry.coordinates[1]}
+            closeButton={false}
+            onClose={() => setHoveredPark(null)}
+            anchor="bottom"
+          >
+            <div>
+              <div>{hoveredPark.properties.name} ({hoveredPark.properties.tyyppi})</div>
+            </div>
+          </Popup>
+        )}
 
 {showCabins && originalData.map((park, index) => (
+  
 <CustomMarker
 key={index}
 latitude={park.geometry.coordinates[0]}
@@ -182,6 +196,7 @@ handleMarkerLeave={handleMarkerLeave}
 park={park}
 iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
 />
+
  ))}
 
 {showVaraustupas && varaustupaData.map((park, index) => (
@@ -334,8 +349,10 @@ iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&i
     iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
   
     />
+   
       ))}
-
+   
+   
 
 
 
