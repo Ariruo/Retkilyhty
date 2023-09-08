@@ -12,6 +12,8 @@ import CustomMarker from "./CustomMarker";
 import useToggleAndFetchData from "../hooks/toggleAndFetchData";
 import 'mapbox-gl/dist/mapbox-gl.css';
 import useSupercluster from "use-supercluster";
+import CustomClusterMarker from "./CustomClusterMarker";
+import useCluster from "../hooks/useCluster";
 
 
 
@@ -31,11 +33,9 @@ const [input, setInput] = useState("");
 const [showSearchResults, setShowSearchResults] = useState(false);
 const [hoveredPark, setHoveredPark] = useState(null);
 const [showCheckboxes, setShowCheckboxes] = useState(false);
-const [viewState, setViewState] = useState({
-  longitude: 23.72018736381,
-  latitude: 68.342938678895,
-zoom: 10,})
-const [showVaraustupas, varaustupaData, toggleVaraustupas] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allvaraustupapoints'));
+const [viewState, setViewState] = useState({longitude: 23.72018736381,latitude: 68.342938678895,zoom: 10,})
+
+const [showVaraustupas, varaustupaData, toggleVaraustupas,] = useToggleAndFetchData(false,async () => await fetchData("http://localhost:9000/api/allvaraustupapoints"));
 const [showNuotipaikka, nuotiopaikkaData, toggleNuotipaikka] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allnuotiopaikkapoints'));
 const [showKota, kotaData, toggleKota] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allkotapoints'));
 const [showLaavu, laavuData, toggleLaavu] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllaavupoints'));
@@ -50,6 +50,8 @@ const [showLahde , lahdeData, toggleLahde] = useToggleAndFetchData(false,async (
 
 
 
+
+
 useEffect(() => {
   fetchData('http://localhost:9000/api/allcabinspoints')
     .then((parks) => {
@@ -58,20 +60,22 @@ useEffect(() => {
     });
 }, []);
 
-const points = originalData
-    ? originalData.map(feature => ({
-        type: "Feature",
-        properties: { cluster: false, name: feature.properties.name, tyyppi: feature.properties.tyyppi },
-        geometry: {
-          type: "Point",
-          coordinates: [
-            feature.geometry.coordinates[1], // Swap latitude and longitude
-            feature.geometry.coordinates[0]
-          ]
-        }
-      }))
-    : [];
-    const mapRef = useRef();
+
+const autiotupapoints = originalData
+? originalData.map(feature => ({
+    type: "Feature",
+    properties: { cluster: false, name: feature.properties.name, tyyppi: feature.properties.tyyppi },
+    geometry: {
+      type: "Point",
+      coordinates: [
+        feature.geometry.coordinates[1], // Swap latitude and longitude
+        feature.geometry.coordinates[0]
+      ]
+    }
+  }))
+: [];
+
+     const mapRef = useRef();
     const bounds = mapRef.current
     ? mapRef.current
         .getMap()
@@ -80,14 +84,20 @@ const points = originalData
         .flat()
     : null;
 
-    const { clusters, supercluster } = useSupercluster({
-      points,
-      bounds,
-      zoom: viewState.zoom,
-      options: { radius: 75, maxZoom: 20 }
-    });
-  
-console.log(clusters)
+    const { clusters: varaustupa } = useCluster(varaustupaData, bounds, viewState.zoom);
+    const { clusters: autiotupa } = useCluster(autiotupapoints, bounds, viewState.zoom);
+    const { clusters: nuotiopaikka } = useCluster(nuotiopaikkaData, bounds, viewState.zoom);
+    const { clusters: kota } = useCluster(kotaData, bounds, viewState.zoom);
+    const { clusters: laavu } = useCluster(laavuData, bounds, viewState.zoom);
+    const { clusters: paivatupa } = useCluster(paivatupaData, bounds, viewState.zoom);
+    const { clusters: kammi } = useCluster(kammiData, bounds, viewState.zoom);
+    const { clusters: sauna } = useCluster(saunaData, bounds, viewState.zoom);
+    const { clusters: lintutorni } = useCluster(lintutorniData, bounds, viewState.zoom);
+    const { clusters: nahtavyys } = useCluster(nahtavyysData, bounds, viewState.zoom);
+    const { clusters: luola } = useCluster(luolaData, bounds, viewState.zoom);
+    const { clusters: lahde } = useCluster(lahdeData, bounds, viewState.zoom);
+
+
 
 useEffect(() => {
   getUserCoordinates().then((coordinates) => {
@@ -138,6 +148,7 @@ const handleResultClick = (park) => {
       zoom: 10,
     });
   };
+
 
 
   const toggleCabins = () => {
@@ -214,41 +225,17 @@ const handleResultClick = (park) => {
 
 
 
-{clusters.map((cluster, index) => {
+{showCabins && autiotupa.map((cluster, index) => {
           const [longitude, latitude] = cluster.geometry.coordinates;
-          const {
-            cluster: isCluster,
-            point_count: pointCount
-          } = cluster.properties;
-          console.log(cluster)
+          const {cluster: isCluster} = cluster.properties;
 
           if (isCluster) {
             return (
-              <Marker
-                key={`cluster-${cluster.id}`}
-                latitude={latitude}
-                longitude={longitude}
-              >
-                <div
-                  className="flex items-center justify-center w-40 h-240 rounded-full bg-blue-500 text-white"
-                  style={{
-                    width: `${35 + (pointCount / points.length) * 45}px`,
-                    height: `${35 + (pointCount / points.length) * 45}px`
-                  }}
-                  
-
-  
-                >
-                  {pointCount}
-                </div>
-              </Marker>
-            );
-          }
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={autiotupapoints} backgroundColor="blue" />
+              );
+            }
           return (
-            
-            
             <CustomMarker
-            
             key={index}
             latitude={latitude}
             longitude={longitude}
@@ -262,174 +249,274 @@ const handleResultClick = (park) => {
           );
         })}
 
-{/* {showCabins && originalData.map((park, index) => (
-  
-  <CustomMarker
-  key={index}
-  latitude={park.geometry.coordinates[0]}
-  longitude={park.geometry.coordinates[1]}
-  handleMarkerHover={handleMarkerHover}
-  setSelectedPark={setSelectedPark}
-  handleMarkerLeave={handleMarkerLeave}
-  park={park}
-  iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
-  />
-  
-   ))} */}
+{showVaraustupas && varaustupa.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={varaustupaData} backgroundColor="red" />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            />
+            
+          );
+        })}
 
-{showVaraustupas && varaustupaData.map((park, index) => (
 
-  <CustomMarker
-  key={index}
-  latitude={park.geometry.coordinates[0]}
-  longitude={park.geometry.coordinates[1]}
-  handleMarkerHover={handleMarkerHover}
-  setSelectedPark={setSelectedPark}
-  handleMarkerLeave={handleMarkerLeave}
-  park={park}
-  iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%231d04ff&size=small&icon=cabin&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
-  />
-   ))}
- 
+
              
  
-{showNuotipaikka && nuotiopaikkaData.map((park, index) => (
-    <CustomMarker
-    key={index}
-    latitude={park.geometry.coordinates[0]}
-    longitude={park.geometry.coordinates[1]}
-    handleMarkerHover={handleMarkerHover}
-    setSelectedPark={setSelectedPark}
-    handleMarkerLeave={handleMarkerLeave}
-    park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=fire&iconType=awesome&apiKey=${GeoAPI}`}
-    />
-     ))}
+{showNuotipaikka && nuotiopaikka.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nuotiopaikkaData} backgroundColor="red" />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            />
+            
+          );
+        })}
 
-{showKota && kotaData.map((park, index) => (
-    <CustomMarker
-    key={index}
-    latitude={park.geometry.coordinates[0]}
-    longitude={park.geometry.coordinates[1]}
-    handleMarkerHover={handleMarkerHover}
-    setSelectedPark={setSelectedPark}
-    handleMarkerLeave={handleMarkerLeave}
-    park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
-    />
-     ))}
+{showKota && kota.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kotaData} backgroundColor="red" />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            />
+            
+          );
+        })}
 
-{showLaavu && laavuData.map((park, index) => (
-    <CustomMarker
-    key={index}
-    latitude={park.geometry.coordinates[0]}
-    longitude={park.geometry.coordinates[1]}
-    handleMarkerHover={handleMarkerHover}
-    setSelectedPark={setSelectedPark}
-    handleMarkerLeave={handleMarkerLeave}
-    park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%231ec69f&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
-    />
-     ))}
 
-{showPaivatupa && paivatupaData.map((park, index) => (
-    <CustomMarker
-    key={index}
-    latitude={park.geometry.coordinates[0]}
-    longitude={park.geometry.coordinates[1]}
-    handleMarkerHover={handleMarkerHover}
-    setSelectedPark={setSelectedPark}
-    handleMarkerLeave={handleMarkerLeave}
-    park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
-  
-    />
-      ))}
+{showLaavu && laavu.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={laavuData} backgroundColor='#8B4513' />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            />
+            
+          );
+        })}
 
-{showKammi && kammiData.map((park, index) => (
-    <CustomMarker
-    key={index}
-    latitude={park.geometry.coordinates[0]}
-    longitude={park.geometry.coordinates[1]}
-    handleMarkerHover={handleMarkerHover}
-    setSelectedPark={setSelectedPark}
-    handleMarkerLeave={handleMarkerLeave}
-    park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
-  
-    />
-      ))}
+{showPaivatupa && paivatupa.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={paivatupaData} backgroundColor='#FF5733' />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            />
+            
+          );
+        })}
 
-{showSauna && saunaData.map((park, index) => (
-    <CustomMarker
-    key={index}
-    latitude={park.geometry.coordinates[0]}
-    longitude={park.geometry.coordinates[1]}
-    handleMarkerHover={handleMarkerHover}
-    setSelectedPark={setSelectedPark}
-    handleMarkerLeave={handleMarkerLeave}
-    park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
-  
-    />
-      ))}
+{showKammi && kammi.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kammiData} backgroundColor='#8B4513' />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            />
+            
+          );
+        })}
 
-{showLintutorni && lintutorniData.map((park, index) => (
-    <CustomMarker
-    key={index}
-    latitude={park.geometry.coordinates[0]}
-    longitude={park.geometry.coordinates[1]}
-    handleMarkerHover={handleMarkerHover}
-    setSelectedPark={setSelectedPark}
-    handleMarkerLeave={handleMarkerLeave}
-    park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
-  
-    />
-      ))}
+{showSauna && sauna.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={saunaData} backgroundColor="brown" />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=brown&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            />
+            
+          );
+        })}
 
-{showNahtavyys && nahtavyysData.map((park, index) => (
-    <CustomMarker
-    key={index}
-    latitude={park.geometry.coordinates[0]}
-    longitude={park.geometry.coordinates[1]}
-    handleMarkerHover={handleMarkerHover}
-    setSelectedPark={setSelectedPark}
-    handleMarkerLeave={handleMarkerLeave}
-    park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
-  
-    />
-      ))}
+{showLintutorni && lintutorni.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lintutorniData} backgroundColor="green" />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            />
+            
+          );
+        })}
 
-{showLuola && luolaData.map((park, index) => (
-    <CustomMarker
-    key={index}
-    latitude={park.geometry.coordinates[0]}
-    longitude={park.geometry.coordinates[1]}
-    handleMarkerHover={handleMarkerHover}
-    setSelectedPark={setSelectedPark}
-    handleMarkerLeave={handleMarkerLeave}
-    park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
-  
-    />
-      ))}
+{showNahtavyys && nahtavyys.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+      
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nahtavyysData} backgroundColor="hsl(0, 100%, 50%)" /> 
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            />
+            
+          );
+        })}
 
-{showLahde && lahdeData.map((park, index) => (
-    <CustomMarker
-    key={index}
-    latitude={park.geometry.coordinates[0]}
-    longitude={park.geometry.coordinates[1]}
-    handleMarkerHover={handleMarkerHover}
-    setSelectedPark={setSelectedPark}
-    handleMarkerLeave={handleMarkerLeave}
-    park={park}
-    iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23d01db8&size=small&iconSize=small&textSize=small&apiKey=${GeoAPI}`}
-  
-    />
-   
-      ))}
+{showLuola && luola.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={luolaData} backgroundColor="yellow" />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            />
+            
+          );
+        })}
+
+{showLahde && lahde.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="blue" />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            />
+            
+          );
+        })}
    
    
 

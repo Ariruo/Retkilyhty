@@ -18,7 +18,7 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults })  => {
     };
 
   const handleChange = (value) => {
-    console.log("Search Value:", value);
+    
     setInput(value);
     filterData(value);
     setShowSearchResults(value.length > 0);

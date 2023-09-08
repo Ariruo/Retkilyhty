@@ -23,7 +23,7 @@ const Coordinateforecast = () => {
         }
 
         const data = await response.json();
-        console.log('Current weather data:', data);
+        
 
         setCityName(data?.cityName || '');
         setDescription(data?.weather?.description || '');
