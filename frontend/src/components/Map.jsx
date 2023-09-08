@@ -64,7 +64,7 @@ useEffect(() => {
 const autiotupapoints = originalData
 ? originalData.map(feature => ({
     type: "Feature",
-    properties: { cluster: false, name: feature.properties.name, tyyppi: feature.properties.tyyppi },
+    properties: { cluster: false, name: feature.properties.name, tyyppi: feature.properties.tyyppi, maakunta: feature.properties.maakunta },
     geometry: {
       type: "Point",
       coordinates: [

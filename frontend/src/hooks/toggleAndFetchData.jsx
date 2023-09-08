@@ -13,7 +13,7 @@ function useToggleAndFetchData(initialState, fetchDataFn,) {
         const fetchedData = await fetchDataFn();
         const preparedData = fetchedData.map(feature => ({
           type: "Feature",
-          properties: { cluster: false, name: feature.properties.name, tyyppi: feature.properties.tyyppi },
+          properties: { cluster: false, name: feature.properties.name, tyyppi: feature.properties.tyyppi, maakunta: feature.properties.maakunta, kunta: feature.properties.kunta, coordinates: feature.geometry.coordinates },
           geometry: {
             type: "Point",
             coordinates: [
