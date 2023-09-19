@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 export default function Sidebar({
-  isOpen,
+ 
   showCabins,
   toggleCabins,
   showVaraustupas,
@@ -80,12 +80,13 @@ export default function Sidebar({
     setOpen(!open);
   };
 
-  const sidebarWidth = open ? "w-72" : "w-0";
-  const sidebarOpacity = open ? "opacity-100" : "opacity-0 pointer-events-none"; // Hide and disable interactions when closed
+  const sidebarWidth = open ? "w-72 transition-width duration-300" : "w-0 transition-width duration-300";
+  
 
   return (
     <div className="flex">
-      <div className={`bg-white z-10 h-screen p-5 pt-8 relative ${sidebarWidth} ${sidebarOpacity}`}>
+      <div className={`bg-white z-10 h-screen p-5 pt-8 relative ${sidebarWidth}`}>
+      {open && 
         <label className="block mb-2">
           <input
             type="checkbox"
@@ -93,30 +94,31 @@ export default function Sidebar({
             onChange={() => setSelectAll(!selectAll)}
             className="mr-2 text-blue-500 rounded"
           />
-          <span className="text-gray-700">ALL</span>
+          <span className="text-gray-700">näytä kaikki</span>
         </label>
-        {renderCheckbox("Autiotupa", showCabins, toggleCabins)}
-        {renderCheckbox("Varaustupas", showVaraustupas, toggleVaraustupas)}
-        {renderCheckbox("Nuotipaikka", showNuotipaikka, toggleNuotipaikka)}
-        {renderCheckbox("Kota", showKota, toggleKota)}
-        {renderCheckbox("Laavu", showLaavu, toggleLaavu)}
-        {renderCheckbox("Päivätupa", showPaivatupa, togglePaivatupa)}
-        {renderCheckbox("Kammi", showKammi, toggleKammi)}
-        {renderCheckbox("Sauna", showSauna, toggleSauna)}
-        {renderCheckbox("Lintutorni", showLintutorni, toggleLintutorni)}
-        {renderCheckbox("Nähtävyys", showNahtavyys, toggleNahtavyys)}
-        {renderCheckbox("Luola", showLuola, toggleLuola)}
-        {renderCheckbox("Lähde", showLahde, toggleLahde)}
-        <FontAwesomeIcon icon={faArrowLeft} className="absolute right-3 top-9 cursor-pointer" onClick={toggleSidebar} />
+         }
+        <div>
+  {open && (
+    <>
+      {renderCheckbox("Autiotupa", showCabins, toggleCabins)}
+      {renderCheckbox("Varaustupas", showVaraustupas, toggleVaraustupas)}
+      {renderCheckbox("Nuotipaikka", showNuotipaikka, toggleNuotipaikka)}
+      {renderCheckbox("Kota", showKota, toggleKota)}
+      {renderCheckbox("Laavu", showLaavu, toggleLaavu)}
+      {renderCheckbox("Päivätupa", showPaivatupa, togglePaivatupa)}
+      {renderCheckbox("Kammi", showKammi, toggleKammi)}
+      {renderCheckbox("Sauna", showSauna, toggleSauna)}
+      {renderCheckbox("Lintutorni", showLintutorni, toggleLintutorni)}
+      {renderCheckbox("Nähtävyys", showNahtavyys, toggleNahtavyys)}
+      {renderCheckbox("Luola", showLuola, toggleLuola)}
+      {renderCheckbox("Lähde", showLahde, toggleLahde)}
+    </>
+  )}
+</div>
+<FontAwesomeIcon icon={faArrowLeft} className={`absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer`} onClick={toggleSidebar} />
+
       </div>
-      {!open && (
-        <div
-          onClick={toggleSidebar}
-          className="fixed top-4 left-4 text-gray-700 cursor-pointer"
-        >
-          <FontAwesomeIcon icon={faArrowRight} />
-        </div>
-      )}
+
     </div>
   );
 }
