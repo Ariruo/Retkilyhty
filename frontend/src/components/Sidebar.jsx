@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
-export default function Sidebar2({
-    isOpen,
-  
+export default function Sidebar({
+  isOpen,
   showCabins,
   toggleCabins,
   showVaraustupas,
@@ -31,7 +29,40 @@ export default function Sidebar2({
   showLahde,
   toggleLahde,
 }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
+
+  useEffect(() => {
+    // Update the individual checkboxes when the "ALL" checkbox changes
+    if (selectAll) {
+      toggleCabins(true);
+      toggleVaraustupas(true);
+      toggleNuotipaikka(true);
+      toggleKota(true);
+      toggleLaavu(true);
+      togglePaivatupa(true);
+      toggleKammi(true);
+      toggleSauna(true);
+      toggleLintutorni(true);
+      toggleNahtavyys(true);
+      toggleLuola(true);
+      toggleLahde(true);
+    } else {
+      // If "ALL" is unchecked, uncheck all other checkboxes
+      toggleCabins(false);
+      toggleVaraustupas(false);
+      toggleNuotipaikka(false);
+      toggleKota(false);
+      toggleLaavu(false);
+      togglePaivatupa(false);
+      toggleKammi(false);
+      toggleSauna(false);
+      toggleLintutorni(false);
+      toggleNahtavyys(false);
+      toggleLuola(false);
+      toggleLahde(false);
+    }
+  }, [selectAll]);
 
   const renderCheckbox = (label, checked, onChange) => (
     <label className="block mb-2">
@@ -53,9 +84,18 @@ export default function Sidebar2({
   const sidebarOpacity = open ? "opacity-100" : "opacity-0 pointer-events-none"; // Hide and disable interactions when closed
 
   return (
-    <div className='flex'>
+    <div className="flex">
       <div className={`bg-white z-10 h-screen p-5 pt-8 relative ${sidebarWidth} ${sidebarOpacity}`}>
-      {renderCheckbox("Autiotupa", showCabins, toggleCabins)}
+        <label className="block mb-2">
+          <input
+            type="checkbox"
+            checked={selectAll}
+            onChange={() => setSelectAll(!selectAll)}
+            className="mr-2 text-blue-500 rounded"
+          />
+          <span className="text-gray-700">ALL</span>
+        </label>
+        {renderCheckbox("Autiotupa", showCabins, toggleCabins)}
         {renderCheckbox("Varaustupas", showVaraustupas, toggleVaraustupas)}
         {renderCheckbox("Nuotipaikka", showNuotipaikka, toggleNuotipaikka)}
         {renderCheckbox("Kota", showKota, toggleKota)}
@@ -67,12 +107,12 @@ export default function Sidebar2({
         {renderCheckbox("Nähtävyys", showNahtavyys, toggleNahtavyys)}
         {renderCheckbox("Luola", showLuola, toggleLuola)}
         {renderCheckbox("Lähde", showLahde, toggleLahde)}
-        <FontAwesomeIcon icon={faArrowLeft} className='absolute right-3 top-9 cursor-pointer' onClick={toggleSidebar} />
+        <FontAwesomeIcon icon={faArrowLeft} className="absolute right-3 top-9 cursor-pointer" onClick={toggleSidebar} />
       </div>
       {!open && (
         <div
           onClick={toggleSidebar}
-          className='fixed top-4 left-4 text-gray-700 cursor-pointer'
+          className="fixed top-4 left-4 text-gray-700 cursor-pointer"
         >
           <FontAwesomeIcon icon={faArrowRight} />
         </div>
