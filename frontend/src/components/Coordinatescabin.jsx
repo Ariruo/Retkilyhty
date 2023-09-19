@@ -17,7 +17,7 @@ const Coordinatecabin = ({ latitude, longitude }) => {
     const fetchWeatherByCoordinates = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/weatherbycoordinates?lon=${latitude}&lat=${longitude}`
+          `http://localhost:9000/api/weatherbycoordinates?lon=${longitude}&lat=${latitude}`
         );
 
         const data = response.data;

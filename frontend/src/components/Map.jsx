@@ -14,6 +14,8 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import useSupercluster from "use-supercluster";
 import CustomClusterMarker from "./CustomClusterMarker";
 import useCluster from "../hooks/useCluster";
+import Sidebar from "./Sidebar";
+
 
 
 
@@ -24,7 +26,7 @@ export default function Mapp() {
   const MapID = import.meta.env.VITE_MAPBOX_TOKEN || process.env.MAPID;
   const GeoAPI = import.meta.env.VITE_GEOAPI_TOKEN || process.env.GEOAPI;
 
- 
+const [isOpen, setIsOpen] = useState(false); 
 const [showCabins, setShowCabins] = useState(true);
 const [originalData , setOriginaldata] = useState([]);
 const [FilteredData, setFilteredData] = useState([]);  
@@ -61,6 +63,9 @@ useEffect(() => {
 }, []);
 
 
+
+
+
 const autiotupapoints = originalData
 ? originalData.map(feature => ({
     type: "Feature",
@@ -68,7 +73,7 @@ const autiotupapoints = originalData
     geometry: {
       type: "Point",
       coordinates: [
-        feature.geometry.coordinates[1], // Swap latitude and longitude
+        feature.geometry.coordinates[1], 
         feature.geometry.coordinates[0]
       ]
     }
@@ -156,18 +161,10 @@ const handleResultClick = (park) => {
   };
   
   
-  
-  const renderCheckbox = (label, checked, onChange) => (
-    <label className="block mb-2">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={onChange}
-        className="mr-2 text-blue-500 rounded"
-      />
-      <span className="text-gray-700">{label}</span>
-    </label>
-  );
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen);
+  };
+ 
   return (
     <div>
  
@@ -188,26 +185,35 @@ const handleResultClick = (park) => {
 <Button onClick={handleFindClosestPark}  style={{ left: "220px", top: "3px" }}>Hae</Button>
  {showSearchResults && FilteredData && FilteredData.length > 0 && <SearchResultList results={FilteredData} onResultClick={handleResultClick} />}
  
+ <Sidebar
+ showCabins={showCabins}
+ toggleCabins={() => toggleCabins(!showCabins)}
+ showVaraustupas={showVaraustupas}
+ toggleVaraustupas={() => toggleVaraustupas(!showVaraustupas)}
+ showNuotipaikka={showNuotipaikka}
+ toggleNuotipaikka={() => toggleNuotipaikka(!showNuotipaikka)}
+ showKota={showKota}
+ toggleKota={() => toggleKota(!showKota)}
+ showLaavu={showLaavu}
+ toggleLaavu={() => toggleLaavu(!showLaavu)}
+ showPaivatupa={showPaivatupa}
+ togglePaivatupa={() => togglePaivatupa(!showPaivatupa)}
+ showKammi={showKammi}
+ toggleKammi={() => toggleKammi(!showKammi)}
+ showSauna={showSauna}
+ toggleSauna={() => toggleSauna(!showSauna)}
+ showLintutorni={showLintutorni}
+ toggleLintutorni={() => toggleLintutorni(!showLintutorni)}
+ showNahtavyys={showNahtavyys}
+ toggleNahtavyys={() => toggleNahtavyys(!showNahtavyys)}
+ showLuola={showLuola}
+ toggleLuola={() => toggleLuola(!showLuola)}
+ showLahde={showLahde}
+ toggleLahde={() => toggleLahde(!showLahde)}
+ />
+
  
- <div>
-        <Button onClick={() => setShowCheckboxes(!showCheckboxes)} style={{ left: "300px", top: "3px" }}>Valikko</Button>
-        {showCheckboxes && (
-          <div className="absolute z-10 left-0 bottom-0 p-4 m-4 bg-gray-100 rounded-tl-lg bg-transparent">
-            {renderCheckbox("Autiotupa", showCabins, toggleCabins)}
-            {renderCheckbox("Varaustupas", showVaraustupas, toggleVaraustupas)}
-            {renderCheckbox("Nuotipaikka", showNuotipaikka, toggleNuotipaikka)}
-            {renderCheckbox("Kota", showKota, toggleKota)}
-            {renderCheckbox("Laavu", showLaavu, toggleLaavu)}
-            {renderCheckbox("Päivätupa", showPaivatupa, togglePaivatupa)}
-            {renderCheckbox("Kammi", showKammi, toggleKammi)}
-            {renderCheckbox("Sauna", showSauna, toggleSauna)}
-            {renderCheckbox("Lintutorni", showLintutorni, toggleLintutorni)}
-            {renderCheckbox("Nähtävyys", showNahtavyys, toggleNahtavyys)}
-            {renderCheckbox("Luola", showLuola, toggleLuola)}
-            {renderCheckbox("Lähde", showLahde, toggleLahde)}
-          </div>
-        )}
-      </div>
+ 
 
 {hoveredPark && (
           <Popup
@@ -540,8 +546,8 @@ const handleResultClick = (park) => {
             <p className="mt-1"> {selectedPark.properties.tyyppi}</p>
             <p className="mt-1"> Maakunta: {selectedPark.properties.maakunta}</p>
             <Coordinatecabin
-            latitude={selectedPark.geometry.coordinates[0]}
-            longitude={selectedPark.geometry.coordinates[1]}
+            latitude={selectedPark.geometry.coordinates[1]}
+            longitude={selectedPark.geometry.coordinates[0]}
             />
           </Popup>)}
 
