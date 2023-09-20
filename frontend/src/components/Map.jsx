@@ -26,7 +26,8 @@ export default function Mapp() {
   const MapID = import.meta.env.VITE_MAPBOX_TOKEN || process.env.MAPID;
   const GeoAPI = import.meta.env.VITE_GEOAPI_TOKEN || process.env.GEOAPI;
 
-const [isOpen, setIsOpen] = useState(false); 
+  const [open, setOpen] = useState(false);
+
 const [showCabins, setShowCabins] = useState(true);
 const [originalData , setOriginaldata] = useState([]);
 const [FilteredData, setFilteredData] = useState([]);  
@@ -140,6 +141,9 @@ const handleFindClosestPark = () => {
   }
 };
 
+const toggleSidebar = () => {
+  setOpen(!open);
+};
 const handleResultClick = (park) => {
     
     
@@ -161,9 +165,7 @@ const handleResultClick = (park) => {
   };
   
   
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
+
  
   return (
     <div>
@@ -181,11 +183,25 @@ const handleResultClick = (park) => {
         >
 
 
-<SearchBar setResults={setFilteredData} setInput={setInput} input={input} setShowSearchResults={setShowSearchResults} />
-<Button onClick={handleFindClosestPark}  style={{ left: "220px", top: "3px" }}>Hae</Button>
- {showSearchResults && FilteredData && FilteredData.length > 0 && <SearchResultList results={FilteredData} onResultClick={handleResultClick} />}
+<SearchBar 
+setResults={setFilteredData} 
+setInput={setInput} 
+input={input} 
+setShowSearchResults={setShowSearchResults} 
+open={open}
+setOpen={setOpen}
+toggleSidebar={toggleSidebar} 
+onClick={handleFindClosestPark}
+/>
+
+
+
+{showSearchResults && FilteredData && FilteredData.length > 0 && <SearchResultList results={FilteredData} onResultClick={handleResultClick} />}
  
  <Sidebar
+ setOpen={setOpen}
+ open={open}
+ toggleSidebar={toggleSidebar}
  showCabins={showCabins}
  toggleCabins={() => toggleCabins(!showCabins)}
  showVaraustupas={showVaraustupas}

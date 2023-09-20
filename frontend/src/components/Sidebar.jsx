@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 
 export default function Sidebar({
- 
+  open,
+ toggleSidebar,
   showCabins,
   toggleCabins,
   showVaraustupas,
@@ -29,7 +30,7 @@ export default function Sidebar({
   showLahde,
   toggleLahde,
 }) {
-  const [open, setOpen] = useState(false);
+ 
   const [selectAll, setSelectAll] = useState(false);
 
   useEffect(() => {
@@ -64,39 +65,29 @@ export default function Sidebar({
     }
   }, [selectAll]);
 
-  const renderCheckbox = (label, checked, onChange) => (
-    <label className="block mb-2">
-      <input
-        type="checkbox"
-        checked={checked}
-        onChange={onChange}
-        className="mr-2 text-blue-500 rounded"
-      />
-      <span className="text-gray-700">{label}</span>
-    </label>
-  );
+ const renderCheckbox = (label, checked, onChange) => (
+  <label className="block mb-2 flex items-center">
+    <input
+      type="checkbox"
+      checked={checked}
+      onChange={onChange}
+      className="mr-2 appearance-none w-5 h-5 border border-gray-300 rounded-md checked:bg-blue-500 checked:border-transparent focus:outline-none"
+    />
+    <span className="text-gray-700 font-semibold">{label}</span>
+  </label>
+);
 
-  const toggleSidebar = () => {
-    setOpen(!open);
-  };
 
-  const sidebarWidth = open ? "w-72 transition-width duration-300" : "w-0 transition-width duration-300";
+  const sidebarWidth = open ? "w-70 transition-width duration-300" : "w-0 transition-width duration-300";
   
 
   return (
     <div className="flex">
-      <div className={`bg-white z-10 h-screen p-5 pt-8 relative ${sidebarWidth}`}>
-      {open && 
-        <label className="block mb-2">
-          <input
-            type="checkbox"
-            checked={selectAll}
-            onChange={() => setSelectAll(!selectAll)}
-            className="mr-2 text-blue-500 rounded"
-          />
-          <span className="text-gray-700">näytä kaikki</span>
-        </label>
-         }
+     <div className={`bg-white z-10 h-screen p-5 pt-8 relative ${open ? sidebarWidth : 'hidden'} rounded-r-3xl`}>
+
+      
+  
+         
         <div>
   {open && (
     <>
@@ -114,11 +105,27 @@ export default function Sidebar({
       {renderCheckbox("Lähde", showLahde, toggleLahde)}
     </>
   )}
+
+<label className="block mb-2 font-semibold"> {/* Added font-semibold */}
+  <input
+    type="checkbox"
+    checked={selectAll}
+    onChange={() => setSelectAll(!selectAll)}
+    className="mr-2 text-blue-500 rounded"
+  />
+  <span className="text-gray-700">Näytä Kaikki</span>
+</label>
+  <FontAwesomeIcon
+  size="2x"
+  icon={faXmark} 
+  className={`absolute top-3 right-3 cursor-pointer`}
+  onClick={toggleSidebar}
+/>
 </div>
-<FontAwesomeIcon icon={faArrowLeft} className={`absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer`} onClick={toggleSidebar} />
+
 
       </div>
-
+      
     </div>
   );
 }
