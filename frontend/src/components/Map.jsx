@@ -38,9 +38,9 @@ const [hoveredPark, setHoveredPark] = useState(null);
 const [showCheckboxes, setShowCheckboxes] = useState(false);
 const [viewState, setViewState] = useState({longitude: 23.72018736381,latitude: 68.342938678895,zoom: 10,})
 
-const [showVaraustupas, varaustupaData, toggleVaraustupas,] = useToggleAndFetchData(false,async () => await fetchData("http://localhost:9000/api/allvaraustupapoints"));
-const [showNuotipaikka, nuotiopaikkaData, toggleNuotipaikka] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allnuotiopaikkapoints'));
-const [showKota, kotaData, toggleKota] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allkotapoints'));
+const [showVaraustupas, varaustupaData, toggleVaraustupas,] = useToggleAndFetchData(true,async () => await fetchData("http://localhost:9000/api/allvaraustupapoints"));
+const [showNuotipaikka, nuotiopaikkaData, toggleNuotipaikka] = useToggleAndFetchData(true,async () => await fetchData('http://localhost:9000/api/allnuotiopaikkapoints'));
+const [showKota, kotaData, toggleKota] = useToggleAndFetchData(true ,async () => await fetchData('http://localhost:9000/api/allkotapoints'));
 const [showLaavu, laavuData, toggleLaavu] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllaavupoints'));
 const [showPaivatupa, paivatupaData, togglePaivatupa] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allpaivatupapoints'));
 const [showKammi, kammiData, toggleKammi] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allkammipoints'));
@@ -289,7 +289,7 @@ onClick={handleFindClosestPark}
 
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={autiotupapoints} backgroundColor="blue" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={autiotupapoints} backgroundColor="#fd0303" />
               );
             }
           return (
@@ -301,7 +301,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23fd0303&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
@@ -313,7 +313,7 @@ onClick={handleFindClosestPark}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={varaustupaData} backgroundColor="red" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={varaustupaData} backgroundColor="#a50000" />
               );
             }
           return (
@@ -325,7 +325,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23a50000&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
@@ -341,7 +341,7 @@ onClick={handleFindClosestPark}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nuotiopaikkaData} backgroundColor="red" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nuotiopaikkaData} backgroundColor="#ff4500" />
               );
             }
           return (
@@ -353,7 +353,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23ff4500&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
@@ -365,7 +365,7 @@ onClick={handleFindClosestPark}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kotaData} backgroundColor="red" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kotaData} backgroundColor="#8b4513" />
               );
             }
           return (
@@ -377,7 +377,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%238b4513&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
@@ -390,7 +390,7 @@ onClick={handleFindClosestPark}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={laavuData} backgroundColor='#8B4513' />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={laavuData} backgroundColor='#f5deb3' />
               );
             }
           return (
@@ -402,7 +402,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23f5deb3&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
@@ -414,7 +414,7 @@ onClick={handleFindClosestPark}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={paivatupaData} backgroundColor='#FF5733' />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={paivatupaData} backgroundColor='#ff6b6b' />
               );
             }
           return (
@@ -426,7 +426,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23ff6b6b&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
@@ -438,7 +438,7 @@ onClick={handleFindClosestPark}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kammiData} backgroundColor='#8B4513' />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kammiData} backgroundColor='#6b8e23' />
               );
             }
           return (
@@ -450,7 +450,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%236b8e23&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
@@ -462,7 +462,7 @@ onClick={handleFindClosestPark}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={saunaData} backgroundColor="brown" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={saunaData} backgroundColor="#8d8067" />
               );
             }
           return (
@@ -474,7 +474,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=brown&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%238d8067&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
@@ -486,7 +486,7 @@ onClick={handleFindClosestPark}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lintutorniData} backgroundColor="green" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lintutorniData} backgroundColor="#00ca1b" />
               );
             }
           return (
@@ -498,7 +498,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%2300ca1b&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
@@ -510,7 +510,7 @@ onClick={handleFindClosestPark}
       
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nahtavyysData} backgroundColor="hsl(0, 100%, 50%)" /> 
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nahtavyysData} backgroundColor="#ffd700" /> 
               );
             }
           return (
@@ -522,7 +522,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23ffd700&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
@@ -534,7 +534,7 @@ onClick={handleFindClosestPark}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={luolaData} backgroundColor="yellow" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={luolaData} backgroundColor="#9b9b9b" />
               );
             }
           return (
@@ -546,7 +546,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%239b9b9b&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
@@ -558,7 +558,7 @@ onClick={handleFindClosestPark}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="blue" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="#2900ff" />
               );
             }
           return (
@@ -570,7 +570,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=red&size=small&icon=cabin&textSize=small&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%232900ff&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );

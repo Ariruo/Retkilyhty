@@ -66,7 +66,7 @@ export default function Sidebar({
   }, [selectAll]);
 
  const renderCheckbox = (label, checked, onChange) => (
-  <label className="block mb-2 flex items-center">
+  <label className=" mb-2 flex items-center">
     <input
       type="checkbox"
       checked={checked}
@@ -106,7 +106,7 @@ export default function Sidebar({
     </>
   )}
 
-<label className="block mb-2 font-semibold"> {/* Added font-semibold */}
+<label className="block mb-2 font-semibold">
   <input
     type="checkbox"
     checked={selectAll}
