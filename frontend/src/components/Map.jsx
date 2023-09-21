@@ -67,6 +67,8 @@ useEffect(() => {
 
 
 
+
+
 const autiotupapoints = originalData
 ? originalData.map(feature => ({
     type: "Feature",
@@ -80,6 +82,10 @@ const autiotupapoints = originalData
     }
   }))
 : [];
+
+
+
+
 
      const mapRef = useRef();
     const bounds = mapRef.current
@@ -128,35 +134,51 @@ const handleMarkerLeave = () => {
 
 const handleFindClosestPark = () => {
   if (FilteredData.length > 0) {
-    const closestPark = FilteredData[0]; 
-    setSelectedPark(closestPark);
+    const closestPark = FilteredData[0];
+
+    // Swap coordinates and create a new closestPark object
+    const swappedClosestPark = {
+      ...closestPark,
+      geometry: {
+        type: closestPark.geometry.type,
+        coordinates: [closestPark.geometry.coordinates[1], closestPark.geometry.coordinates[0]],
+      },
+    };
+
+    setSelectedPark(swappedClosestPark); // Set the closestPark with swapped coordinates
     setInput("");
     setShowSearchResults(false);
     setViewState({
-      longitude: closestPark.geometry.coordinates[1], 
+      longitude: closestPark.geometry.coordinates[1], // Keep the original coordinates in viewState
       latitude: closestPark.geometry.coordinates[0],
       zoom: 10,
     });
-   
   }
 };
 
 const toggleSidebar = () => {
   setOpen(!open);
 };
+
 const handleResultClick = (park) => {
-    
-    
-    
-    setSelectedPark(park);
-    setInput("");
-    setShowSearchResults(false);
-    setViewState({
-      longitude: park.geometry.coordinates[1],
-      latitude: park.geometry.coordinates[0],
-      zoom: 10,
-    });
+  // Swap coordinates and create a new park object
+  const swappedPark = {
+    ...park,
+    geometry: {
+      type: park.geometry.type,
+      coordinates: [park.geometry.coordinates[1], park.geometry.coordinates[0]],
+    },
   };
+
+  setSelectedPark(swappedPark); // Set the park with swapped coordinates
+  setInput("");
+  setShowSearchResults(false);
+  setViewState({
+    longitude: park.geometry.coordinates[1], // Keep the original coordinates in viewState
+    latitude: park.geometry.coordinates[0],
+    zoom: 10,
+  });
+};
 
 
 
@@ -164,6 +186,10 @@ const handleResultClick = (park) => {
     setShowCabins(!showCabins);
   };
   
+  useEffect(() => {
+    console.log(selectedPark);
+
+  }, [selectedPark]);
   
 
  
