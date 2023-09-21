@@ -41,7 +41,7 @@ const [viewState, setViewState] = useState({longitude: 23.72018736381,latitude: 
 const [showVaraustupas, varaustupaData, toggleVaraustupas,] = useToggleAndFetchData(true,async () => await fetchData("http://localhost:9000/api/allvaraustupapoints"));
 const [showNuotipaikka, nuotiopaikkaData, toggleNuotipaikka] = useToggleAndFetchData(true,async () => await fetchData('http://localhost:9000/api/allnuotiopaikkapoints'));
 const [showKota, kotaData, toggleKota] = useToggleAndFetchData(true ,async () => await fetchData('http://localhost:9000/api/allkotapoints'));
-const [showLaavu, laavuData, toggleLaavu] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllaavupoints'));
+const [showLaavu, laavuData, toggleLaavu] = useToggleAndFetchData(true ,async () => await fetchData('http://localhost:9000/api/alllaavupoints'));
 const [showPaivatupa, paivatupaData, togglePaivatupa] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allpaivatupapoints'));
 const [showKammi, kammiData, toggleKammi] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allkammipoints'));
 const [showSauna, saunaData, toggleSauna] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allsaunapoints'));
@@ -144,12 +144,12 @@ const handleFindClosestPark = () => {
         coordinates: [closestPark.geometry.coordinates[1], closestPark.geometry.coordinates[0]],
       },
     };
-
+    const newZoom = viewState.zoom + 1
     setSelectedPark(swappedClosestPark); // Set the closestPark with swapped coordinates
     setInput("");
     setShowSearchResults(false);
     mapRef.current.getMap().easeTo({
-      center: [park.geometry.coordinates[1], park.geometry.coordinates[0]], // Set the new center
+      center: [closestPark.geometry.coordinates[1], closestPark.geometry.coordinates[0]], // Set the new center
       zoom: newZoom, // Use the updated zoom level
       essential: true, // This ensures the animation is treated as an essential gesture
        
