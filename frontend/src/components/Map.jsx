@@ -148,11 +148,13 @@ const handleFindClosestPark = () => {
     setSelectedPark(swappedClosestPark); // Set the closestPark with swapped coordinates
     setInput("");
     setShowSearchResults(false);
-    setViewState({
-      longitude: closestPark.geometry.coordinates[1], // Keep the original coordinates in viewState
-      latitude: closestPark.geometry.coordinates[0],
-      zoom: 10,
+    mapRef.current.getMap().easeTo({
+      center: [park.geometry.coordinates[1], park.geometry.coordinates[0]], // Set the new center
+      zoom: newZoom, // Use the updated zoom level
+      essential: true, // This ensures the animation is treated as an essential gesture
+       
     });
+    setShowCabins(true)
   }
 };
 
@@ -173,13 +175,21 @@ const handleResultClick = (park) => {
   setSelectedPark(swappedPark); // Set the park with swapped coordinates
   setInput("");
   setShowSearchResults(false);
-  setViewState({
-    longitude: park.geometry.coordinates[1], // Keep the original coordinates in viewState
-    latitude: park.geometry.coordinates[0],
-    zoom: 10,
-  });
-};
 
+  // Calculate the new zoom level
+  const newZoom = viewState.zoom + 1; // You can adjust the value as needed
+
+  // Use map.flyTo to smoothly transition to the new viewState with a zooming effect
+  mapRef.current.getMap().easeTo({
+    center: [park.geometry.coordinates[1], park.geometry.coordinates[0]], // Set the new center
+    zoom: newZoom, // Use the updated zoom level
+    essential: true, // This ensures the animation is treated as an essential gesture
+     
+  });
+
+  // Set showCabins to true when handling the result click
+  setShowCabins(true);
+};
 
 
   const toggleCabins = () => {
