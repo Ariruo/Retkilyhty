@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import WeatherIcon from './Weathericon';
-import surise from '../../assets/sunrise.png'
+
 import axios from 'axios';
 
 const Coordinatecabin = ({ latitude, longitude }) => {
@@ -60,10 +60,12 @@ const Coordinatecabin = ({ latitude, longitude }) => {
     <div className="flex items-center">
       <img src="assets/visibility.png" alt="Näkyvyys" style={{ width: '30px', height: '30px', marginRight: '8px' }} />
       <p style={{ fontWeight: 'bold' }}>{visibility}</p>
+      <p className='pl-1'>  m</p>
     </div>
     <div className="flex items-center mt-1">
       <img src="assets/wind.png" alt="Tuuli" style={{ width: '30px', height: '30px', marginRight: '8px' }} />
-      <p style={{ fontWeight: 'bold' }}>{windSpeed}</p>
+      <p style={{ fontWeight: 'bold' }}>{windSpeed} </p>
+      <p className='pl-1'>  m/s</p>
     </div>
   </div>
   <div className="flex flex-col items-center">

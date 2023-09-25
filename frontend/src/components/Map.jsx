@@ -596,7 +596,7 @@ onClick={handleFindClosestPark}
             >
           <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
           <p className="mt-1 text-center font-semibold">{selectedPark.properties.tyyppi}</p>
-<p className="mt-1 text-center font-semibold">Maakunta: {selectedPark.properties.maakunta}</p>
+<p className="mt-1 text-center font-semibold"> {selectedPark.properties.maakunta}</p>
             <Coordinatecabin
             latitude={selectedPark.geometry.coordinates[1]}
             longitude={selectedPark.geometry.coordinates[0]}
