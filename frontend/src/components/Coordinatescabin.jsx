@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import WeatherIcon from './Weathericon';
+import surise from '../../assets/sunrise.png'
 import axios from 'axios';
 
 const Coordinatecabin = ({ latitude, longitude }) => {
@@ -48,18 +49,36 @@ const Coordinatecabin = ({ latitude, longitude }) => {
   }, [latitude, longitude]);
 
   return (
-    <div className="flex flex-col items-center mt-16">
-      <WeatherIcon icon={icon} width={80} height={80} />
+    <div className="flex flex-col items-center mt-4">
+      <WeatherIcon icon={icon} width={135} height={135} />
      
-      <h2>{temperature} °C</h2>
+      <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '-20px' }}>{temperature} °C</h2>
       
-      <p>Näkyvyys {visibility} meters</p>
-      <p>Tuuli {windSpeed} m/s</p>
-      <p>Aurinko nousee {sunrise}</p>
-      <p>Aurinko lasee {sunset}</p>
-      <p>Klo {updatedAt}</p>
       
-      {error && <p>{error}</p>}
+      <div className="flex justify-between p-4 mt-6">
+  <div className="flex flex-col items-center p-2">
+    <div className="flex items-center">
+      <img src="assets/visibility.png" alt="Näkyvyys" style={{ width: '30px', height: '30px', marginRight: '8px' }} />
+      <p style={{ fontWeight: 'bold' }}>{visibility}</p>
+    </div>
+    <div className="flex items-center mt-1">
+      <img src="assets/wind.png" alt="Tuuli" style={{ width: '30px', height: '30px', marginRight: '8px' }} />
+      <p style={{ fontWeight: 'bold' }}>{windSpeed}</p>
+    </div>
+  </div>
+  <div className="flex flex-col items-center">
+    <div className="flex items-center">
+      <img src="assets/sunrise.png" alt="Aurinko nousee" style={{ width: '35px', height: '35px', marginRight: '8px' }} />
+      <p className="mt-3" style={{ fontWeight: 'bold' }}>{sunrise}</p>
+    </div>
+    <div className="flex items-center ml-2">
+      <img src="assets/sunset.png" alt="Aurinko laskee" style={{ width: '35px', height: '35px', marginRight: '8px' }} />
+      <p className="mt-2" style={{ fontWeight: 'bold' }}>{sunset}</p>
+    </div>
+  </div>
+</div>
+<p style={{ fontWeight: 'bold' }}>Klo {updatedAt}</p>
+{error && <p>{error}</p>}
     </div>
   );
 };

@@ -15,8 +15,7 @@ import useSupercluster from "use-supercluster";
 import CustomClusterMarker from "./CustomClusterMarker";
 import useCluster from "../hooks/useCluster";
 import Sidebar from "./Sidebar";
-
-
+import autiotupaIcon from '../../assets/autiotupa.png'
 
 
 
@@ -38,10 +37,10 @@ const [hoveredPark, setHoveredPark] = useState(null);
 const [showCheckboxes, setShowCheckboxes] = useState(false);
 const [viewState, setViewState] = useState({longitude: 23.72018736381,latitude: 68.342938678895,zoom: 10,})
 
-const [showVaraustupas, varaustupaData, toggleVaraustupas,] = useToggleAndFetchData(true,async () => await fetchData("http://localhost:9000/api/allvaraustupapoints"));
-const [showNuotipaikka, nuotiopaikkaData, toggleNuotipaikka] = useToggleAndFetchData(true,async () => await fetchData('http://localhost:9000/api/allnuotiopaikkapoints'));
-const [showKota, kotaData, toggleKota] = useToggleAndFetchData(true ,async () => await fetchData('http://localhost:9000/api/allkotapoints'));
-const [showLaavu, laavuData, toggleLaavu] = useToggleAndFetchData(true ,async () => await fetchData('http://localhost:9000/api/alllaavupoints'));
+const [showVaraustupas, varaustupaData, toggleVaraustupas,] = useToggleAndFetchData(false,async () => await fetchData("http://localhost:9000/api/allvaraustupapoints"));
+const [showNuotipaikka, nuotiopaikkaData, toggleNuotipaikka] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allnuotiopaikkapoints'));
+const [showKota, kotaData, toggleKota] = useToggleAndFetchData(false ,async () => await fetchData('http://localhost:9000/api/allkotapoints'));
+const [showLaavu, laavuData, toggleLaavu] = useToggleAndFetchData(false ,async () => await fetchData('http://localhost:9000/api/alllaavupoints'));
 const [showPaivatupa, paivatupaData, togglePaivatupa] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allpaivatupapoints'));
 const [showKammi, kammiData, toggleKammi] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allkammipoints'));
 const [showSauna, saunaData, toggleSauna] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allsaunapoints'));
@@ -301,7 +300,8 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23fd0303&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={autiotupaIcon}
+           
             />
             
           );
@@ -353,7 +353,7 @@ onClick={handleFindClosestPark}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23ff4500&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%238b4513&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
             />
             
           );
