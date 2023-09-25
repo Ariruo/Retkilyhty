@@ -6,7 +6,7 @@ function useCluster(points, bounds, zoom) {
     points,
     bounds,
     zoom,
-    options: { radius: 75, maxZoom: 20, nodeSize: 10 }
+    options: { radius: 200, maxZoom: 20, nodeSize: 10 }
   });
 
   return useMemo(() => ({ clusters, supercluster }), [clusters, supercluster]);
