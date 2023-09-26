@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import Coordinatecabin from "./Coordinatescabin";
 import getUserCoordinates from "../service/getUserCoordinates";
+import calculateDistance from "../service/calculateDistance"; 
 import SearchBar from "./Searchbar";
 import SearchResultList from "./SearchResultList";
 import Button from "./Button";
@@ -25,7 +26,9 @@ export default function Mapp() {
   const MapID = import.meta.env.VITE_MAPBOX_TOKEN || process.env.MAPID;
   const GeoAPI = import.meta.env.VITE_GEOAPI_TOKEN || process.env.GEOAPI;
 
-  const [open, setOpen] = useState(false);
+const [open, setOpen] = useState(false);
+const [distance, setDistance] = useState(null)
+const [userCoordinates, setUserCoordinates] = useState(null);
 
 const [showCabins, setShowCabins] = useState(true);
 const [originalData , setOriginaldata] = useState([]);
@@ -110,16 +113,42 @@ const autiotupapoints = originalData
 
 
 
-useEffect(() => {
-  getUserCoordinates().then((coordinates) => {
-    setViewState({
-      longitude: coordinates.longitude,
-      latitude: coordinates.latitude,
-      zoom: 13,
-    });
-  });
-}, []);
+    useEffect(() => {
+      // Get the user's real-time coordinates
+      getUserCoordinates().then((coordinates) => {
+        setUserCoordinates(coordinates);
+        setViewState({
+          longitude: coordinates.longitude,
+          latitude: coordinates.latitude,
+          zoom: 13,
+        });
+      });
+    }, []);
 
+    const calculateAndSetDistance = (park) => {
+      if (userCoordinates && park) {
+        const userLat = userCoordinates.latitude;
+        const userLon = userCoordinates.longitude;
+        const parkCoordinates = {
+          latitude: park.geometry.coordinates[1],
+          longitude: park.geometry.coordinates[0],
+        };
+        const dist = calculateDistance(
+          userLat,
+          userLon,
+          parkCoordinates.latitude,
+          parkCoordinates.longitude
+        );
+        setDistance(dist);
+      } else {
+        setDistance(null);
+      }
+    };
+  
+    useEffect(() => {
+      // Calculate the distance when a park is selected or deselected
+      calculateAndSetDistance(selectedPark);
+    }, [selectedPark, userCoordinates]);
 
 
 const handleMarkerHover = (event, park) => {
@@ -597,6 +626,9 @@ onClick={handleFindClosestPark}
           <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
           <p className="mt-1 text-center font-semibold">{selectedPark.properties.tyyppi}</p>
 <p className="mt-1 text-center font-semibold"> {selectedPark.properties.maakunta}</p>
+{distance && (
+              <p className="mt-1 text-center font-semibold">Distance: {distance.toFixed(2)} kilometers</p>
+            )}
             <Coordinatecabin
             latitude={selectedPark.geometry.coordinates[1]}
             longitude={selectedPark.geometry.coordinates[0]}
