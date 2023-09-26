@@ -274,26 +274,36 @@ const handleResultClick = (park) => {
         // If no park is selected, select the first one
         const closestParks = getClosestParks(10); // Change 10 to the desired number of closest parks to display
         if (closestParks.length > 0) {
-          setSelectedPark(closestParks[0]); // Select the first park in the list
+          const newSelectedPark = closestParks[0]; // Select the first park in the list
+          setSelectedPark(newSelectedPark);
           setClosestParkIndex(0); // Initialize the index
-          
+  
+          // Update the viewState to focus on the selected park
+          const newZoom = 10; // Set the default zoom level
+          mapRef.current.getMap().easeTo({
+            center: [
+              newSelectedPark.geometry.coordinates[0],
+              newSelectedPark.geometry.coordinates[1],
+            ],
+            zoom: newZoom,
+            essential: true,
+          });
         }
       } else {
         // If a park is already selected, move to the next one in the list
         const closestParks = getClosestParks(10); // Change 10 to the desired number of closest parks to display
         const currentIndex = closestParkIndex;
         const nextIndex = (currentIndex + 1) % closestParks.length; // Circular index
-        setSelectedPark(closestParks[nextIndex]); // Select the next park in the list
+        const newSelectedPark = closestParks[nextIndex]; // Select the next park in the list
+        setSelectedPark(newSelectedPark);
         setClosestParkIndex(nextIndex); // Update the index
-      }
   
-      // Update the viewState to focus on the selected park
-      if (selectedPark) {
+        // Update the viewState to focus on the selected park
         const newZoom = 10; // Set the default zoom level
         mapRef.current.getMap().easeTo({
           center: [
-            selectedPark.geometry.coordinates[0],
-            selectedPark.geometry.coordinates[1],
+            newSelectedPark.geometry.coordinates[0],
+            newSelectedPark.geometry.coordinates[1],
           ],
           zoom: newZoom,
           essential: true,
@@ -301,7 +311,6 @@ const handleResultClick = (park) => {
       }
     }
   };
-  
 
  
   
