@@ -29,7 +29,7 @@ export default function Mapp() {
 const [open, setOpen] = useState(false);
 const [distance, setDistance] = useState(null)
 const [userCoordinates, setUserCoordinates] = useState(null);
-const [currentClosestIndex, setCurrentClosestIndex] = useState(0);
+const [closestParkIndex, setClosestParkIndex] = useState();
 
 const [showCabins, setShowCabins] = useState(true);
 const [originalData , setOriginaldata] = useState([]);
@@ -227,13 +227,13 @@ const handleResultClick = (park) => {
   
   useEffect(() => {
     console.log(selectedPark);
+    console.log(viewState)
 
   }, [selectedPark]);
 
 
   const handleFindClosestParkbutton = () => {
-    if (userCoordinates) {
-      // Combine all data arrays into one array
+    if (userCoordinates && FilteredData.length > 0) {
       const allDataPoints = [].concat(
         autiotupapoints,
         varaustupaData,
@@ -248,90 +248,60 @@ const handleResultClick = (park) => {
         luolaData,
         lahdeData
       );
-
-      const findClosestPark = (userCoordinates, parks) => {
-        let closestPark = null;
-        let minDistance = Infinity;
-
-        parks.forEach((park) => {
-          const parkCoordinates = {
-            latitude: park.geometry.coordinates[1],
-            longitude: park.geometry.coordinates[0],
-          };
-
-          const dist = calculateDistance(
+  
+      // Find the closest parks
+      const getClosestParks = (numParks) => {
+        const sortedParks = allDataPoints.slice().sort((a, b) => {
+          const distanceA = calculateDistance(
             userCoordinates.latitude,
             userCoordinates.longitude,
-            parkCoordinates.latitude,
-            parkCoordinates.longitude
+            a.geometry.coordinates[1],
+            a.geometry.coordinates[0]
           );
-
-          if (dist < minDistance) {
-            minDistance = dist;
-            closestPark = park;
-          }
-        });
-
-        return closestPark;
-      };
-
-      const closestParks = allDataPoints
-        .filter((_, index) => index !== currentClosestIndex) // Exclude the current closest park
-        .map((park, index) => ({
-          park,
-          distance: calculateDistance(
+          const distanceB = calculateDistance(
             userCoordinates.latitude,
             userCoordinates.longitude,
-            park.geometry.coordinates[1],
-            park.geometry.coordinates[0]
-          ),
-        }))
-        .sort((a, b) => a.distance - b.distance);
-
-      if (closestParks.length > 0) {
-        const nextClosestParkIndex = closestParks[currentClosestIndex]
-          ? currentClosestIndex + 1
-          : 0;
-
-        setCurrentClosestIndex(nextClosestParkIndex);
-        setSelectedPark(closestParks[nextClosestParkIndex].park);
-
-        // Update the viewState when a new closest park is selected
-        if (closestParks[nextClosestParkIndex].park) {
-          const newZoom = 10; // Set the default zoom level
-          mapRef.current.getMap().easeTo({
-            center: [
-              closestParks[nextClosestParkIndex].park.geometry.coordinates[0],
-              closestParks[nextClosestParkIndex].park.geometry.coordinates[1],
-            ],
-            zoom: newZoom,
-            essential: true,
-          });
-        } else {
-          // Reset the viewState when no closest park is found
-          mapRef.current.getMap().easeTo({
-            center: [23.72018736381, 68.342938678895], // Default coordinates
-            zoom: 10, // Default zoom level
-            essential: true,
-          });
+            b.geometry.coordinates[1],
+            b.geometry.coordinates[0]
+          );
+          return distanceA - distanceB;
+        });
+  
+        return sortedParks.slice(0, numParks);
+      };
+  
+      if (!selectedPark) {
+        // If no park is selected, select the first one
+        const closestParks = getClosestParks(10); // Change 10 to the desired number of closest parks to display
+        if (closestParks.length > 0) {
+          setSelectedPark(closestParks[0]); // Select the first park in the list
+          setClosestParkIndex(0); // Initialize the index
+          
         }
       } else {
-        // Reset the viewState when no closest park is found
+        // If a park is already selected, move to the next one in the list
+        const closestParks = getClosestParks(10); // Change 10 to the desired number of closest parks to display
+        const currentIndex = closestParkIndex;
+        const nextIndex = (currentIndex + 1) % closestParks.length; // Circular index
+        setSelectedPark(closestParks[nextIndex]); // Select the next park in the list
+        setClosestParkIndex(nextIndex); // Update the index
+      }
+  
+      // Update the viewState to focus on the selected park
+      if (selectedPark) {
+        const newZoom = 10; // Set the default zoom level
         mapRef.current.getMap().easeTo({
-          center: [23.72018736381, 68.342938678895], // Default coordinates
-          zoom: 10, // Default zoom level
+          center: [
+            selectedPark.geometry.coordinates[0],
+            selectedPark.geometry.coordinates[1],
+          ],
+          zoom: newZoom,
           essential: true,
         });
       }
     }
   };
-
-  useEffect(() => {
-    // Reset the index and clear the selected park when it is set to null
-    if (!selectedPark) {
-      setCurrentClosestIndex(0);
-    }
-  }, [selectedPark]);
+  
 
  
   
