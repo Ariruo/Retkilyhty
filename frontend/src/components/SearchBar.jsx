@@ -31,7 +31,7 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults, toggleSi
   };
 
   return (
-    <div className={`input-wrapper absolute z-10 h-12 border rounded-md shadow-md bg-white  left-80 top-4  transition-width duration-300 ${searchBarOpen ? 'w-64' : 'w-12'}`}>
+    <div className={`input-wrapper absolute z-10 h-12 border rounded-md shadow-md bg-white top-6 transition-width duration-300 ${searchBarOpen ? 'w-64' : 'w-12'}`} style={{ left: '21%' }}>
       <input
         className={`bg-transparent focus:outline-none text-gray-600 placeholder-gray-400 flex-grow ${searchBarOpen ? 'pl-2 pr-2' : 'pl-0 pr-0'}`}
         placeholder={placeholderText}

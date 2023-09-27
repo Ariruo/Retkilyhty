@@ -377,10 +377,11 @@ onClick={handleFindClosestPark}
  />
 
 <button
-  className="z-50 fixed top-20 right-80"
+  className="z-50 fixed top-20  bg-white p-2 border rounded-md shadow-md cursor-pointer"
   onClick={handleFindClosestParkbutton}
+  style={{ left: '17%' }}
 >
-  <img src="assets/nearby.png" alt="Aurinko laskee" style={{ width: '50px', height: '50px' }} />
+  <img src="assets/nearby.png" alt="nearby.png" style={{ width: '30px', height: '30px' }} />
 </button>
  
 

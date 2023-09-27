@@ -81,12 +81,14 @@ export default function Sidebar({
   return (
     <div className="flex">
       {/* Hamburger menu button */}
-      <div className={`absolute top-7 left-60 cursor-pointer ${hamburgerIconTransition}`}>
-        <FontAwesomeIcon
-          size="2x"
-          icon={open ? faXmark : faBars}
-          onClick={toggleSidebar}
-        />
+      <div className={`absolute top-6 left-70 cursor-pointer ${hamburgerIconTransition} bg-white p-2 rounded-md shadow-md`} style={{ left: '13%'  }}>
+  <FontAwesomeIcon
+    size="2x"
+    icon={open ? faXmark : faBars}
+    onClick={toggleSidebar}
+    
+    style={{  width: '30 px', height: '30px' }}
+  />
       </div>
 
       <div
