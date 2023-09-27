@@ -1,13 +1,14 @@
 import axios from "axios";
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faBars } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { FaSearch } from "react-icons/fa";
 import { useState } from "react";
 
-const SearchBar = ({ setResults, setInput, input, setShowSearchResults, onClick, toggleSidebar })  => {
+const SearchBar = ({ setResults, setInput, input, setShowSearchResults, toggleSidebar })  => {
+  const [searchBarOpen, setSearchBarOpen] = useState(false);
   const [showSidebarLabel, setShowSidebarLabel] = useState(false);
-  const [showSearchIconLabel, setShowSearchIconLabel] = useState(false);
-  
+  const placeholderText = searchBarOpen ? "Etsi autiotupia" : "";
+  const iconSize = searchBarOpen ? "text-gray-500" : "text-gray-500 text-xl"; // Adjust the icon size as needed
+
   const filterData = async (value) => {
     try {
       const response = await axios.get(`http://localhost:9000/api/allcabinspoints?search=${value}`);
@@ -25,35 +26,23 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults, onClick,
     setShowSearchResults(value.length > 0);
   };
 
+  const toggleSearchBar = () => {
+    setSearchBarOpen(!searchBarOpen);
+  };
+
   return (
-    <div className="input-wrapper absolute z-10 h-12 border rounded-md px-3 shadow-md bg-white flex items-center left-4 top-4">
-      <div className="flex items-center p-1.5 pr-3 pt-2 rounded-md">
-        <FontAwesomeIcon
-          icon={faBars}
-          className={`absolute left-3 top-1/2 transform -translate-y-1/2 cursor-pointer pr-2`}
-          onClick={toggleSidebar}
-          onMouseEnter={() => setShowSidebarLabel(true)}
-          onMouseLeave={() => setShowSidebarLabel(false)}
-        />
-        {showSidebarLabel && (
-          <span className="absolute text-white bg-gray-700 py-1 px-2 rounded-lg">Valikko</span>
-        )}
-      </div>
+    <div className={`input-wrapper absolute z-10 h-12 border rounded-md shadow-md bg-white  left-80 top-4  transition-width duration-300 ${searchBarOpen ? 'w-64' : 'w-12'}`}>
       <input
-        className="bg-transparent focus:outline-none text-gray-600 placeholder-gray-400 flex-grow"
-        placeholder="Etsi autiotupia"
+        className={`bg-transparent focus:outline-none text-gray-600 placeholder-gray-400 flex-grow ${searchBarOpen ? 'pl-2 pr-2' : 'pl-0 pr-0'}`}
+        placeholder={placeholderText}
         value={input}
         onChange={(e) => handleChange(e.target.value)}
       />
-      <FaSearch
-        className="text-gray-500 absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer"
-        onClick={onClick}
-        onMouseEnter={() => setShowSearchIconLabel(true)}
-        onMouseLeave={() => setShowSearchIconLabel(false)}
+      <FontAwesomeIcon
+        icon={faSearch}
+        className={`absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer ${iconSize}`}
+        onClick={toggleSearchBar}
       />
-      {showSearchIconLabel && (
-        <span className="absolute text-white bg-gray-700 py-1 px-2 rounded-lg">Etsi</span>
-      )}
     </div>
   );
 };

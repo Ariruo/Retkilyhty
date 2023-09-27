@@ -330,12 +330,7 @@ const handleResultClick = (park) => {
         style={{ width: "99,9vw", height: "94vh", position: "relative", top: 0, left: 0 }}
         ref={mapRef}
         >
-<button
-  className="z-50 fixed top-4 left-4 bg-white p-2 rounded shadow-md cursor-pointer"
-  onClick={handleFindClosestParkbutton}
->
-  Find Closest Park
-</button>
+
 <SearchBar 
 setResults={setFilteredData} 
 setInput={setInput} 
@@ -381,7 +376,12 @@ onClick={handleFindClosestPark}
  toggleLahde={() => toggleLahde(!showLahde)}
  />
 
- 
+<button
+  className="z-50 fixed top-20 right-80"
+  onClick={handleFindClosestParkbutton}
+>
+  <img src="assets/nearby.png" alt="Aurinko laskee" style={{ width: '50px', height: '50px' }} />
+</button>
  
 
 {hoveredPark && (
@@ -727,12 +727,7 @@ onClick={handleFindClosestPark}
 
     
        
-        <NavigationControl 
-        position="bottom-right"
-        showCompass={true}
-        visualizePitch={true}
-        showZoom={true}
-        />
+     
         <GeolocateControl
         positionOptions={{ enableHighAccuracy: true }}
         trackUserLocation={true}
