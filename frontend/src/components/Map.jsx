@@ -1,18 +1,17 @@
 import React, { useState, useEffect, lazy, useRef  } from "react";
 import Map, { Marker, Popup, Source, Layer, NavigationControl,GeolocateControl,} from "react-map-gl";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+
 import Coordinatecabin from "./Coordinatescabin";
 import getUserCoordinates from "../service/getUserCoordinates";
 import calculateDistance from "../service/calculateDistance"; 
 import SearchBar from "./Searchbar";
 import SearchResultList from "./SearchResultList";
-import Button from "./Button";
+;
 import fetchData from "../api/fetch";
 import CustomMarker from "./CustomMarker";
 import useToggleAndFetchData from "../hooks/toggleAndFetchData";
 import 'mapbox-gl/dist/mapbox-gl.css';
-import useSupercluster from "use-supercluster";
+
 import CustomClusterMarker from "./CustomClusterMarker";
 import useCluster from "../hooks/useCluster";
 import Sidebar from "./Sidebar";
@@ -39,7 +38,7 @@ const [selectedPark, setSelectedPark] = useState(null);
 const [input, setInput] = useState("");
 const [showSearchResults, setShowSearchResults] = useState(false);
 const [hoveredPark, setHoveredPark] = useState(null);
-const [showCheckboxes, setShowCheckboxes] = useState(false);
+
 const [viewState, setViewState] = useState({longitude: 23.72018736381,latitude: 68.342938678895,zoom: 10,})
 
 const [nuotiopaikkaData, loadingnuotipaikka] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allnuotiopaikkapoints"));
@@ -65,15 +64,7 @@ const [showLuola, setShowLuola] = useState(false);
 const [lahdeData, loadinglahde] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/alllahdepoints"));
 const [showLahde, setShowLahde] = useState(false);
 
-// const [showKota, kotaData, toggleKota] = useToggleAndFetchData(false ,async () => await fetchData('http://localhost:9000/api/allkotapoints'));
-// const [showLaavu, laavuData, toggleLaavu] = useToggleAndFetchData(false ,async () => await fetchData('http://localhost:9000/api/alllaavupoints'));
-// const [showPaivatupa, paivatupaData, togglePaivatupa] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allpaivatupapoints'));
-// const [showKammi, kammiData, toggleKammi] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allkammipoints'));
-// const [showSauna, saunaData, toggleSauna] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allsaunapoints'));
-// const [showLintutorni, lintutorniData, toggleLintutorni] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllintutornipoints'));
-// const [showNahtavyys , nahtavyysData, toggleNahtavyys] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allnahtavyyspoints'));
-// const [showLuola , luolaData, toggleLuola] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allluolapoints'));
-// const [showLahde , lahdeData, toggleLahde] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllahdepoints'));
+
 
 
 
@@ -87,12 +78,6 @@ useEffect(() => {
       setOriginaldata(parks);
     });
 }, []);
-
-
-
-
-
-
 
 const autiotupapoints = originalData
 ? originalData.map(feature => ({
@@ -300,19 +285,31 @@ const handleResultClick = (park) => {
           setClosestParkIndex(0); // Initialize the index
   
           // Update the viewState to focus on the selected park
-          const newZoom = 10; // Set the default zoom level
+         
           mapRef.current.getMap().easeTo({
             center: [
               newSelectedPark.geometry.coordinates[0],
               newSelectedPark.geometry.coordinates[1],
             ],
-            zoom: newZoom,
+            zoom: 12,
             essential: true,
           });
   
           // Set showLaavu and showNuotipaikka states based on the park type
-        
+          setShowLaavu(newSelectedPark.properties.tyyppi === 'Laavu');
           setShowNuotipaikka(newSelectedPark.properties.tyyppi === 'Nuotiopaikka');
+          setShowCabins(newSelectedPark.properties.tyyppi === 'Autiotupa');
+          setShowVaraustupas(newSelectedPark.properties.tyyppi === 'Varaustupa');
+          setShowKota(newSelectedPark.properties.tyyppi === 'Kota');
+          setShowPaivatupa(newSelectedPark.properties.tyyppi === 'Päivätupa');
+          setShowKammi(newSelectedPark.properties.tyyppi === 'Kammi');
+          setShowSauna(newSelectedPark.properties.tyyppi === 'Sauna');
+          setShowLintutorni(newSelectedPark.properties.tyyppi === 'Lintutorni');
+          setShowNahtavyys(newSelectedPark.properties.tyyppi === 'Nähtävyys');
+          setShowLuola(newSelectedPark.properties.tyyppi === 'Luola');
+          setShowLahde(newSelectedPark.properties.tyyppi === 'Lähde');
+  
+       
         }
       } else {
         // If a park is already selected, move to the next one in the list
@@ -325,17 +322,17 @@ const handleResultClick = (park) => {
         setClosestParkIndex(nextIndex); // Update the index
   
         // Update the viewState to focus on the selected park
-        const newZoom = 10; // Set the default zoom level
+       
         mapRef.current.getMap().easeTo({
           center: [
             newSelectedPark.geometry.coordinates[0],
             newSelectedPark.geometry.coordinates[1],
           ],
-          zoom: newZoom,
+          zoom: 12,
           essential: true,
         });
   
-        // Set showLaavu and showNuotipaikka states based on the park type
+        // Set show states based on the park type
         setShowLaavu(newSelectedPark.properties.tyyppi === 'Laavu');
         setShowNuotipaikka(newSelectedPark.properties.tyyppi === 'Nuotiopaikka');
         setShowCabins(newSelectedPark.properties.tyyppi === 'Autiotupa');
@@ -348,7 +345,7 @@ const handleResultClick = (park) => {
         setShowNahtavyys(newSelectedPark.properties.tyyppi === 'Nähtävyys');
         setShowLuola(newSelectedPark.properties.tyyppi === 'Luola');
         setShowLahde(newSelectedPark.properties.tyyppi === 'Lähde');
-        
+
       }
     }
   };
