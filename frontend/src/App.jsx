@@ -21,7 +21,7 @@ function App() {
           
           <Route path="/map" element={<Map/>} />
          
-          {/* Add other routes here using the <Route> component */}
+       
         </Routes>
       </BrowserRouter>
     </div>

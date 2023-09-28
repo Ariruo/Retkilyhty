@@ -31,6 +31,7 @@ const [distance, setDistance] = useState(null)
 const [userCoordinates, setUserCoordinates] = useState(null);
 const [closestParkIndex, setClosestParkIndex] = useState();
 
+
 const [showCabins, setShowCabins] = useState(true);
 const [originalData , setOriginaldata] = useState([]);
 const [FilteredData, setFilteredData] = useState([]);  
@@ -41,17 +42,38 @@ const [hoveredPark, setHoveredPark] = useState(null);
 const [showCheckboxes, setShowCheckboxes] = useState(false);
 const [viewState, setViewState] = useState({longitude: 23.72018736381,latitude: 68.342938678895,zoom: 10,})
 
-const [showVaraustupas, varaustupaData, toggleVaraustupas,] = useToggleAndFetchData(false,async () => await fetchData("http://localhost:9000/api/allvaraustupapoints"));
-const [showNuotipaikka, nuotiopaikkaData, toggleNuotipaikka] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allnuotiopaikkapoints'));
-const [showKota, kotaData, toggleKota] = useToggleAndFetchData(false ,async () => await fetchData('http://localhost:9000/api/allkotapoints'));
-const [showLaavu, laavuData, toggleLaavu] = useToggleAndFetchData(false ,async () => await fetchData('http://localhost:9000/api/alllaavupoints'));
-const [showPaivatupa, paivatupaData, togglePaivatupa] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allpaivatupapoints'));
-const [showKammi, kammiData, toggleKammi] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allkammipoints'));
-const [showSauna, saunaData, toggleSauna] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allsaunapoints'));
-const [showLintutorni, lintutorniData, toggleLintutorni] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllintutornipoints'));
-const [showNahtavyys , nahtavyysData, toggleNahtavyys] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allnahtavyyspoints'));
-const [showLuola , luolaData, toggleLuola] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allluolapoints'));
-const [showLahde , lahdeData, toggleLahde] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllahdepoints'));
+const [nuotiopaikkaData, loadingnuotipaikka] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allnuotiopaikkapoints"));
+const [showNuotipaikka, setShowNuotipaikka] = useState(false);
+const [varaustupaData, loadingvaraus ] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allvaraustupapoints"));
+const [showVaraustupas, setShowVaraustupas] = useState(false);
+const [kotaData, loadingkota] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allkotapoints"));
+const [showKota, setShowKota] = useState(false);
+const [laavuData, loadinglaavu] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/alllaavupoints"));
+const [showLaavu, setShowLaavu] = useState(false);
+const [paivatupaData, loadingpaivatupa] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allpaivatupapoints"));
+const [showPaivatupa, setShowPaivatupa] = useState(false);
+const [kammiData, loadingkammi] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allkammipoints"));
+const [showKammi, setShowKammi] = useState(false);
+const [saunaData, loadingsauna] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allsaunapoints"));
+const [showSauna, setShowSauna] = useState(false);
+const [lintutorniData, loadinglintutorni] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/alllintutornipoints"));
+const [showLintutorni, setShowLintutorni] = useState(false);
+const [nahtavyysData, loadingnahtavyys] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allnahtavyyspoints"));
+const [showNahtavyys, setShowNahtavyys] = useState(false);
+const [luolaData, loadingluola] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allluolapoints"));
+const [showLuola, setShowLuola] = useState(false);
+const [lahdeData, loadinglahde] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/alllahdepoints"));
+const [showLahde, setShowLahde] = useState(false);
+
+// const [showKota, kotaData, toggleKota] = useToggleAndFetchData(false ,async () => await fetchData('http://localhost:9000/api/allkotapoints'));
+// const [showLaavu, laavuData, toggleLaavu] = useToggleAndFetchData(false ,async () => await fetchData('http://localhost:9000/api/alllaavupoints'));
+// const [showPaivatupa, paivatupaData, togglePaivatupa] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allpaivatupapoints'));
+// const [showKammi, kammiData, toggleKammi] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allkammipoints'));
+// const [showSauna, saunaData, toggleSauna] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allsaunapoints'));
+// const [showLintutorni, lintutorniData, toggleLintutorni] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllintutornipoints'));
+// const [showNahtavyys , nahtavyysData, toggleNahtavyys] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allnahtavyyspoints'));
+// const [showLuola , luolaData, toggleLuola] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/allluolapoints'));
+// const [showLahde , lahdeData, toggleLahde] = useToggleAndFetchData(false,async () => await fetchData('http://localhost:9000/api/alllahdepoints'));
 
 
 
@@ -85,6 +107,7 @@ const autiotupapoints = originalData
     }
   }))
 : [];
+
 
 
 
@@ -221,20 +244,18 @@ const handleResultClick = (park) => {
 };
 
 
-  const toggleCabins = () => {
-    setShowCabins(!showCabins);
-  };
+
   
   useEffect(() => {
-    console.log(selectedPark);
-    console.log(viewState)
+    console.log(showNuotipaikka)
+    console.log(showLaavu)
+  }, [showNuotipaikka, showLaavu])
 
-  }, [selectedPark]);
 
 
   const handleFindClosestParkbutton = () => {
     if (userCoordinates && FilteredData.length > 0) {
-      const allDataPoints = [].concat(
+      const allDataPoints = [
         autiotupapoints,
         varaustupaData,
         nuotiopaikkaData,
@@ -246,8 +267,8 @@ const handleResultClick = (park) => {
         lintutorniData,
         nahtavyysData,
         luolaData,
-        lahdeData
-      );
+        lahdeData,
+      ].flat();
   
       // Find the closest parks
       const getClosestParks = (numParks) => {
@@ -288,6 +309,10 @@ const handleResultClick = (park) => {
             zoom: newZoom,
             essential: true,
           });
+  
+          // Set showLaavu and showNuotipaikka states based on the park type
+        
+          setShowNuotipaikka(newSelectedPark.properties.tyyppi === 'Nuotiopaikka');
         }
       } else {
         // If a park is already selected, move to the next one in the list
@@ -295,6 +320,7 @@ const handleResultClick = (park) => {
         const currentIndex = closestParkIndex;
         const nextIndex = (currentIndex + 1) % closestParks.length; // Circular index
         const newSelectedPark = closestParks[nextIndex]; // Select the next park in the list
+  
         setSelectedPark(newSelectedPark);
         setClosestParkIndex(nextIndex); // Update the index
   
@@ -308,11 +334,30 @@ const handleResultClick = (park) => {
           zoom: newZoom,
           essential: true,
         });
+  
+        // Set showLaavu and showNuotipaikka states based on the park type
+        setShowLaavu(newSelectedPark.properties.tyyppi === 'Laavu');
+        setShowNuotipaikka(newSelectedPark.properties.tyyppi === 'Nuotiopaikka');
+        setShowCabins(newSelectedPark.properties.tyyppi === 'Autiotupa');
+        setShowVaraustupas(newSelectedPark.properties.tyyppi === 'Varaustupa');
+        setShowKota(newSelectedPark.properties.tyyppi === 'Kota');
+        setShowPaivatupa(newSelectedPark.properties.tyyppi === 'Päivätupa');
+        setShowKammi(newSelectedPark.properties.tyyppi === 'Kammi');
+        setShowSauna(newSelectedPark.properties.tyyppi === 'Sauna');
+        setShowLintutorni(newSelectedPark.properties.tyyppi === 'Lintutorni');
+        setShowNahtavyys(newSelectedPark.properties.tyyppi === 'Nähtävyys');
+        setShowLuola(newSelectedPark.properties.tyyppi === 'Luola');
+        setShowLahde(newSelectedPark.properties.tyyppi === 'Lähde');
+        
       }
     }
   };
+  
+  
 
- 
+  
+   
+  
   
 
  
@@ -351,29 +396,31 @@ onClick={handleFindClosestPark}
  open={open}
  toggleSidebar={toggleSidebar}
  showCabins={showCabins}
- toggleCabins={() => toggleCabins(!showCabins)}
+ setShowCabins={setShowCabins}
+ 
  showVaraustupas={showVaraustupas}
- toggleVaraustupas={() => toggleVaraustupas(!showVaraustupas)}
- showNuotipaikka={showNuotipaikka}
- toggleNuotipaikka={() => toggleNuotipaikka(!showNuotipaikka)}
- showKota={showKota}
- toggleKota={() => toggleKota(!showKota)}
- showLaavu={showLaavu}
- toggleLaavu={() => toggleLaavu(!showLaavu)}
- showPaivatupa={showPaivatupa}
- togglePaivatupa={() => togglePaivatupa(!showPaivatupa)}
- showKammi={showKammi}
- toggleKammi={() => toggleKammi(!showKammi)}
- showSauna={showSauna}
- toggleSauna={() => toggleSauna(!showSauna)}
+ setShowVaraustupas={setShowVaraustupas}
+showNuotipaikka={showNuotipaikka}
+setShowNuotipaikka={setShowNuotipaikka}
+showKota={showKota}
+setShowKota={setShowKota}
+showLaavu={showLaavu}
+setShowLaavu={setShowLaavu}
+showPaivatupa={showPaivatupa}
+setShowPaivatupa={setShowPaivatupa}
+showKammi={showKammi}
+setShowKammi={setShowKammi}
+showSauna={showSauna}
+setShowSauna={setShowSauna}
  showLintutorni={showLintutorni}
- toggleLintutorni={() => toggleLintutorni(!showLintutorni)}
- showNahtavyys={showNahtavyys}
- toggleNahtavyys={() => toggleNahtavyys(!showNahtavyys)}
+  setShowLintutorni={setShowLintutorni}
+showNahtavyys={showNahtavyys}
+setShowNahtavyys={setShowNahtavyys}
  showLuola={showLuola}
- toggleLuola={() => toggleLuola(!showLuola)}
+  setShowLuola={setShowLuola}
  showLahde={showLahde}
- toggleLahde={() => toggleLahde(!showLahde)}
+ setShowLahde={setShowLahde}
+ 
  />
 
 <button
@@ -381,7 +428,7 @@ onClick={handleFindClosestPark}
   onClick={handleFindClosestParkbutton}
   style={{ left: '17%' }}
 >
-  <img src="assets/nearby.png" alt="nearby.png" style={{ width: '30px', height: '30px' }} />
+  <img src="assets/nearby-icon-15.jpg" alt="nearby.png" style={{ width: '30px', height: '30px' }} />
 </button>
  
 
@@ -717,7 +764,7 @@ onClick={handleFindClosestPark}
           <p className="mt-1 text-center font-semibold">{selectedPark.properties.tyyppi}</p>
 <p className="mt-1 text-center font-semibold"> {selectedPark.properties.maakunta}</p>
 {distance && (
-              <p className="mt-1 text-center font-semibold">Distance: {distance.toFixed(2)} kilometers</p>
+              <p className="mt-1 text-center font-semibold">Distance: {distance.toFixed(2)} Km</p>
             )}
             <Coordinatecabin
             latitude={selectedPark.geometry.coordinates[1]}

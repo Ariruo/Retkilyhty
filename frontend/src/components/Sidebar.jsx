@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
@@ -7,120 +7,73 @@ export default function Sidebar({
   open,
   toggleSidebar,
   showCabins,
-  toggleCabins,
+  setShowCabins, // Pass setShowCabins function
   showVaraustupas,
-  toggleVaraustupas,
+  setShowVaraustupas, // Pass setShowVaraustupas function
   showNuotipaikka,
-  toggleNuotipaikka,
+  setShowNuotipaikka, // Pass setShowNuotipaikka function
   showKota,
-  toggleKota,
+  setShowKota, // Pass setShowKota function
   showLaavu,
-  toggleLaavu,
+  setShowLaavu, // Pass setShowLaavu function
   showPaivatupa,
-  togglePaivatupa,
+  setShowPaivatupa, // Pass setShowPaivatupa function
   showKammi,
-  toggleKammi,
+  setShowKammi, // Pass setShowKammi function
   showSauna,
-  toggleSauna,
+  setShowSauna, // Pass setShowSauna function
   showLintutorni,
-  toggleLintutorni,
+  setShowLintutorni, // Pass setShowLintutorni function
   showNahtavyys,
-  toggleNahtavyys,
+  setShowNahtavyys, // Pass setShowNahtavyys function
   showLuola,
-  toggleLuola,
+  setShowLuola, // Pass setShowLuola function
   showLahde,
-  toggleLahde,
+  setShowLahde, // Pass setShowLahde function
 }) {
-  const [selectAll, setSelectAll] = useState(false);
-
-  useEffect(() => {
-    // Update the individual checkboxes when the "ALL" checkbox changes
-    if (selectAll) {
-      toggleCabins(true);
-      toggleVaraustupas(true);
-      toggleNuotipaikka(true);
-      toggleKota(true);
-      toggleLaavu(true);
-      togglePaivatupa(true);
-      toggleKammi(true);
-      toggleSauna(true);
-      toggleLintutorni(true);
-      toggleNahtavyys(true);
-      toggleLuola(true);
-      toggleLahde(true);
-    } else {
-      // If "ALL" is unchecked, uncheck all other checkboxes
-      toggleCabins(false);
-      toggleVaraustupas(false);
-      toggleNuotipaikka(false);
-      toggleKota(false);
-      toggleLaavu(false);
-      togglePaivatupa(false);
-      toggleKammi(false);
-      toggleSauna(false);
-      toggleLintutorni(false);
-      toggleNahtavyys(false);
-      toggleLuola(false);
-      toggleLahde(false);
-    }
-  }, [selectAll]);
-
-  const renderCheckbox = (label, checked, onChange) => (
+  const renderCheckbox = (label, checked, setShow) => (
     <label
       className={`mb-2 flex items-center cursor-pointer ${checked ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'} rounded-lg p-2`}
-      onClick={() => onChange(!checked)}
+      onClick={() => setShow(!checked)} // Update the state directly
     >
       {label}
     </label>
   );
 
   const sidebarWidth = open ? "w-70 transition-width duration-300" : "w-0 transition-width duration-300";
-  const sidebarAnimation = open ? "translate-x-0" : "-translate-x-full"; // Slide-in animation
-  const hamburgerIconTransition = "transition-transform duration-600"; // Transition for the hamburger icon
+  const sidebarAnimation = open ? "translate-x-0" : "-translate-x-full";
+  const hamburgerIconTransition = "transition-transform duration-600";
 
   return (
     <div className="flex">
-      {/* Hamburger menu button */}
-      <div className={`absolute top-6 left-70 cursor-pointer ${hamburgerIconTransition} bg-white p-2 rounded-md shadow-md`} style={{ left: '13%'  }}>
-  <FontAwesomeIcon
-    size="2x"
-    icon={open ? faXmark : faBars}
-    onClick={toggleSidebar}
-    
-    style={{  width: '30 px', height: '30px' }}
-  />
+      <div className={`absolute top-6 left-70 cursor-pointer ${hamburgerIconTransition} bg-white p-2 rounded-md shadow-md`} style={{ left: '13%' }}>
+        <FontAwesomeIcon
+          size="2x"
+          icon={open ? faXmark : faBars}
+          onClick={toggleSidebar}
+          style={{ width: '30px', height: '30px' }}
+        />
       </div>
 
       <div
         className={`bg-white z-10 h-screen p-5 pt-8 relative ${sidebarWidth} rounded-r-3xl transform ${sidebarAnimation}`}
       >
-        {/* Sidebar content */}
         {open && (
           <>
-            {renderCheckbox("Autiotupa", showCabins, toggleCabins)}
-            {renderCheckbox("Varaustupas", showVaraustupas, toggleVaraustupas)}
-            {renderCheckbox("Nuotipaikka", showNuotipaikka, toggleNuotipaikka)}
-            {renderCheckbox("Kota", showKota, toggleKota)}
-            {renderCheckbox("Laavu", showLaavu, toggleLaavu)}
-            {renderCheckbox("Päivätupa", showPaivatupa, togglePaivatupa)}
-            {renderCheckbox("Kammi", showKammi, toggleKammi)}
-            {renderCheckbox("Sauna", showSauna, toggleSauna)}
-            {renderCheckbox("Lintutorni", showLintutorni, toggleLintutorni)}
-            {renderCheckbox("Nähtävyys", showNahtavyys, toggleNahtavyys)}
-            {renderCheckbox("Luola", showLuola, toggleLuola)}
-            {renderCheckbox("Lähde", showLahde, toggleLahde)}
+            {renderCheckbox("Autiotupa", showCabins, setShowCabins)}
+            {renderCheckbox("Varaustupas", showVaraustupas, setShowVaraustupas)}
+            {renderCheckbox("Nuotipaikka", showNuotipaikka, setShowNuotipaikka)}
+            {renderCheckbox("Kota", showKota, setShowKota)}
+            {renderCheckbox("Laavu", showLaavu, setShowLaavu)}
+            {renderCheckbox("Päivätupa", showPaivatupa, setShowPaivatupa)}
+            {renderCheckbox("Kammi", showKammi, setShowKammi)}
+            {renderCheckbox("Sauna", showSauna, setShowSauna)}
+            {renderCheckbox("Lintutorni", showLintutorni, setShowLintutorni)}
+            {renderCheckbox("Nähtävyys", showNahtavyys, setShowNahtavyys)}
+            {renderCheckbox("Luola", showLuola, setShowLuola)}
+            {renderCheckbox("Lähde", showLahde, setShowLahde)}
           </>
         )}
-{/* 
-        <label className="block mb-2 font-semibold">
-          <input
-            type="checkbox"
-            checked={selectAll}
-            onChange={() => setSelectAll(!selectAll)}
-            className="mr-2 text-blue-500 rounded"
-          />
-          <span className="text-gray-700">Näytä Kaikki</span>
-        </label> */}
       </div>
     </div>
   );
