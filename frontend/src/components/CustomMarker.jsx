@@ -17,7 +17,7 @@ function CustomMarker({ latitude, longitude, handleMarkerHover, iconUrl, handleM
             setSelectedPark(park);
           }}
       >
-        <img src={iconUrl} alt="marker icon" />
+        <img src={iconUrl} alt="marker icon" style={{ width: '35px', height: '40px' }} />
       </button>
     </Marker>
   );

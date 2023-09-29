@@ -16,6 +16,19 @@ import CustomClusterMarker from "./CustomClusterMarker";
 import useCluster from "../hooks/useCluster";
 import Sidebar from "./Sidebar";
 import autiotupaIcon from '../../assets/autiotupa.png'
+import nuotiopaikkaIcon from '../../assets/tulipaikka3.png'
+import varaustupaIcon from '../../assets/varaustupa.png'
+import lintutorniIcon from '../../assets/lintutorni.png'
+import laavuIcon from '../../assets/laavu.png'
+import kotaIcon from '../../assets/kota.png'
+import paivatupaIcon from '../../assets/autiotupa.png'
+import kammiIcon from '../../assets/kammi.png'
+import saunaIcon from '../../assets/sauna.png'
+import nahtavyysIcon from '../../assets/nähtävyys.png'
+import luolaIcon from '../../assets/luola.png'
+import lahdeIcon from '../../assets/lähde.png'
+
+
 
 
 
@@ -488,7 +501,7 @@ setShowNahtavyys={setShowNahtavyys}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23a50000&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={varaustupaIcon}
             />
             
           );
@@ -516,7 +529,7 @@ setShowNahtavyys={setShowNahtavyys}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%238b4513&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={nuotiopaikkaIcon}
             />
             
           );
@@ -540,7 +553,7 @@ setShowNahtavyys={setShowNahtavyys}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%238b4513&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={kotaIcon}
             />
             
           );
@@ -565,7 +578,7 @@ setShowNahtavyys={setShowNahtavyys}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23f5deb3&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={laavuIcon}
             />
             
           );
@@ -589,7 +602,7 @@ setShowNahtavyys={setShowNahtavyys}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23ff6b6b&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={paivatupaIcon}
             />
             
           );
@@ -613,7 +626,7 @@ setShowNahtavyys={setShowNahtavyys}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%236b8e23&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={kammiIcon}
             />
             
           );
@@ -637,7 +650,7 @@ setShowNahtavyys={setShowNahtavyys}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%238d8067&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={saunaIcon}
             />
             
           );
@@ -661,7 +674,7 @@ setShowNahtavyys={setShowNahtavyys}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%2300ca1b&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={lintutorniIcon}
             />
             
           );
@@ -685,7 +698,7 @@ setShowNahtavyys={setShowNahtavyys}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%23ffd700&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={nahtavyysIcon}
             />
             
           );
@@ -709,7 +722,7 @@ setShowNahtavyys={setShowNahtavyys}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%239b9b9b&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={luolaIcon}
             />
             
           );
@@ -733,7 +746,7 @@ setShowNahtavyys={setShowNahtavyys}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
-            iconUrl={`https://api.geoapify.com/v1/icon/?type=material&color=%232900ff&size=small&iconType=awesome&iconSize=small&textSize=small&noWhiteCircle&apiKey=${GeoAPI}`}
+            iconUrl={lahdeIcon}
             />
             
           );
