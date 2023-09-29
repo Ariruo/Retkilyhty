@@ -489,7 +489,7 @@ setShowNahtavyys={setShowNahtavyys}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={varaustupaData} backgroundColor="#a50000" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={varaustupaData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -517,7 +517,7 @@ setShowNahtavyys={setShowNahtavyys}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nuotiopaikkaData} backgroundColor="#ff4500" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nuotiopaikkaData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -541,7 +541,7 @@ setShowNahtavyys={setShowNahtavyys}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kotaData} backgroundColor="#8b4513" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kotaData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -566,7 +566,7 @@ setShowNahtavyys={setShowNahtavyys}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={laavuData} backgroundColor='#f5deb3' />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={laavuData} backgroundColor='#ff4500 ' />
               );
             }
           return (
@@ -590,7 +590,7 @@ setShowNahtavyys={setShowNahtavyys}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={paivatupaData} backgroundColor='#ff6b6b' />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={paivatupaData} backgroundColor='#ff4500 ' />
               );
             }
           return (
@@ -614,7 +614,7 @@ setShowNahtavyys={setShowNahtavyys}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kammiData} backgroundColor='#6b8e23' />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kammiData} backgroundColor='#ff4500 ' />
               );
             }
           return (
@@ -638,7 +638,7 @@ setShowNahtavyys={setShowNahtavyys}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={saunaData} backgroundColor="#8d8067" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={saunaData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -662,7 +662,7 @@ setShowNahtavyys={setShowNahtavyys}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lintutorniData} backgroundColor="#00ca1b" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lintutorniData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -686,7 +686,7 @@ setShowNahtavyys={setShowNahtavyys}
       
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nahtavyysData} backgroundColor="#ffd700" /> 
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nahtavyysData} backgroundColor="#ff4500 " /> 
               );
             }
           return (
@@ -710,7 +710,7 @@ setShowNahtavyys={setShowNahtavyys}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={luolaData} backgroundColor="#9b9b9b" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={luolaData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -734,7 +734,7 @@ setShowNahtavyys={setShowNahtavyys}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="#2900ff" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="##ff4500" />
               );
             }
           return (
