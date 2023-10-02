@@ -149,6 +149,10 @@ router.get('/api/alllahdepoints', async ctx => {
   await filterAndRespond(ctx, 'Lähde');
 });
 
+router.get('/api/all', async ctx => {
+  await filterAndRespond(ctx, '');
+});
+
 
 
 

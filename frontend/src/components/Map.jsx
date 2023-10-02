@@ -6,7 +6,9 @@ import getUserCoordinates from "../service/getUserCoordinates";
 import calculateDistance from "../service/calculateDistance"; 
 import SearchBar from "./Searchbar";
 import SearchResultList from "./SearchResultList";
-;
+import FindClosestMarkerButton from "./FindClosestMarkerButton";
+import SidebarButton from "./SidebarButton";
+
 import fetchData from "../api/fetch";
 import CustomMarker from "./CustomMarker";
 import useToggleAndFetchData from "../hooks/toggleAndFetchData";
@@ -44,6 +46,7 @@ const [userCoordinates, setUserCoordinates] = useState(null);
 const [closestParkIndex, setClosestParkIndex] = useState();
 
 
+
 const [showCabins, setShowCabins] = useState(true);
 const [originalData , setOriginaldata] = useState([]);
 const [FilteredData, setFilteredData] = useState([]);  
@@ -76,8 +79,6 @@ const [luolaData, loadingluola] = useToggleAndFetchData(async () => await fetchD
 const [showLuola, setShowLuola] = useState(false);
 const [lahdeData, loadinglahde] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/alllahdepoints"));
 const [showLahde, setShowLahde] = useState(false);
-
-
 
 
 
@@ -237,8 +238,22 @@ const handleResultClick = (park) => {
      
   });
 
+  
+
   // Set showCabins to true when handling the result click
-  setShowCabins(true);
+  setShowLaavu(park.properties.tyyppi === 'Laavu');
+  setShowNuotipaikka(park.properties.tyyppi === 'Nuotiopaikka');
+  setShowCabins(park.properties.tyyppi === 'Autiotupa');
+  setShowVaraustupas(park.properties.tyyppi === 'Varaustupa');
+  setShowKota(park.properties.tyyppi === 'Kota');
+  setShowPaivatupa(park.properties.tyyppi === 'Päivätupa');
+  setShowKammi(park.properties.tyyppi === 'Kammi');
+  setShowSauna(park.properties.tyyppi === 'Sauna');
+  setShowLintutorni(park.properties.tyyppi === 'Lintutorni');
+  setShowNahtavyys(park.properties.tyyppi === 'Nähtävyys');
+  setShowLuola(park.properties.tyyppi === 'Luola');
+  setShowLahde(park.properties.tyyppi === 'Lähde');
+
 };
 
 
@@ -365,7 +380,7 @@ const handleResultClick = (park) => {
   
   
 
-  
+
    
   
   
@@ -386,6 +401,12 @@ const handleResultClick = (park) => {
         ref={mapRef}
         >
 
+
+
+
+{showSearchResults && FilteredData && FilteredData.length > 0 && <SearchResultList results={FilteredData} onResultClick={handleResultClick} />}
+
+
 <SearchBar 
 setResults={setFilteredData} 
 setInput={setInput} 
@@ -399,9 +420,17 @@ onClick={handleFindClosestPark}
 
 
 
-{showSearchResults && FilteredData && FilteredData.length > 0 && <SearchResultList results={FilteredData} onResultClick={handleResultClick} />}
- 
- <Sidebar
+
+
+<FindClosestMarkerButton onClick={handleFindClosestParkbutton} />
+
+<SidebarButton
+        open={open}
+        toggleSidebar={toggleSidebar}
+      
+      />
+
+      <Sidebar
  setOpen={setOpen}
  open={open}
  toggleSidebar={toggleSidebar}
@@ -433,14 +462,6 @@ setShowNahtavyys={setShowNahtavyys}
  
  />
 
-<button
-  className="z-50 fixed top-20  bg-white p-2 border rounded-md shadow-md cursor-pointer"
-  onClick={handleFindClosestParkbutton}
-  style={{ left: '17%' }}
->
-  <img src="assets/nearby-icon-15.jpg" alt="nearby.png" style={{ width: '30px', height: '30px' }} />
-</button>
- 
 
 {hoveredPark && (
           <Popup
