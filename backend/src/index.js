@@ -149,9 +149,15 @@ router.get('/api/alllahdepoints', async ctx => {
   await filterAndRespond(ctx, 'Lähde');
 });
 
+router.get('/api/allruokailukatospoints', async ctx => {
+  await filterAndRespond(ctx, 'Ruokailukatos');
+});
+
 router.get('/api/all', async ctx => {
   await filterAndRespond(ctx, '');
 });
+
+
 
 
 

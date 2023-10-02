@@ -29,6 +29,7 @@ import saunaIcon from '../../assets/sauna.png'
 import nahtavyysIcon from '../../assets/nähtävyys.png'
 import luolaIcon from '../../assets/luola.png'
 import lahdeIcon from '../../assets/lähde.png'
+import ruokailukatosIcon from '../../assets/ruokailukatos.png'
 
 
 
@@ -79,7 +80,8 @@ const [luolaData, loadingluola] = useToggleAndFetchData(async () => await fetchD
 const [showLuola, setShowLuola] = useState(false);
 const [lahdeData, loadinglahde] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/alllahdepoints"));
 const [showLahde, setShowLahde] = useState(false);
-
+const [ruokailukatosData, loadingruokailukatos] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allruokailukatospoints"));
+const [showRuokailukatos, setShowRuokailukatos] = useState(false);
 
 
 
@@ -133,6 +135,7 @@ const autiotupapoints = originalData
     const { clusters: nahtavyys } = useCluster(nahtavyysData, bounds, viewState.zoom);
     const { clusters: luola } = useCluster(luolaData, bounds, viewState.zoom);
     const { clusters: lahde } = useCluster(lahdeData, bounds, viewState.zoom);
+    const { clusters: ruokailukatos } = useCluster(ruokailukatosData, bounds, viewState.zoom);
 
 
 
@@ -253,6 +256,7 @@ const handleResultClick = (park) => {
   setShowNahtavyys(park.properties.tyyppi === 'Nähtävyys');
   setShowLuola(park.properties.tyyppi === 'Luola');
   setShowLahde(park.properties.tyyppi === 'Lähde');
+  setShowRuokailukatos(park.properties.tyyppi === 'Ruokailukatos');
 
 };
 
@@ -281,6 +285,7 @@ const handleResultClick = (park) => {
         nahtavyysData,
         luolaData,
         lahdeData,
+        ruokailukatos,
       ].flat();
   
       // Find the closest parks
@@ -336,6 +341,7 @@ const handleResultClick = (park) => {
           setShowNahtavyys(newSelectedPark.properties.tyyppi === 'Nähtävyys');
           setShowLuola(newSelectedPark.properties.tyyppi === 'Luola');
           setShowLahde(newSelectedPark.properties.tyyppi === 'Lähde');
+          setShowRuokailukatos(newSelectedPark.properties.tyyppi === 'Ruokailukatos');
   
        
         }
@@ -373,6 +379,7 @@ const handleResultClick = (park) => {
         setShowNahtavyys(newSelectedPark.properties.tyyppi === 'Nähtävyys');
         setShowLuola(newSelectedPark.properties.tyyppi === 'Luola');
         setShowLahde(newSelectedPark.properties.tyyppi === 'Lähde');
+        setShowRuokailukatos(newSelectedPark.properties.tyyppi === 'Ruokailukatos');
 
       }
     }
@@ -459,6 +466,9 @@ setShowNahtavyys={setShowNahtavyys}
   setShowLuola={setShowLuola}
  showLahde={showLahde}
  setShowLahde={setShowLahde}
+  showRuokailukatos={showRuokailukatos}
+  setShowRuokailukatos={setShowRuokailukatos}
+      
  
  />
 
@@ -768,6 +778,30 @@ setShowNahtavyys={setShowNahtavyys}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={lahdeIcon}
+            />
+            
+          );
+        })}
+
+{showRuokailukatos && ruokailukatos.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="##ff4500" />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={ruokailukatosIcon}
             />
             
           );

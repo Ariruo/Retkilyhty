@@ -30,6 +30,8 @@ export default function Sidebar({
   setShowLuola, // Pass setShowLuola function
   showLahde,
   setShowLahde, // Pass setShowLahde function
+  setShowRuokailukatos,
+  showRuokailukatos,
 }) {
   const renderCheckbox = (label, checked, setShow) => (
     <label
@@ -77,6 +79,7 @@ export default function Sidebar({
             {renderCheckbox("Nähtävyys", showNahtavyys, setShowNahtavyys)}
             {renderCheckbox("Luola", showLuola, setShowLuola)}
             {renderCheckbox("Lähde", showLahde, setShowLahde)}
+            {renderCheckbox("Ruokailukatos", showRuokailukatos, setShowRuokailukatos)}
           </>
         )}
         </div>
