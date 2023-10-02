@@ -8,7 +8,8 @@ const SidebarButton = ({ open, toggleSidebar }) => {
 
   return (
     <div
-      className={`fixed top-20 md:left-24 left-10 cursor-pointer ${hamburgerIconTransition} bg-white p-2 rounded-md shadow-md`}
+      className={`fixed top-20 md:left-24 left-10 cursor-pointer ${hamburgerIconTransition} bg-white p-2 rounded-md shadow-md  border border-orange-800`}
+      
     >
       <FontAwesomeIcon
         size="2x"

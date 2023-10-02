@@ -35,16 +35,17 @@ export default function Sidebar({
 }) {
   const renderCheckbox = (label, checked, setShow) => (
     <label
-      className={`mb-2 font-sans flex items-center cursor-pointer ${
+      className={`mb-2 font-sans font-Montserrat flex items-center cursor-pointer ${
         checked
-          ? 'bg-orange-800 text-white'
-          : 'bg-white text-gray-800'
-      } rounded-lg p-2 backdrop-blur-md transition-colors duration-300`}
+          ? 'bg-orange-800 text-white border border-orange-900'
+          : 'bg-white text-gray-900 border border-orange-900'
+      } rounded-lg p-2 backdrop-blur-md transition-colors duration-300 font-bold`}
       onClick={() => setShow(!checked)}
     >
       {label}
     </label>
   );
+
   
   const sidebarWidth = open ? "w-70 transition-width duration-300" : "w-0 transition-width duration-300";
   const sidebarAnimation = open ? "translate-x-0" : "-translate-x-full";
@@ -56,7 +57,8 @@ export default function Sidebar({
     
     
       <div
-        className={`bg-orange-800  bg-opacity-80 z-10 h-screen p-5 pt-8 relative ${sidebarWidth} rounded-r-3xl transform ${sidebarAnimation}`}
+        className={`bg-white z-10 bg-opacity-80  h-screen p-5 pt-8 relative border border-orange-800 ${sidebarWidth} rounded-r-3xl transform ${sidebarAnimation}`}
+       
       >
          <button
   className="absolute top-2 right-2 p-3 text-gray-600 cursor-pointer"

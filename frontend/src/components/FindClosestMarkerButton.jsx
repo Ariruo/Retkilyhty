@@ -3,7 +3,7 @@ import React from 'react';
 const FindClosestMarkerButton = ({ onClick }) => {
   return (
     <button
-      className="z-9 fixed bg-white p-2 border rounded-md shadow-md cursor-pointer top-40 left-10 md:top-20 md:left-40"
+      className="z-9 fixed bg-white p-2 border rounded-md shadow-md cursor-pointer top-40 left-10 md:top-20 md:left-40 border border-orange-800"
       onClick={onClick}
     >
       <img

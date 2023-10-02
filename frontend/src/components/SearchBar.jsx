@@ -36,7 +36,7 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults,})  => {
     
     
     <div
-      className={`input-wrapper fixed left-10 sm:left-56 first-line:left-10  sm:top-20   z-10 h-12 border rounded-md shadow-md bg-white top-60 transition-width duration-300 ${
+      className={`input-wrapper fixed left-10 sm:left-56 first-line:left-10  sm:top-20   z-10 h-12 border rounded-md border border-orange-800 shadow-md bg-white top-60 transition-width duration-300 ${
         searchBarOpen ? 'w-64' : 'w-12'
       }`}
     >
