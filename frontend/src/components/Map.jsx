@@ -56,9 +56,10 @@ const [input, setInput] = useState("");
 const [showSearchResults, setShowSearchResults] = useState(false);
 const [hoveredPark, setHoveredPark] = useState(null);
 
-const [viewState, setViewState] = useState({longitude: 23.72018736381,latitude: 68.342938678895,zoom: 10,})
+const [viewState, setViewState] = useState({longitude: 23.72018736381,latitude: 68.342938678895,zoom: 10,});
 
 const [nuotiopaikkaData, loadingnuotipaikka] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allnuotiopaikkapoints"));
+const [autiotupaData, loadingautiotupa] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allcabinspoints"));
 const [showNuotipaikka, setShowNuotipaikka] = useState(false);
 const [varaustupaData, loadingvaraus ] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allvaraustupapoints"));
 const [showVaraustupas, setShowVaraustupas] = useState(false);
@@ -85,35 +86,6 @@ const [showRuokailukatos, setShowRuokailukatos] = useState(false);
 
 
 
-
-
-useEffect(() => {
-  fetchData('http://localhost:9000/api/allcabinspoints')
-    .then((parks) => {
-      setFilteredData(parks);
-      setOriginaldata(parks);
-    });
-}, []);
-
-const autiotupapoints = originalData
-? originalData.map(feature => ({
-    type: "Feature",
-    properties: { cluster: false, name: feature.properties.name, tyyppi: feature.properties.tyyppi, maakunta: feature.properties.maakunta },
-    geometry: {
-      type: "Point",
-      coordinates: [
-        feature.geometry.coordinates[1], 
-        feature.geometry.coordinates[0]
-      ]
-    }
-  }))
-: [];
-
-
-
-
-
-
      const mapRef = useRef();
     const bounds = mapRef.current
     ? mapRef.current
@@ -124,7 +96,7 @@ const autiotupapoints = originalData
     : null;
 
     const { clusters: varaustupa } = useCluster(varaustupaData, bounds, viewState.zoom);
-    const { clusters: autiotupa } = useCluster(autiotupapoints, bounds, viewState.zoom);
+    const { clusters: autiotupa } = useCluster(autiotupaData, bounds, viewState.zoom);
     const { clusters: nuotiopaikka } = useCluster(nuotiopaikkaData, bounds, viewState.zoom);
     const { clusters: kota } = useCluster(kotaData, bounds, viewState.zoom);
     const { clusters: laavu } = useCluster(laavuData, bounds, viewState.zoom);
@@ -172,9 +144,9 @@ const autiotupapoints = originalData
     };
   
     useEffect(() => {
-      // Calculate the distance when a park is selected or deselected
-      calculateAndSetDistance(selectedPark);
-    }, [selectedPark, userCoordinates]);
+      // Calculate the distance when a park is selected, deselected, or hovered
+      calculateAndSetDistance(selectedPark || hoveredPark);
+    }, [selectedPark, hoveredPark, userCoordinates]);
 
 
 const handleMarkerHover = (event, park) => {
@@ -261,19 +233,10 @@ const handleResultClick = (park) => {
 };
 
 
-
-  
-  useEffect(() => {
-    console.log(showNuotipaikka)
-    console.log(showLaavu)
-  }, [showNuotipaikka, showLaavu])
-
-
-
   const handleFindClosestParkbutton = () => {
-    if (userCoordinates && FilteredData.length > 0) {
+    if (userCoordinates) {
       const allDataPoints = [
-        autiotupapoints,
+        autiotupaData,
         varaustupaData,
         nuotiopaikkaData,
         kotaData,
@@ -458,19 +421,17 @@ showKammi={showKammi}
 setShowKammi={setShowKammi}
 showSauna={showSauna}
 setShowSauna={setShowSauna}
- showLintutorni={showLintutorni}
-  setShowLintutorni={setShowLintutorni}
+showLintutorni={showLintutorni}
+setShowLintutorni={setShowLintutorni}
 showNahtavyys={showNahtavyys}
 setShowNahtavyys={setShowNahtavyys}
- showLuola={showLuola}
-  setShowLuola={setShowLuola}
- showLahde={showLahde}
- setShowLahde={setShowLahde}
-  showRuokailukatos={showRuokailukatos}
-  setShowRuokailukatos={setShowRuokailukatos}
-      
- 
- />
+showLuola={showLuola}
+setShowLuola={setShowLuola}
+showLahde={showLahde}
+setShowLahde={setShowLahde}
+showRuokailukatos={showRuokailukatos}
+setShowRuokailukatos={setShowRuokailukatos}
+/>
 
 
 {hoveredPark && (
@@ -482,7 +443,10 @@ setShowNahtavyys={setShowNahtavyys}
             anchor="bottom"
           >
             <div>
-              <div>{hoveredPark.properties.name} ({hoveredPark.properties.tyyppi})</div>
+              <div>{hoveredPark.properties.name} ({hoveredPark.properties.tyyppi})
+              {distance && (
+              <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
+            )}</div>
             </div>
           </Popup>
         )}
@@ -495,7 +459,7 @@ setShowNahtavyys={setShowNahtavyys}
 
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={autiotupapoints} backgroundColor="#fd0303" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={autiotupaData} backgroundColor="#fd0303" />
               );
             }
           return (
