@@ -33,13 +33,11 @@ import ruokailukatosIcon from '../../assets/ruokailukatos.png'
 
 
 
-
-
 export default function Mapp() {
 
 
-  const MapID = import.meta.env.VITE_MAPBOX_TOKEN || process.env.MAPID;
-  const GeoAPI = import.meta.env.VITE_GEOAPI_TOKEN || process.env.GEOAPI;
+const MapID = import.meta.env.VITE_MAPBOX_TOKEN || process.env.MAPID;
+ 
 
 const [open, setOpen] = useState(false);
 const [distance, setDistance] = useState(null)
@@ -49,7 +47,7 @@ const [closestParkIndex, setClosestParkIndex] = useState();
 
 
 const [showCabins, setShowCabins] = useState(true);
-const [originalData , setOriginaldata] = useState([]);
+
 const [FilteredData, setFilteredData] = useState([]);  
 const [selectedPark, setSelectedPark] = useState(null);
 const [input, setInput] = useState("");
@@ -86,7 +84,7 @@ const [showRuokailukatos, setShowRuokailukatos] = useState(false);
 
 
 
-     const mapRef = useRef();
+    const mapRef = useRef();
     const bounds = mapRef.current
     ? mapRef.current
         .getMap()
@@ -212,10 +210,7 @@ const handleResultClick = (park) => {
     essential: true, // This ensures the animation is treated as an essential gesture
      
   });
-
-  
-
-  // Set showCabins to true when handling the result click
+// Set showCabins to true when handling the result click
   setShowLaavu(park.properties.tyyppi === 'Laavu');
   setShowNuotipaikka(park.properties.tyyppi === 'Nuotiopaikka');
   setShowCabins(park.properties.tyyppi === 'Autiotupa');
@@ -358,9 +353,6 @@ const handleResultClick = (park) => {
  
   return (
     <div>
- 
-
-
       <Map
         mapboxAccessToken={MapID}
         {...viewState}
@@ -386,6 +378,7 @@ open={open}
 setOpen={setOpen}
 toggleSidebar={toggleSidebar} 
 onClick={handleFindClosestPark}
+
 />
 
 
@@ -401,14 +394,14 @@ onClick={handleFindClosestPark}
       />
 
       <Sidebar
- setOpen={setOpen}
- open={open}
- toggleSidebar={toggleSidebar}
- showCabins={showCabins}
- setShowCabins={setShowCabins}
+setOpen={setOpen}
+open={open}
+toggleSidebar={toggleSidebar}
+showCabins={showCabins}
+setShowCabins={setShowCabins}
  
- showVaraustupas={showVaraustupas}
- setShowVaraustupas={setShowVaraustupas}
+showVaraustupas={showVaraustupas}
+setShowVaraustupas={setShowVaraustupas}
 showNuotipaikka={showNuotipaikka}
 setShowNuotipaikka={setShowNuotipaikka}
 showKota={showKota}
@@ -435,21 +428,25 @@ setShowRuokailukatos={setShowRuokailukatos}
 
 
 {hoveredPark && (
-          <Popup
-            latitude={hoveredPark.geometry.coordinates[1]}
-            longitude={hoveredPark.geometry.coordinates[0]}
-            closeButton={false}
-            onClose={() => setHoveredPark(null)}
-            anchor="bottom"
-          >
-            <div>
-              <div>{hoveredPark.properties.name} ({hoveredPark.properties.tyyppi})
-              {distance && (
-              <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
-            )}</div>
-            </div>
-          </Popup>
+  <div className="hidden sm:block"> {/* Hidden on small screens */}
+    <Popup
+      latitude={hoveredPark.geometry.coordinates[1]}
+      longitude={hoveredPark.geometry.coordinates[0]}
+      closeButton={false}
+      onClose={() => setHoveredPark(null)}
+      anchor="bottom"
+    >
+      <div>
+        <div className="font-semibold text-center">{hoveredPark.properties.name}</div>
+        <div className="text-center text-xxs">({hoveredPark.properties.tyyppi})</div>
+        
+        {distance && (
+          <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
         )}
+      </div>
+    </Popup>
+  </div>
+)}
 
 
 
@@ -481,8 +478,7 @@ setShowRuokailukatos={setShowRuokailukatos}
 {showVaraustupas && varaustupa.map((cluster, index) => {
           const [longitude, latitude] = cluster.geometry.coordinates;
           const {cluster: isCluster} = cluster.properties;
-        
-          if (isCluster) {
+                  if (isCluster) {
             return (
             <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={varaustupaData} backgroundColor="#ff4500 " />
               );
@@ -729,7 +725,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="##ff4500" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="#ff4500" />
               );
             }
           return (
@@ -753,7 +749,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="##ff4500" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="#ff4500" />
               );
             }
           return (
@@ -793,7 +789,7 @@ setShowRuokailukatos={setShowRuokailukatos}
           <p className="mt-1 text-center font-semibold">{selectedPark.properties.tyyppi}</p>
 <p className="mt-1 text-center font-semibold"> {selectedPark.properties.maakunta}</p>
 {distance && (
-              <p className="mt-1 text-center font-semibold">Distance: {distance.toFixed(2)} Km</p>
+              <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
             )}
             <Coordinatecabin
             latitude={selectedPark.geometry.coordinates[1]}

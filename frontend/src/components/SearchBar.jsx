@@ -27,7 +27,14 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults }) => {
   };
 
   const toggleSearchBar = () => {
+    if (!searchBarOpen) {
+      // Clear the input field when the search bar is opened
+      setInput("");
+    }
+    
+    // Close the search bar and set showShowSearchResults to false
     setSearchBarOpen(!searchBarOpen);
+    setShowSearchResults(false); // Set showShowSearchResults to false
   };
 
   const searchBarRef = useRef(null);
@@ -36,6 +43,9 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults }) => {
     const handleClickOutside = (event) => {
       if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
         setSearchBarOpen(false);
+        
+        // Set showShowSearchResults to false when the search bar is closed
+        setShowSearchResults(false);
       }
     };
 

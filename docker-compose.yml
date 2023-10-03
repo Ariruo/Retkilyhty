@@ -23,7 +23,7 @@ services:
             context: ./frontend
         environment:
             MAPID: ${MAPID}
-            GeoAPI: ${GeoAPI}
+           
 
         ports:
             - "8000:8000"
