@@ -1,9 +1,9 @@
 import axios from "axios";
-import { faSearch, faBars } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useState } from "react";
+import { faSearch, faBars } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useState, useEffect, useRef } from "react";
 
-const SearchBar = ({ setResults, setInput, input, setShowSearchResults,})  => {
+const SearchBar = ({ setResults, setInput, input, setShowSearchResults }) => {
   const [searchBarOpen, setSearchBarOpen] = useState(false);
   const [showSidebarLabel, setShowSidebarLabel] = useState(false);
   const placeholderText = searchBarOpen ? "Etsi kohteita" : "";
@@ -12,7 +12,7 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults,})  => {
   const filterData = async (value) => {
     try {
       const response = await axios.get(`http://localhost:9000/api/all?search=${value}`);
-      
+
       setResults(response.data.features);
       setShowSearchResults(value.length > 0);
     } catch (error) {
@@ -30,25 +30,37 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults,})  => {
     setSearchBarOpen(!searchBarOpen);
   };
 
-  
-  return (
+  const searchBarRef = useRef(null);
 
-    
-    
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
+        setSearchBarOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+  return (
     <div
       className={`input-wrapper fixed left-10 sm:left-56 first-line:left-10  sm:top-20   z-10 h-12 border rounded-md border border-orange-800 shadow-md bg-white top-60 transition-width duration-300 ${
-        searchBarOpen ? 'w-64' : 'w-12'
+        searchBarOpen ? "w-64" : "w-12"
       }`}
+      ref={searchBarRef}
     >
-    
-    {searchBarOpen && (
-      <input
-        className={`bg-transparent focus:outline-none text-gray-600 placeholder-gray-400 w-75 h-29 pl-2 pr-2 mt-4 text-lg`}
-        placeholder={placeholderText}
-        value={input}
-        onChange={(e) => handleChange(e.target.value)}
-      />
-    )}
+      {searchBarOpen && (
+        <input
+          className={`bg-transparent focus:outline-none text-gray-600 placeholder-gray-400 w-75 h-29 pl-2 pr-2 mt-4 text-lg`}
+          placeholder={placeholderText}
+          value={input}
+          onChange={(e) => handleChange(e.target.value)}
+        />
+      )}
 
       <FontAwesomeIcon
         icon={faSearch}
