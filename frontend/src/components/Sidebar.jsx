@@ -57,7 +57,7 @@ export default function Sidebar({
     
     
       <div
-        className={`bg-white z-10 bg-opacity-80  h-screen p-5 pt-8 relative border border-orange-800 ${sidebarWidth} rounded-r-3xl transform ${sidebarAnimation}`}
+        className={`bg-white z-10 bg-opacity-80 fixed   h-screen p-5 pt-8  border border-orange-800 ${sidebarWidth} rounded-r-3xl transform ${sidebarAnimation}`}
        
       >
          <button

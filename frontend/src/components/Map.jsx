@@ -428,7 +428,7 @@ setShowRuokailukatos={setShowRuokailukatos}
 
 
 {hoveredPark && (
-  <div className="hidden sm:block"> {/* Hidden on small screens */}
+  <div className="hidden"> 
     <Popup
       latitude={hoveredPark.geometry.coordinates[1]}
       longitude={hoveredPark.geometry.coordinates[0]}
@@ -749,7 +749,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="#ff4500" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={ruokailukatosData} backgroundColor="#ff4500" />
               );
             }
           return (
