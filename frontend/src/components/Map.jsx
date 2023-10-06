@@ -8,6 +8,7 @@ import SearchBar from "./Searchbar";
 import SearchResultList from "./SearchResultList";
 import FindClosestMarkerButton from "./FindClosestMarkerButton";
 import SidebarButton from "./SidebarButton";
+import './popup.css';
 
 import fetchData from "../api/fetch";
 import CustomMarker from "./CustomMarker";
@@ -395,9 +396,16 @@ const handleResultClick = (park) => {
             onClose={() => {
               setSelectedPark(null);
             }}
+            closeButton={true}
+            className="mapboxgl-popup-close-button"
+            
+
+          
             >
-          <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
-          <p className="mt-1 text-center font-semibold">({selectedPark.properties.tyyppi})</p>
+              <div >
+  <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
+</div>
+          <h2 className="mt-1 text-center text-small font-semibold">({selectedPark.properties.tyyppi})</h2>
 
 {distance && (
               <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
@@ -406,6 +414,7 @@ const handleResultClick = (park) => {
             latitude={selectedPark.geometry.coordinates[1]}
             longitude={selectedPark.geometry.coordinates[0]}
             />
+            
           </Popup>
           </div>)}
 
