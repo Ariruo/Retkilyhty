@@ -14,11 +14,13 @@ const Coordinatecabin = ({ latitude, longitude }) => {
   const [sunrise, setSunrise] = useState('');
   const [sunset, setSunset] = useState('');
 
+  const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
+
   useEffect(() => {
     const fetchWeatherByCoordinates = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:9000/api/weatherbycoordinates?lon=${longitude}&lat=${latitude}`
+          `${baseUrl}/api/weatherbycoordinates?lon=${longitude}&lat=${latitude}`
         );
 
         const data = response.data;
@@ -49,13 +51,13 @@ const Coordinatecabin = ({ latitude, longitude }) => {
   }, [latitude, longitude]);
 
   return (
-    <div className="flex flex-col items-center mt-4">
+    <div className="flex flex-col items-center justify-center mt-[-30px] ">
       <WeatherIcon icon={icon} width={135} height={135} />
      
-      <h2 style={{ fontSize: '20px', fontWeight: 'bold', marginTop: '-20px' }}>{temperature} °C</h2>
+      <h2 style={{ fontSize: '19px', fontWeight: 'bold', marginTop: '-20px', marginLeft: '10px' }}>{temperature} °C</h2>
       
       
-      <div className="flex justify-between p-4 mt-6">
+      <div className="flex justify-between p-4 mt-1">
   <div className="flex flex-col items-center p-2">
     <div className="flex items-center">
       <img src="assets/visibility.png" alt="Näkyvyys" style={{ width: '30px', height: '30px', marginRight: '8px' }} />
@@ -73,8 +75,8 @@ const Coordinatecabin = ({ latitude, longitude }) => {
       <img src="assets/sunrise.png" alt="Aurinko nousee" style={{ width: '35px', height: '35px', marginRight: '8px' }} />
       <p className="mt-3" style={{ fontWeight: 'bold' }}>{sunrise}</p>
     </div>
-    <div className="flex items-center ml-2">
-      <img src="assets/sunset.png" alt="Aurinko laskee" style={{ width: '35px', height: '35px', marginRight: '8px' }} />
+    <div className="flex items-center ml-1">
+      <img src="assets/sunset.png" alt="Aurinko laskee" style={{ width: '34px', height: '34px', marginRight: '8px' }} />
       <p className="mt-2" style={{ fontWeight: 'bold' }}>{sunset}</p>
     </div>
   </div>

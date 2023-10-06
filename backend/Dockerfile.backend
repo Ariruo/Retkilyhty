@@ -6,4 +6,9 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 
+ENV APPID = your_app_id_here
+
+
+
+
 CMD [ "npm", "start" ]

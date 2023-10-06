@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import Map from "../components/map";
+import Map from "../components/Map";
 
 
 function Home() {

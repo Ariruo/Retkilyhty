@@ -21,10 +21,7 @@ services:
         build:
             dockerfile: Dockerfile.frontend
             context: ./frontend
-        environment:
-            MAPID: ${MAPID}
-           
-
+      
         ports:
             - "8000:8000"
         volumes:

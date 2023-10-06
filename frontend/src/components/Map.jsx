@@ -36,7 +36,23 @@ import ruokailukatosIcon from '../../assets/ruokailukatos.png'
 export default function Mapp() {
 
 
-const MapID = import.meta.env.VITE_MAPBOX_TOKEN || process.env.MAPID;
+const MapID =  import.meta.env.VITE_MAPID || import.meta.env.VITE_MAPBOX_TOKEN 
+const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000"; 
+
+const nuotiopaikkaEndpoint = `${baseUrl}/api/allnuotiopaikkapoints`;
+const autiotupaEndpoint = `${baseUrl}/api/allcabinspoints`;
+const varaustupaEndpoint = `${baseUrl}/api/allvaraustupapoints`;
+const kotaEndpoint = `${baseUrl}/api/allkotapoints`;
+const laavuEndpoint = `${baseUrl}/api/alllaavupoints`;
+const paivatupaEndpoint = `${baseUrl}/api/allpaivatupapoints`;
+const kammiEndpoint = `${baseUrl}/api/allkammipoints`;
+const saunaEndpoint = `${baseUrl}/api/allsaunapoints`;
+const lintutorniEndpoint = `${baseUrl}/api/alllintutornipoints`;
+const nahtavyysEndpoint = `${baseUrl}/api/allnahtavyyspoints`;
+const luolaEndpoint = `${baseUrl}/api/allluolapoints`;
+const lahdeEndpoint = `${baseUrl}/api/alllahdepoints`;
+const ruokailukatosEndpoint = `${baseUrl}/api/allruokailukatospoints`;
+
  
 
 const [open, setOpen] = useState(false);
@@ -56,30 +72,30 @@ const [hoveredPark, setHoveredPark] = useState(null);
 
 const [viewState, setViewState] = useState({longitude: 23.72018736381,latitude: 68.342938678895,zoom: 10,});
 
-const [nuotiopaikkaData, loadingnuotipaikka] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allnuotiopaikkapoints"));
-const [autiotupaData, loadingautiotupa] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allcabinspoints"));
+const [nuotiopaikkaData, loadingnuotipaikka] = useToggleAndFetchData(async () => await fetchData(nuotiopaikkaEndpoint));
+const [autiotupaData, loadingautiotupa] = useToggleAndFetchData(async () => await fetchData(autiotupaEndpoint));
 const [showNuotipaikka, setShowNuotipaikka] = useState(false);
-const [varaustupaData, loadingvaraus ] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allvaraustupapoints"));
+const [varaustupaData, loadingvaraus ] = useToggleAndFetchData(async () => await fetchData(varaustupaEndpoint));
 const [showVaraustupas, setShowVaraustupas] = useState(false);
-const [kotaData, loadingkota] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allkotapoints"));
+const [kotaData, loadingkota] = useToggleAndFetchData(async () => await fetchData(kotaEndpoint));
 const [showKota, setShowKota] = useState(false);
-const [laavuData, loadinglaavu] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/alllaavupoints"));
+const [laavuData, loadinglaavu] = useToggleAndFetchData(async () => await fetchData(laavuEndpoint));
 const [showLaavu, setShowLaavu] = useState(false);
-const [paivatupaData, loadingpaivatupa] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allpaivatupapoints"));
+const [paivatupaData, loadingpaivatupa] = useToggleAndFetchData(async () => await fetchData(paivatupaEndpoint));
 const [showPaivatupa, setShowPaivatupa] = useState(false);
-const [kammiData, loadingkammi] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allkammipoints"));
+const [kammiData, loadingkammi] = useToggleAndFetchData(async () => await fetchData(kammiEndpoint));
 const [showKammi, setShowKammi] = useState(false);
-const [saunaData, loadingsauna] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allsaunapoints"));
+const [saunaData, loadingsauna] = useToggleAndFetchData(async () => await fetchData(saunaEndpoint));
 const [showSauna, setShowSauna] = useState(false);
-const [lintutorniData, loadinglintutorni] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/alllintutornipoints"));
+const [lintutorniData, loadinglintutorni] = useToggleAndFetchData(async () => await fetchData(lintutorniEndpoint));
 const [showLintutorni, setShowLintutorni] = useState(false);
-const [nahtavyysData, loadingnahtavyys] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allnahtavyyspoints"));
+const [nahtavyysData, loadingnahtavyys] = useToggleAndFetchData(async () => await fetchData(nahtavyysEndpoint));
 const [showNahtavyys, setShowNahtavyys] = useState(false);
-const [luolaData, loadingluola] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allluolapoints"));
+const [luolaData, loadingluola] = useToggleAndFetchData(async () => await fetchData(luolaEndpoint));
 const [showLuola, setShowLuola] = useState(false);
-const [lahdeData, loadinglahde] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/alllahdepoints"));
+const [lahdeData, loadinglahde] = useToggleAndFetchData(async () => await fetchData(lahdeEndpoint));
 const [showLahde, setShowLahde] = useState(false);
-const [ruokailukatosData, loadingruokailukatos] = useToggleAndFetchData(async () => await fetchData("http://localhost:9000/api/allruokailukatospoints"));
+const [ruokailukatosData, loadingruokailukatos] = useToggleAndFetchData(async () => await fetchData(ruokailukatosEndpoint));
 const [showRuokailukatos, setShowRuokailukatos] = useState(false);
 
 
@@ -367,6 +383,32 @@ const handleResultClick = (park) => {
 
 
 {showSearchResults && FilteredData && FilteredData.length > 0 && <SearchResultList results={FilteredData} onResultClick={handleResultClick} />}
+
+
+{selectedPark && (
+  <div style={{ position: 'absolute', zIndex: 9999 }}>
+            <Popup 
+            latitude={selectedPark.geometry.coordinates[1]}
+            longitude={selectedPark.geometry.coordinates[0]}
+            anchor="bottom"
+            closeOnClick={false}
+            onClose={() => {
+              setSelectedPark(null);
+            }}
+            >
+          <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
+          <p className="mt-1 text-center font-semibold">({selectedPark.properties.tyyppi})</p>
+
+{distance && (
+              <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
+            )}
+            <Coordinatecabin
+            latitude={selectedPark.geometry.coordinates[1]}
+            longitude={selectedPark.geometry.coordinates[0]}
+            />
+          </Popup>
+          </div>)}
+
 
 
 <SearchBar 
@@ -775,27 +817,7 @@ setShowRuokailukatos={setShowRuokailukatos}
  
 
  
- {selectedPark && (
-            <Popup 
-            latitude={selectedPark.geometry.coordinates[1]}
-            longitude={selectedPark.geometry.coordinates[0]}
-            anchor="bottom"
-            closeOnClick={false}
-            onClose={() => {
-              setSelectedPark(null);
-            }}
-            >
-          <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
-          <p className="mt-1 text-center font-semibold">{selectedPark.properties.tyyppi}</p>
-<p className="mt-1 text-center font-semibold"> {selectedPark.properties.maakunta}</p>
-{distance && (
-              <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
-            )}
-            <Coordinatecabin
-            latitude={selectedPark.geometry.coordinates[1]}
-            longitude={selectedPark.geometry.coordinates[0]}
-            />
-          </Popup>)}
+
 
 
     

@@ -5,8 +5,7 @@ import { BrowserRouter, Route, Routes} from 'react-router-dom'
 
 import Navbar from './pages/navbar'
 import Home from './pages/home'
-
-import Map from './components/map'
+import Map from './components/Map'
 
 
 
