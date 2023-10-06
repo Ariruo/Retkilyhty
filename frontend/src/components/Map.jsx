@@ -479,25 +479,27 @@ setShowRuokailukatos={setShowRuokailukatos}
 
 
 {hoveredPark && (
-  <div className="hidden"> 
+  
+  
     <Popup
       latitude={hoveredPark.geometry.coordinates[1]}
       longitude={hoveredPark.geometry.coordinates[0]}
       closeButton={false}
       onClose={() => setHoveredPark(null)}
       anchor="bottom"
+      className="hidden md:block"
+     
     >
-      <div>
-        <div className="font-semibold text-center">{hoveredPark.properties.name}</div>
+      
+        <div className="font-semibold text-center ">{hoveredPark.properties.name}</div>
         <div className="text-center text-xxs">({hoveredPark.properties.tyyppi})</div>
         
         {distance && (
           <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
         )}
-      </div>
+        
     </Popup>
-  </div>
-)}
+  )}
 
 
 
