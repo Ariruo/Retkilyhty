@@ -1,0 +1,101 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation Template for Frontend and Backend EC2 Instances
+
+Parameters:
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instances
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: Must be the name of an existing EC2 KeyPair
+
+Resources:
+  FrontendInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SecurityGroups:
+        - !Ref FrontendSecurityGroup
+      KeyName: !Ref KeyName
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo yum update -y
+          sudo amazon-linux-extras install docker -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo docker pull ariru/trailtorchfrontend:latest
+          sudo docker run --name frontend -p 8000:8000 ariru/trailtorchfrontend
+
+  BackendInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SecurityGroups:
+        - !Ref BackendSecurityGroup
+      KeyName: !Ref KeyName
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash -xe
+          sudo yum update -y
+          sudo amazon-linux-extras install docker -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo docker pull ariru/trailtorchbackend:backend
+          sudo docker run --name backend -p 9000:9000 ariru/trailtorchbackend:backend
+    DependsOn: BackendEIPAssociation
+
+  BackendEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      InstanceId: !Ref BackendInstance
+      AllocationId: eipalloc-0bb855b1c54df265a # Replace with your Elastic IP Allocation ID
+
+  BackendEIPAssociation:
+    Type: AWS::EC2::EIPAssociation
+    Properties:
+      InstanceId: !Ref BackendInstance
+      AllocationId: eipalloc-0bb855b1c54df265a # Replace with your Elastic IP Allocation ID
+
+  FrontendSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for Frontend EC2 Instance
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+
+  BackendSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for Backend EC2 Instance
+      SecurityGroupIngress:
+        - SourceSecurityGroupId: !Ref FrontendSecurityGroup
+          IpProtocol: tcp
+          FromPort: 9000
+          ToPort: 9000
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-0fc61db8544a617ed # Amazon Linux 2 AMI with Kernel 5.10 for us-east-1
+    # Add mappings for other regions as needed
+
+Outputs:
+  FrontendInstanceIP:
+    Description: Public IP address of the Frontend EC2 instance
+    Value: !GetAtt FrontendInstance.PublicIp
+
+  BackendInstanceIP:
+    Description: Public IP address of the Backend EC2 instance
+    Value: !GetAtt BackendInstance.PublicIp

@@ -1,11 +1,22 @@
 .mapboxgl-popup-close-button button {
-  
+   color:black;
    font-size: 35px;
    padding-top: 7px;
    padding-right: 5px;
 
   }
 
-  .mapboxgl-popup-tip {
+  .mapboxgl-popup-content {
+ 
+  background-color: aquamarine;
+
+  }
+
+  .mapboxgl-popup-content-wrapper {
+    padding: 1%;
+    background-color: black;
+  }
+
+  .on-hover .mapboxgl-popup-tip {
     display: none;
   }

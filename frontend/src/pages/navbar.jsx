@@ -34,7 +34,7 @@ const Navbar = () => {
       <div className="container mx-auto px-4 flex items-center justify-center">
         {/* Logo */}
         <button onClick={handleHomeClick} className="text-white  center font-semibold text-xl focus:outline-none">
-          TrailTorch
+         Retkilyhty
         </button>
 
       

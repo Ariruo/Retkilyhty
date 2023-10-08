@@ -25,20 +25,26 @@ const Coordinatecabin = ({ latitude, longitude }) => {
 
         const data = response.data;
 
-        
+        const currentTime = new Date();
+        const hours = currentTime.getHours().toString().padStart(2, '0');
+        const minutes = currentTime.getMinutes().toString().padStart(2, '0');
+        const seconds = currentTime.getSeconds().toString().padStart(2, '0');
+        const formattedTime = `${hours}:${minutes}`;
 
         setTemperature(data?.main?.temp || '');
         setDescription(data?.weather[0]?.description || '');
         setVisibility(data?.visibility || '');
         setWindSpeed(data?.wind?.speed || '');
-        setUpdatedAt(new Date().toLocaleTimeString()); // Set the current time as updated at
+        setUpdatedAt(formattedTime); // Set the current time as updated at
         setIcon(data?.weather[0]?.icon || '');
 
-        const sunriseTime = new Date(data?.sys?.sunrise * 1000);
-        setSunrise(sunriseTime.toLocaleTimeString());
+        
 
+        const sunriseTime = new Date(data?.sys?.sunrise * 1000);
+        setSunrise(sunriseTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
+        
         const sunsetTime = new Date(data?.sys?.sunset * 1000);
-        setSunset(sunsetTime.toLocaleTimeString());
+        setSunset(sunsetTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }));
 
         setError('');
       } catch (error) {
@@ -50,11 +56,17 @@ const Coordinatecabin = ({ latitude, longitude }) => {
     fetchWeatherByCoordinates();
   }, [latitude, longitude]);
 
+  const roundedTemperature = Math.round(temperature);
+  console.log(updatedAt)
+  const [hour, minute] = updatedAt.split(':');
+  console.log('Hour:', hour);
+  console.log('Minute:', minute);
+
   return (
-    <div className="flex flex-col items-center justify-center mt-[-30px] ">
+    <div className="flex flex-col items-center justify-center mt-[-20px] ">
       <WeatherIcon icon={icon} width={135} height={135} />
      
-      <h2 style={{ fontSize: '19px', fontWeight: 'bold', marginTop: '-20px', marginLeft: '10px' }}>{temperature} °C</h2>
+      <h2 style={{ fontSize: '19px', fontWeight: 'bold', marginTop: '-20px', marginLeft: '10px' }}>{roundedTemperature} °C</h2>
       
       
       <div className="flex justify-between p-4 mt-1">
@@ -81,7 +93,7 @@ const Coordinatecabin = ({ latitude, longitude }) => {
     </div>
   </div>
 </div>
-<p style={{ fontWeight: 'bold' }}>Klo {updatedAt}</p>
+
 {error && <p>{error}</p>}
     </div>
   );

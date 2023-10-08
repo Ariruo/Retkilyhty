@@ -138,7 +138,7 @@ router.get('/api/alllintutornipoints', async ctx => {
 });
 
 router.get('/api/allnahtavyyspoints', async ctx => {
-  await filterAndRespond(ctx, 'NÃ¤htÃ¤vyys');
+  await filterAndRespond(ctx, 'Nähtävyys');
 });
 
 router.get('/api/allluolapoints', async ctx => {

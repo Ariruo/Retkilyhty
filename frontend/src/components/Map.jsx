@@ -71,7 +71,11 @@ const [input, setInput] = useState("");
 const [showSearchResults, setShowSearchResults] = useState(false);
 const [hoveredPark, setHoveredPark] = useState(null);
 
-const [viewState, setViewState] = useState({longitude: 23.72018736381,latitude: 68.342938678895,zoom: 10,});
+const [viewState, setViewState] = useState({
+  longitude: 25.0, 
+  latitude: 64.5, 
+  zoom: 10, 
+});
 
 const [nuotiopaikkaData, loadingnuotipaikka] = useToggleAndFetchData(async () => await fetchData(nuotiopaikkaEndpoint));
 const [autiotupaData, loadingautiotupa] = useToggleAndFetchData(async () => await fetchData(autiotupaEndpoint));
@@ -157,6 +161,8 @@ const [showRuokailukatos, setShowRuokailukatos] = useState(false);
         setDistance(null);
       }
     };
+
+    let hoverTimeout; // To track the timeout
   
     useEffect(() => {
       // Calculate the distance when a park is selected, deselected, or hovered
@@ -164,14 +170,20 @@ const [showRuokailukatos, setShowRuokailukatos] = useState(false);
     }, [selectedPark, hoveredPark, userCoordinates]);
 
 
-const handleMarkerHover = (event, park) => {
-  event.preventDefault();
-  setHoveredPark(park);
-};
-
-const handleMarkerLeave = () => {
-  setHoveredPark(null);
-};
+    const handleMarkerHover = (event, park) => {
+      event.preventDefault();
+      clearTimeout(hoverTimeout); // Clear any existing timeout
+    
+      // Set a new timeout to delay toggling off the hover effect
+      hoverTimeout = setTimeout(() => {
+        setHoveredPark(park);
+      }, 300); // Adjust the delay (in milliseconds) as needed
+    };
+    
+    const handleMarkerLeave = () => {
+      clearTimeout(hoverTimeout); // Clear any existing timeout
+      setHoveredPark(null);
+    };
 
 const handleFindClosestPark = () => {
   if (FilteredData.length > 0) {
@@ -387,7 +399,7 @@ const handleResultClick = (park) => {
 
 
 {selectedPark && (
-  <div style={{ position: 'absolute', zIndex: 9999 }}>
+  
             <Popup 
             latitude={selectedPark.geometry.coordinates[1]}
             longitude={selectedPark.geometry.coordinates[0]}
@@ -398,15 +410,11 @@ const handleResultClick = (park) => {
             }}
             closeButton={true}
             className="mapboxgl-popup-close-button"
-            
-
-          
             >
-              <div >
+<div className="w-full h-full pt-4">
   <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
+  <h2 className="mt-1 text-center text-small font-semibold">({selectedPark.properties.tyyppi})</h2>
 </div>
-          <h2 className="mt-1 text-center text-small font-semibold">({selectedPark.properties.tyyppi})</h2>
-
 {distance && (
               <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
             )}
@@ -416,7 +424,7 @@ const handleResultClick = (park) => {
             />
             
           </Popup>
-          </div>)}
+       )}
 
 
 
@@ -487,7 +495,7 @@ setShowRuokailukatos={setShowRuokailukatos}
       closeButton={false}
       onClose={() => setHoveredPark(null)}
       anchor="bottom"
-      className="hidden md:block"
+      className="hidden md:block on-hover"
      
     >
       

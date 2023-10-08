@@ -9,7 +9,7 @@ function CustomMarker({ latitude, longitude, handleMarkerHover, iconUrl, handleM
       offsetTop={-20}
     >
       <button
-        className=""
+        className="w-9 h-15 inline-block relative"
         onMouseEnter={(e) => handleMarkerHover(e, park)}
         onMouseLeave={handleMarkerLeave}
         onClick={(e) => {
