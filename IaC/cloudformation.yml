@@ -6,6 +6,10 @@ Parameters:
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instances
     Type: AWS::EC2::KeyPair::KeyName
     ConstraintDescription: Must be the name of an existing EC2 KeyPair
+    
+  ElasticIp:
+    Description: Existing Elastic IP to associate with the Backend EC2 instance
+    Type: AWS::EC2::EIP::AllocationId
 
 Resources:
   FrontendInstance:
@@ -30,8 +34,6 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
       InstanceType: t2.micro
-      SecurityGroups:
-        - !Ref BackendSecurityGroup
       KeyName: !Ref KeyName
       ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
       UserData:
@@ -41,21 +43,10 @@ Resources:
           sudo amazon-linux-extras install docker -y
           sudo systemctl start docker
           sudo systemctl enable docker
-          sudo docker pull ariru/trailtorchbackend:backend
-          sudo docker run --name backend -p 9000:9000 ariru/trailtorchbackend:backend
-    DependsOn: BackendEIPAssociation
-
-  BackendEIP:
-    Type: AWS::EC2::EIP
-    Properties:
-      InstanceId: !Ref BackendInstance
-      AllocationId: eipalloc-0bb855b1c54df265a # Replace with your Elastic IP Allocation ID
-
-  BackendEIPAssociation:
-    Type: AWS::EC2::EIPAssociation
-    Properties:
-      InstanceId: !Ref BackendInstance
-      AllocationId: eipalloc-0bb855b1c54df265a # Replace with your Elastic IP Allocation ID
+          sudo docker pull ariru/trailtorchbackend:latest
+          sudo docker run --name backend -e APPID="29801f93bb782e8265636bf8520b3f31" -p 9000:9000 singlebackend:latest
+      SecurityGroups:
+        - !Ref BackendSecurityGroup
 
   FrontendSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -76,7 +67,7 @@ Resources:
     Properties:
       GroupDescription: Security Group for Backend EC2 Instance
       SecurityGroupIngress:
-        - SourceSecurityGroupId: !Ref FrontendSecurityGroup
+        - SourceSecurityGroupId: !GetAtt FrontendSecurityGroup.GroupId
           IpProtocol: tcp
           FromPort: 9000
           ToPort: 9000
