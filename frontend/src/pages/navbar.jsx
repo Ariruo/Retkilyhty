@@ -30,18 +30,22 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-orange-900 py-2 font-sans">
+    <nav className="bg-orange-900  font-sans fixed h-0 top-0 w-full z-10">
       <div className="container mx-auto px-4 flex items-center justify-center">
-        {/* Logo */}
-        <button onClick={handleHomeClick} className="text-white  center font-semibold text-xl focus:outline-none">
-         Retkilyhty
+        {/* Larger Logo with custom styling */}
+        <button onClick={handleHomeClick} className="text-white center font-semibold text-lg focus:outline-none">
+          <img
+            src="assets/logo_text.png"
+            alt="logo"
+            style={{
+              width: '90x', // Adjust the width as needed
+              height: '90px', // Adjust the height as needed
+              position: 'absolute',
+              paddingTop : '10px',
+            
+            }}
+          />
         </button>
-
-      
-       
-          
-          
-        
       </div>
     </nav>
   );

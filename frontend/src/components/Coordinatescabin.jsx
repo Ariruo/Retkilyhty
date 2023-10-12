@@ -57,10 +57,9 @@ const Coordinatecabin = ({ latitude, longitude }) => {
   }, [latitude, longitude]);
 
   const roundedTemperature = Math.round(temperature);
-  console.log(updatedAt)
+ 
   const [hour, minute] = updatedAt.split(':');
-  console.log('Hour:', hour);
-  console.log('Minute:', minute);
+
 
   return (
     <div className="flex flex-col items-center justify-center mt-[-20px] ">

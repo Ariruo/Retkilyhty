@@ -11,7 +11,7 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults }) => {
  
 
   const [searchBarOpen, setSearchBarOpen] = useState(false);
-  const [showSidebarLabel, setShowSidebarLabel] = useState(false);
+  
   const placeholderText = searchBarOpen ? "Etsi kohteita" : "";
   const iconSize = searchBarOpen ? "text-gray-500" : "text-gray-500 text-xl"; // Adjust the icon size as needed
 
@@ -29,13 +29,18 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults }) => {
   const handleChange = (value) => {
     setInput(value);
     filterData(value);
-    setShowSearchResults(value.length > 0);
+    
   };
 
   const toggleSearchBar = () => {
     if (!searchBarOpen) {
       // Clear the input field when the search bar is opened
       setInput("");
+      // Close the search bar and set showShowSearchResults to false
+  setSearchBarOpen(!searchBarOpen);
+
+  // Set showShowSearchResults to false when the search bar is closed
+  setShowSearchResults(!searchBarOpen);
     }
     
     // Close the search bar and set showShowSearchResults to false

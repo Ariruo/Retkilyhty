@@ -162,27 +162,23 @@ const [showRuokailukatos, setShowRuokailukatos] = useState(false);
       }
     };
 
-    let hoverTimeout; // To track the timeout
+   
   
     useEffect(() => {
       // Calculate the distance when a park is selected, deselected, or hovered
       calculateAndSetDistance(selectedPark || hoveredPark);
     }, [selectedPark, hoveredPark, userCoordinates]);
 
+    
 
     const handleMarkerHover = (event, park) => {
       event.preventDefault();
-      clearTimeout(hoverTimeout); // Clear any existing timeout
-    
-      // Set a new timeout to delay toggling off the hover effect
-      hoverTimeout = setTimeout(() => {
-        setHoveredPark(park);
-      }, 300); // Adjust the delay (in milliseconds) as needed
+     setHoveredPark(park);
+     
     };
     
     const handleMarkerLeave = () => {
-      clearTimeout(hoverTimeout); // Clear any existing timeout
-      setHoveredPark(null);
+     setHoveredPark(null);
     };
 
 const handleFindClosestPark = () => {
@@ -255,6 +251,10 @@ const handleResultClick = (park) => {
   setShowRuokailukatos(park.properties.tyyppi === 'Ruokailukatos');
 
 };
+
+useEffect(() => {
+  console.log(showSearchResults)
+}, [showSearchResults])
 
 
   const handleFindClosestParkbutton = () => {
@@ -381,14 +381,14 @@ const handleResultClick = (park) => {
 
  
   return (
-    <div>
+    <>
       <Map
         mapboxAccessToken={MapID}
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         
         mapStyle="mapbox://styles/mapbox/outdoors-v12"
-        style={{ width: "99,9vw", height: "94vh", position: "relative", top: 0, left: 0 }}
+        style={{ width: "99,9vw", height: "100vh", position: "relative", top: 0, left: 0 }}
         ref={mapRef}
         >
 
@@ -410,8 +410,9 @@ const handleResultClick = (park) => {
             }}
             closeButton={true}
             className="mapboxgl-popup-close-button"
+            style={{ zIndex: 9999 }} 
             >
-<div className="w-full h-full pt-4">
+<div className="w-full h-full pt-4 z-50">
   <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
   <h2 className="mt-1 text-center text-small font-semibold">({selectedPark.properties.tyyppi})</h2>
 </div>
@@ -452,7 +453,7 @@ onClick={handleFindClosestPark}
       
       />
 
-      <Sidebar
+<Sidebar
 setOpen={setOpen}
 open={open}
 toggleSidebar={toggleSidebar}
@@ -487,9 +488,7 @@ setShowRuokailukatos={setShowRuokailukatos}
 
 
 {hoveredPark && (
-  
-  
-    <Popup
+  <Popup
       latitude={hoveredPark.geometry.coordinates[1]}
       longitude={hoveredPark.geometry.coordinates[0]}
       closeButton={false}
@@ -854,6 +853,6 @@ setShowRuokailukatos={setShowRuokailukatos}
 
 
 
-    </div>
+    </>
   );
 }
