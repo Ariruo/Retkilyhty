@@ -1,52 +1,55 @@
+# Welcome to[www.retkilyhty.fi](http://www.retkilyhty.fi)!
 
+TrailTorch is a versatile application that empowers users to easily discover and explore various types of accommodations and points of interest in their area. Whether you're planning a weekend escape, an adventure to a reserved hut, or just curious about nearby attractions, this app has you covered.
 
-Welcome to the TrailTorch! This application allows users to easily find and explore the locations of cabins in their area and check weather info from each cabin. Whether you're planning a weekend getaway or just curious about the nearby cabins, this app has you covered. 
+**Note:** This project is an ongoing work in progress. We're actively developing additional features and improvements. Feel free to star the repository to stay updated!
 
-Note: This project is a work in progress. Additional features and improvements are actively being developed. Feel free to star the repository to stay updated!
 
 ## Table of Contents
 
 - [Features](#features)
 - [Technologies](#technologies)
 - [Installation](#installation)
-
-
+- [Hosting](#hosting)
+  
 ## Features
 
-- View a map with markers representing cabin locations.
-- Click on a marker to view more information about a specific cabin. You can also see the current weather information regarding the cabin
-- Search for cabins based on name.
-- Responsive design for a seamless experience on various devices.
+- View a dynamic map with markers representing a wide range of locations, including cabins, huts, reserved huts, on-shelter huts, attractions, and more.
+- Click on a marker to access detailed information about a specific location. You can also check the current weather information for that area.
+- Easily search for places by name.
+- Enjoy a responsive design for a seamless experience on various devices.
 
 ## Technologies
 
-This project is built using the following technologies:
+TrailTorch is powered by the following technologies:
 
-- [React](https://reactjs.org/): A JavaScript library for building user interfaces.
+- [React](https://reactjs.org/): A JavaScript library for crafting user interfaces.
 - [Node.js](https://nodejs.org/): A JavaScript runtime for server-side development.
-- [Mapbox](https://www.mapbox.com/): A mapping platform that provides APIs for location-based services.
-- [Tailwind CSS](https://tailwindcss.com/): A utility-first CSS framework for quickly styling your app.
+- [Mapbox](https://www.mapbox.com/): A mapping platform offering location-based service APIs.
+- [Tailwind CSS](https://tailwindcss.com/): A utility-first CSS framework for quick and stylish app styling.
 - [Vite](https://vitejs.dev/): A fast build tool for modern web applications.
 
-### Third-Party Cabin Data
+### Third-Party Data Sources
 
-The cabin data used in this app is sourced from [Tulikartta](https://www.tulikartta.fi/), a third-party API that provides cabin location information.
+TrailTorch leverages data from various sources, including the [Tulikartta](https://www.tulikartta.fi/) API, for cabin location information, and it integrates with [OpenWeatherMap](https://openweathermap.org/) for up-to-date weather details.
 
 ## Installation
 
-to make this app work you need both  [OpenWeatherMap](https://openweathermap.org/)  api key and [mapbox](https://www.mapbox.com/) api key.
+To use this app effectively, you'll need both an [OpenWeatherMap](https://openweathermap.org/) API key and a [Mapbox](https://www.mapbox.com/) API key.
 
-1. Clone the repository:
-2. navigate both frontend and backend and do npm i
-3. in frontend start the server npm run dev
-4. in backend npm start
+1. Clone the repository.
+2. Navigate to both the frontend and backend directories and execute `npm install`.
+3. In the frontend, start the server using `npm run dev`.
+4. In the backend, launch the application with `npm start`.
 
-Contributing
-Contributions are welcome! If you find any issues or have suggestions for improvements, feel free to submit a pull request. Make sure to follow the code of conduct when contributing.
+## Hosting
 
-License
+TrailTorch is hosted on AWS, ensuring reliable performance and accessibility to users across the globe.
+
+## Contributing
+
+Contributions are highly encouraged! If you discover any issues or have suggestions for improvements, please don't hesitate to submit a pull request. Be sure to follow the code of conduct when contributing.
+
+## License
+
 This project is licensed under the MIT License.
-
-
-
-
