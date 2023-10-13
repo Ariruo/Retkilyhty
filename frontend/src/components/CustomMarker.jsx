@@ -1,30 +1,30 @@
-import React from "react";
+import React, { useState } from "react";
 import { Marker } from "react-map-gl";
 
-function CustomMarker({ latitude, longitude, park, setSelectedPark, handleMarkerHover, handleMarkerLeave, iconUrl }) {
+function CustomMarker({ latitude, longitude, park, setSelectedPark, iconUrl, setHoveredPark, distance }) {
+  const [hovered, setHovered] = useState(false);
+
+  const handleMarkerClick = () => {
+    setSelectedPark(park);
+  };
+
   return (
-    <Marker
-      latitude={latitude}
-      longitude={longitude}
-      offsetTop={-20}
-    >
-      {/* Transparent div acting as a hitbox */}
+    <Marker latitude={latitude} longitude={longitude}>
       <div
-        className="invisible-hitbox"
-        
+        className="relative marker-container"
+        onMouseOver={() => {
+          setHovered(true);
+          setHoveredPark(park);
+        }}
+        onMouseOut={() => {
+          setHovered(false);
+          setHoveredPark(null);
+        }}
+        onClick={handleMarkerClick}
       >
-        <button
-          className="w-9 h-15 inline-block relative"
-          onMouseOver={(e) => handleMarkerHover(e, park)}
-        onMouseOut={handleMarkerLeave}
-          onClick={(e) => {
-            e.preventDefault();
-            setSelectedPark(park);
-          }}
-        >
-          <img src={iconUrl} alt="marker icon" style={{ width: '35px', height: '40px' }} />
-        </button>
+        <img src={iconUrl} alt="marker icon" style={{ width: "35px", height: "40px" }} />
       </div>
+
     </Marker>
   );
 }

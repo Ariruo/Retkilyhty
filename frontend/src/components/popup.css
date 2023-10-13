@@ -1,22 +1,27 @@
+
 .mapboxgl-popup-close-button button {
-   color:black;
-   font-size: 35px;
-   padding-top: 7px;
-   padding-right: 5px;
+  color:black;
+  font-size: 35px;
+  padding-top: 7px;
+  padding-right: 5px;
+ }
 
-  }
-
-  .mapboxgl-popup-content {
- 
-  background-color: aquamarine;
-
-  }
-
-  .mapboxgl-popup-content-wrapper {
-    padding: 1%;
-    background-color: black;
-  }
 
   .on-hover .mapboxgl-popup-tip {
     display: none;
-  }
+    }
+
+
+.marker-popup-content {
+ 
+  top: -120px; /* Adjust this value to position it precisely on top of the marker */
+  left: -105px; /* Adjust this value to position it precisely on top of the marker */
+
+
+ 
+  padding: 10px;
+  
+  z-index: 999;
+  width: 200px; /* Adjust this value as needed */
+      
+    }

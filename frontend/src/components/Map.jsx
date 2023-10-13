@@ -10,6 +10,8 @@ import FindClosestMarkerButton from "./FindClosestMarkerButton";
 import SidebarButton from "./SidebarButton";
 import './popup.css';
 
+
+
 import fetchData from "../api/fetch";
 import CustomMarker from "./CustomMarker";
 import useToggleAndFetchData from "../hooks/toggleAndFetchData";
@@ -167,13 +169,15 @@ const [showRuokailukatos, setShowRuokailukatos] = useState(false);
     useEffect(() => {
       // Calculate the distance when a park is selected, deselected, or hovered
       calculateAndSetDistance(selectedPark || hoveredPark);
-    }, [selectedPark, hoveredPark, userCoordinates]);
+    }, [selectedPark, hoveredPark, userCoordinates,]);
 
     
 
     const handleMarkerHover = (event, park) => {
       event.preventDefault();
-     setHoveredPark(park);
+      setHoveredPark(park);
+    
+     
      
     };
     
@@ -252,9 +256,7 @@ const handleResultClick = (park) => {
 
 };
 
-useEffect(() => {
-  console.log(showSearchResults)
-}, [showSearchResults])
+
 
 
   const handleFindClosestParkbutton = () => {
@@ -376,7 +378,9 @@ useEffect(() => {
 
 
    
-  
+  useEffect(() => {
+    console.log(distance);
+  }, [distance]);
   
 
  
@@ -388,7 +392,7 @@ useEffect(() => {
         onMove={evt => setViewState(evt.viewState)}
         
         mapStyle="mapbox://styles/mapbox/outdoors-v12"
-        style={{ width: "99,9vw", height: "100vh", position: "relative", top: 0, left: 0 }}
+        style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}
         ref={mapRef}
         >
 
@@ -410,7 +414,7 @@ useEffect(() => {
             }}
             closeButton={true}
             className="mapboxgl-popup-close-button"
-            style={{ zIndex: 9999 }} 
+            style={{ zIndex: 12 }} 
             >
 <div className="w-full h-full pt-4 z-50">
   <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
@@ -426,7 +430,6 @@ useEffect(() => {
             
           </Popup>
        )}
-
 
 
 <SearchBar 
@@ -484,29 +487,29 @@ showLahde={showLahde}
 setShowLahde={setShowLahde}
 showRuokailukatos={showRuokailukatos}
 setShowRuokailukatos={setShowRuokailukatos}
+
 />
 
 
 {hoveredPark && (
   <Popup
-      latitude={hoveredPark.geometry.coordinates[1]}
-      longitude={hoveredPark.geometry.coordinates[0]}
-      closeButton={false}
-      onClose={() => setHoveredPark(null)}
-      anchor="bottom"
-      className="hidden md:block on-hover"
-     
-    >
-      
-        <div className="font-semibold text-center ">{hoveredPark.properties.name}</div>
-        <div className="text-center text-xxs">({hoveredPark.properties.tyyppi})</div>
-        
-        {distance && (
-          <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
-        )}
-        
-    </Popup>
-  )}
+    latitude={hoveredPark.geometry.coordinates[1]}
+    longitude={hoveredPark.geometry.coordinates[0]}
+    closeButton={false}
+    className="marker-popup-content"
+
+  >
+    
+      <p className="font-semibold text-center">{hoveredPark.properties.name}</p>
+      <p className="text-center text-xxs">({hoveredPark.properties.tyyppi})</p>
+      {distance && (
+        <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
+      )}
+      {/* Add other information you want to display here */}
+   
+  </Popup>
+)}
+
 
 
 
@@ -529,7 +532,9 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={autiotupaIcon}
-           
+            distance={distance}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
             />
               
           );
@@ -553,10 +558,14 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={varaustupaIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
             />
             
           );
         })}
+
 
 
 
@@ -581,6 +590,9 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={nuotiopaikkaIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
             />
             
           );
@@ -605,6 +617,9 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={kotaIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
             />
             
           );
@@ -630,6 +645,9 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={laavuIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
             />
             
           );
@@ -654,6 +672,9 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={paivatupaIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
             />
             
           );
@@ -678,6 +699,9 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={kammiIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
             />
             
           );
@@ -702,6 +726,9 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={saunaIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
             />
             
           );
@@ -726,6 +753,9 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={lintutorniIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
             />
             
           );
@@ -750,6 +780,9 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={nahtavyysIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
             />
             
           );
@@ -774,6 +807,10 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={luolaIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
+           
             />
             
           );
@@ -798,6 +835,9 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={lahdeIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
             />
             
           );
@@ -822,6 +862,9 @@ setShowRuokailukatos={setShowRuokailukatos}
             handleMarkerLeave={handleMarkerLeave}
             park={cluster}
             iconUrl={ruokailukatosIcon}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance}
             />
             
           );

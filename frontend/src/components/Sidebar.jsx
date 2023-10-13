@@ -72,7 +72,7 @@ export default function Sidebar({
   return (
     <div className="flex">
       <div
-        className={`bg-white z-10 bg-opacity-80 fixed h-screen p-5 pt-8 border border-orange-800 ${sidebarWidth} rounded-r-3xl transform ${sidebarAnimation}`}
+        className={`bg-white z-20 bg-opacity-80 fixed h-screen p-5 pt-8 border border-orange-800 ${sidebarWidth} rounded-r-3xl transform ${sidebarAnimation}`}
       >
         <button className="absolute top-2 right-2 p-3 text-gray-600 cursor-pointer" onClick={toggleSidebar}>
           <FontAwesomeIcon icon={open ? faTimes : faBars} size="2x" />

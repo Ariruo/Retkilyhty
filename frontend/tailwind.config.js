@@ -17,6 +17,7 @@ export default {
       '2xl': '1536px',
      
       }, 
+      
       fontSize: {
         'xxs': '0.625rem', // Adjust the font size as needed
       },
