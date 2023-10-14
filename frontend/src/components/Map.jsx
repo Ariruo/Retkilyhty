@@ -63,9 +63,10 @@ const [distance, setDistance] = useState(null)
 const [userCoordinates, setUserCoordinates] = useState(null);
 const [closestParkIndex, setClosestParkIndex] = useState();
 
+const [isLargeScreen, setIsLargeScreen] = useState(false);
 
 
-const [showCabins, setShowCabins] = useState(true);
+
 
 const [FilteredData, setFilteredData] = useState([]);  
 const [selectedPark, setSelectedPark] = useState(null);
@@ -76,34 +77,34 @@ const [hoveredPark, setHoveredPark] = useState(null);
 const [viewState, setViewState] = useState({
   longitude: 25.0, 
   latitude: 64.5, 
-  zoom: 10, 
+  zoom: 5, 
 });
-
+const [showCabins, setShowCabins] = useState(true);
 const [nuotiopaikkaData, loadingnuotipaikka] = useToggleAndFetchData(async () => await fetchData(nuotiopaikkaEndpoint));
 const [autiotupaData, loadingautiotupa] = useToggleAndFetchData(async () => await fetchData(autiotupaEndpoint));
-const [showNuotipaikka, setShowNuotipaikka] = useState(false);
+const [showNuotipaikka, setShowNuotipaikka] = useState(true);
 const [varaustupaData, loadingvaraus ] = useToggleAndFetchData(async () => await fetchData(varaustupaEndpoint));
-const [showVaraustupas, setShowVaraustupas] = useState(false);
+const [showVaraustupas, setShowVaraustupas] = useState(true);
 const [kotaData, loadingkota] = useToggleAndFetchData(async () => await fetchData(kotaEndpoint));
-const [showKota, setShowKota] = useState(false);
+const [showKota, setShowKota] = useState(true);
 const [laavuData, loadinglaavu] = useToggleAndFetchData(async () => await fetchData(laavuEndpoint));
-const [showLaavu, setShowLaavu] = useState(false);
+const [showLaavu, setShowLaavu] = useState(true);
 const [paivatupaData, loadingpaivatupa] = useToggleAndFetchData(async () => await fetchData(paivatupaEndpoint));
-const [showPaivatupa, setShowPaivatupa] = useState(false);
+const [showPaivatupa, setShowPaivatupa] = useState(true);
 const [kammiData, loadingkammi] = useToggleAndFetchData(async () => await fetchData(kammiEndpoint));
-const [showKammi, setShowKammi] = useState(false);
+const [showKammi, setShowKammi] = useState(true);
 const [saunaData, loadingsauna] = useToggleAndFetchData(async () => await fetchData(saunaEndpoint));
-const [showSauna, setShowSauna] = useState(false);
+const [showSauna, setShowSauna] = useState(true);
 const [lintutorniData, loadinglintutorni] = useToggleAndFetchData(async () => await fetchData(lintutorniEndpoint));
-const [showLintutorni, setShowLintutorni] = useState(false);
+const [showLintutorni, setShowLintutorni] = useState(true);
 const [nahtavyysData, loadingnahtavyys] = useToggleAndFetchData(async () => await fetchData(nahtavyysEndpoint));
-const [showNahtavyys, setShowNahtavyys] = useState(false);
+const [showNahtavyys, setShowNahtavyys] = useState(true);
 const [luolaData, loadingluola] = useToggleAndFetchData(async () => await fetchData(luolaEndpoint));
-const [showLuola, setShowLuola] = useState(false);
+const [showLuola, setShowLuola] = useState(true);
 const [lahdeData, loadinglahde] = useToggleAndFetchData(async () => await fetchData(lahdeEndpoint));
-const [showLahde, setShowLahde] = useState(false);
+const [showLahde, setShowLahde] = useState(true);
 const [ruokailukatosData, loadingruokailukatos] = useToggleAndFetchData(async () => await fetchData(ruokailukatosEndpoint));
-const [showRuokailukatos, setShowRuokailukatos] = useState(false);
+const [showRuokailukatos, setShowRuokailukatos] = useState(true);
 
 
 
@@ -115,7 +116,7 @@ const [showRuokailukatos, setShowRuokailukatos] = useState(false);
         .toArray()
         .flat()
     : null;
-
+   
     const { clusters: varaustupa } = useCluster(varaustupaData, bounds, viewState.zoom);
     const { clusters: autiotupa } = useCluster(autiotupaData, bounds, viewState.zoom);
     const { clusters: nuotiopaikka } = useCluster(nuotiopaikkaData, bounds, viewState.zoom);
@@ -130,7 +131,20 @@ const [showRuokailukatos, setShowRuokailukatos] = useState(false);
     const { clusters: lahde } = useCluster(lahdeData, bounds, viewState.zoom);
     const { clusters: ruokailukatos } = useCluster(ruokailukatosData, bounds, viewState.zoom);
 
-
+    useEffect(() => {
+      function handleResize() {
+        setIsLargeScreen(window.innerWidth >= 768); // Adjust the screen width as needed
+      }
+  
+      // Initial check and event listener for window resize
+      handleResize();
+      window.addEventListener('resize', handleResize);
+  
+      // Clean up the event listener on component unmount
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
 
     useEffect(() => {
       // Get the user's real-time coordinates
@@ -163,7 +177,13 @@ const [showRuokailukatos, setShowRuokailukatos] = useState(false);
         setDistance(null);
       }
     };
+    const geoControlRef = useRef();
 
+    useEffect(() => {
+      // Activate as soon as the control is loaded
+      geoControlRef.current?.trigger();
+    }, [geoControlRef.current]);
+  
    
   
     useEffect(() => {
@@ -171,14 +191,13 @@ const [showRuokailukatos, setShowRuokailukatos] = useState(false);
       calculateAndSetDistance(selectedPark || hoveredPark);
     }, [selectedPark, hoveredPark, userCoordinates,]);
 
+
+    
     
 
     const handleMarkerHover = (event, park) => {
       event.preventDefault();
       setHoveredPark(park);
-    
-     
-     
     };
     
     const handleMarkerLeave = () => {
@@ -258,94 +277,54 @@ const handleResultClick = (park) => {
 
 
 
+const handleFindClosestParkbutton = () => {
+  if (userCoordinates) {
+    const allDataPoints = [
+      autiotupaData,
+      varaustupaData,
+      nuotiopaikkaData,
+      kotaData,
+      laavuData,
+      paivatupaData,
+      kammiData,
+      saunaData,
+      lintutorniData,
+      nahtavyysData,
+      luolaData,
+      lahdeData,
+      ruokailukatos,
+    ].flat();
 
-  const handleFindClosestParkbutton = () => {
-    if (userCoordinates) {
-      const allDataPoints = [
-        autiotupaData,
-        varaustupaData,
-        nuotiopaikkaData,
-        kotaData,
-        laavuData,
-        paivatupaData,
-        kammiData,
-        saunaData,
-        lintutorniData,
-        nahtavyysData,
-        luolaData,
-        lahdeData,
-        ruokailukatos,
-      ].flat();
-  
-      // Find the closest parks
-      const getClosestParks = (numParks) => {
-        const sortedParks = allDataPoints.slice().sort((a, b) => {
-          const distanceA = calculateDistance(
-            userCoordinates.latitude,
-            userCoordinates.longitude,
-            a.geometry.coordinates[1],
-            a.geometry.coordinates[0]
-          );
-          const distanceB = calculateDistance(
-            userCoordinates.latitude,
-            userCoordinates.longitude,
-            b.geometry.coordinates[1],
-            b.geometry.coordinates[0]
-          );
-          return distanceA - distanceB;
-        });
-  
-        return sortedParks.slice(0, numParks);
-      };
-  
-      if (!selectedPark) {
-        // If no park is selected, select the first one
-        const closestParks = getClosestParks(10); // Change 10 to the desired number of closest parks to display
-        if (closestParks.length > 0) {
-          const newSelectedPark = closestParks[0]; // Select the first park in the list
-          setSelectedPark(newSelectedPark);
-          setClosestParkIndex(0); // Initialize the index
-  
-          // Update the viewState to focus on the selected park
-         
-          mapRef.current.getMap().easeTo({
-            center: [
-              newSelectedPark.geometry.coordinates[0],
-              newSelectedPark.geometry.coordinates[1],
-            ],
-            zoom: 12,
-            essential: true,
-          });
-  
-          // Set showLaavu and showNuotipaikka states based on the park type
-          setShowLaavu(newSelectedPark.properties.tyyppi === 'Laavu');
-          setShowNuotipaikka(newSelectedPark.properties.tyyppi === 'Nuotiopaikka');
-          setShowCabins(newSelectedPark.properties.tyyppi === 'Autiotupa');
-          setShowVaraustupas(newSelectedPark.properties.tyyppi === 'Varaustupa');
-          setShowKota(newSelectedPark.properties.tyyppi === 'Kota');
-          setShowPaivatupa(newSelectedPark.properties.tyyppi === 'Päivätupa');
-          setShowKammi(newSelectedPark.properties.tyyppi === 'Kammi');
-          setShowSauna(newSelectedPark.properties.tyyppi === 'Sauna');
-          setShowLintutorni(newSelectedPark.properties.tyyppi === 'Lintutorni');
-          setShowNahtavyys(newSelectedPark.properties.tyyppi === 'Nähtävyys');
-          setShowLuola(newSelectedPark.properties.tyyppi === 'Luola');
-          setShowLahde(newSelectedPark.properties.tyyppi === 'Lähde');
-          setShowRuokailukatos(newSelectedPark.properties.tyyppi === 'Ruokailukatos');
-  
-       
-        }
-      } else {
-        // If a park is already selected, move to the next one in the list
-        const closestParks = getClosestParks(10); // Change 10 to the desired number of closest parks to display
-        const currentIndex = closestParkIndex;
-        const nextIndex = (currentIndex + 1) % closestParks.length; // Circular index
-        const newSelectedPark = closestParks[nextIndex]; // Select the next park in the list
-  
+    // Find the closest parks
+    const getClosestParks = (numParks) => {
+      const sortedParks = allDataPoints.slice().sort((a, b) => {
+        const distanceA = calculateDistance(
+          userCoordinates.latitude,
+          userCoordinates.longitude,
+          a.geometry.coordinates[1],
+          a.geometry.coordinates[0]
+        );
+        const distanceB = calculateDistance(
+          userCoordinates.latitude,
+          userCoordinates.longitude,
+          b.geometry.coordinates[1],
+          b.geometry.coordinates[0]
+        );
+        return distanceA - distanceB;
+      });
+
+      return sortedParks.slice(0, numParks);
+    };
+
+    if (!selectedPark) {
+      // If no park is selected, select the first one
+      const closestParks = getClosestParks(10);
+      if (closestParks.length > 0) {
+        const newSelectedPark = closestParks[0];
         setSelectedPark(newSelectedPark);
-        setClosestParkIndex(nextIndex); // Update the index
-  
+        setClosestParkIndex(0);
+
         // Update the viewState to focus on the selected park
-       
         mapRef.current.getMap().easeTo({
           center: [
             newSelectedPark.geometry.coordinates[0],
@@ -354,25 +333,121 @@ const handleResultClick = (park) => {
           zoom: 12,
           essential: true,
         });
-  
-        // Set show states based on the park type
-        setShowLaavu(newSelectedPark.properties.tyyppi === 'Laavu');
-        setShowNuotipaikka(newSelectedPark.properties.tyyppi === 'Nuotiopaikka');
-        setShowCabins(newSelectedPark.properties.tyyppi === 'Autiotupa');
-        setShowVaraustupas(newSelectedPark.properties.tyyppi === 'Varaustupa');
-        setShowKota(newSelectedPark.properties.tyyppi === 'Kota');
-        setShowPaivatupa(newSelectedPark.properties.tyyppi === 'Päivätupa');
-        setShowKammi(newSelectedPark.properties.tyyppi === 'Kammi');
-        setShowSauna(newSelectedPark.properties.tyyppi === 'Sauna');
-        setShowLintutorni(newSelectedPark.properties.tyyppi === 'Lintutorni');
-        setShowNahtavyys(newSelectedPark.properties.tyyppi === 'Nähtävyys');
-        setShowLuola(newSelectedPark.properties.tyyppi === 'Luola');
-        setShowLahde(newSelectedPark.properties.tyyppi === 'Lähde');
-        setShowRuokailukatos(newSelectedPark.properties.tyyppi === 'Ruokailukatos');
 
+        // Set the show state for the type of the newSelectedPark
+        switch (newSelectedPark.properties.tyyppi) {
+          case 'Laavu':
+            setShowLaavu(true);
+            break;
+          case 'Nuotiopaikka':
+            setShowNuotipaikka(true);
+            break;
+          case 'Autiotupa':
+            setShowCabins(true);
+            break;
+          case 'Varaustupa':
+            setShowVaraustupas(true);
+            break;
+          case 'Kota':
+            setShowKota(true);
+            break;
+          case 'Päivätupa':
+            setShowPaivatupa(true);
+            break;
+          case 'Kammi':
+            setShowKammi(true);
+            break;
+          case 'Sauna':
+            setShowSauna(true);
+            break;
+          case 'Lintutorni':
+            setShowLintutorni(true);
+            break;
+          case 'Nähtävyys':
+            setShowNahtavyys(true);
+            break;
+          case 'Luola':
+            setShowLuola(true);
+            break;
+          case 'Lähde':
+            setShowLahde(true);
+            break;
+          case 'Ruokailukatos':
+            setShowRuokailukatos(true);
+            break;
+          default:
+            break;
+        }
+      }
+    } else {
+      // If a park is already selected, move to the next one in the list
+      const closestParks = getClosestParks(10);
+      const currentIndex = closestParkIndex;
+      const nextIndex = (currentIndex + 1) % closestParks.length; // Circular index
+      const newSelectedPark = closestParks[nextIndex];
+      setSelectedPark(newSelectedPark);
+      setClosestParkIndex(nextIndex);
+
+      // Update the viewState to focus on the selected park
+      mapRef.current.getMap().easeTo({
+        center: [
+          newSelectedPark.geometry.coordinates[0],
+          newSelectedPark.geometry.coordinates[1],
+        ],
+        zoom: 12,
+        essential: true,
+      });
+
+      // Update only the show state for the type of the newSelectedPark
+      switch (newSelectedPark.properties.tyyppi) {
+        case 'Laavu':
+          setShowLaavu(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Nuotiopaikka':
+          setShowNuotipaikka(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Autiotupa':
+          setShowCabins(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Varaustupa':
+          setShowVaraustupas(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Kota':
+          setShowKota(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Päivätupa':
+          setShowPaivatupa(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Kammi':
+          setShowKammi(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Sauna':
+          setShowSauna(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Lintutorni':
+          setShowLintutorni(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Nähtävyys':
+          setShowNahtavyys(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Luola':
+          setShowLuola(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Lähde':
+          setShowLahde(!newSelectedPark.properties.suljettu);
+          break;
+        case 'Ruokailukatos':
+          setShowRuokailukatos(!newSelectedPark.properties.suljettu);
+          break;
+        default:
+          break;
       }
     }
-  };
+  }
+};
+
+
+
   
   
 
@@ -416,7 +491,7 @@ const handleResultClick = (park) => {
             className="mapboxgl-popup-close-button"
             style={{ zIndex: 12 }} 
             >
-<div className="w-full h-full pt-4 z-50">
+<div>
   <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
   <h2 className="mt-1 text-center text-small font-semibold">({selectedPark.properties.tyyppi})</h2>
 </div>
@@ -491,7 +566,7 @@ setShowRuokailukatos={setShowRuokailukatos}
 />
 
 
-{hoveredPark && (
+{hoveredPark && isLargeScreen && (
   <Popup
     latitude={hoveredPark.geometry.coordinates[1]}
     longitude={hoveredPark.geometry.coordinates[0]}
@@ -519,7 +594,7 @@ setShowRuokailukatos={setShowRuokailukatos}
 
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={autiotupaData} backgroundColor="#fd0303" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={autiotupaData} mapRef={mapRef} viewState={viewState} setViewState={setViewState} backgroundColor="#fd0303" />
               );
             }
           return (
@@ -545,7 +620,7 @@ setShowRuokailukatos={setShowRuokailukatos}
           const {cluster: isCluster} = cluster.properties;
                   if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={varaustupaData} backgroundColor="#ff4500 " />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} mapRef={mapRef} points={varaustupaData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -577,7 +652,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nuotiopaikkaData} backgroundColor="#ff4500 " />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} mapRef={mapRef} points={nuotiopaikkaData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -604,7 +679,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kotaData} backgroundColor="#ff4500 " />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} mapRef={mapRef} points={kotaData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -632,7 +707,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={laavuData} backgroundColor='#ff4500 ' />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} mapRef={mapRef} points={laavuData} backgroundColor='#ff4500 ' />
               );
             }
           return (
@@ -659,7 +734,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={paivatupaData} backgroundColor='#ff4500 ' />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} mapRef={mapRef} points={paivatupaData} backgroundColor='#ff4500 ' />
               );
             }
           return (
@@ -686,7 +761,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={kammiData} backgroundColor='#ff4500 ' />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} mapRef={mapRef} points={kammiData} backgroundColor='#ff4500 ' />
               );
             }
           return (
@@ -713,7 +788,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={saunaData} backgroundColor="#ff4500 " />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} mapRef={mapRef} points={saunaData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -740,7 +815,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lintutorniData} backgroundColor="#ff4500 " />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} mapRef={mapRef} points={lintutorniData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -767,7 +842,7 @@ setShowRuokailukatos={setShowRuokailukatos}
       
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={nahtavyysData} backgroundColor="#ff4500 " /> 
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} mapRef={mapRef} points={nahtavyysData} backgroundColor="#ff4500 " /> 
               );
             }
           return (
@@ -794,7 +869,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={luolaData} backgroundColor="#ff4500 " />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} mapRef={mapRef} points={luolaData} backgroundColor="#ff4500 " />
               );
             }
           return (
@@ -822,7 +897,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={lahdeData} backgroundColor="#ff4500" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} mapRef={mapRef} points={lahdeData} backgroundColor="#ff4500" />
               );
             }
           return (
@@ -849,7 +924,7 @@ setShowRuokailukatos={setShowRuokailukatos}
         
           if (isCluster) {
             return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={ruokailukatosData} backgroundColor="#ff4500" />
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster}  mapRef={mapRef} points={ruokailukatosData} backgroundColor="#ff4500" />
               );
             }
           return (
@@ -890,6 +965,9 @@ setShowRuokailukatos={setShowRuokailukatos}
         showUserHeading={true}
         showAccuracyCircle={false}
         showUserLocation={true}
+        ref={geoControlRef}
+        
+        
         />
       </Map>
 

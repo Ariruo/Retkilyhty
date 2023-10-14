@@ -33,7 +33,7 @@ export default function Sidebar({
   showRuokailukatos,
   setShowRuokailukatos,
 }) {
-  const [isChecked, setIsChecked] = useState(false);
+  const [isChecked, setIsChecked] = useState(true);
 
   const toggleAll = () => {
     setIsChecked(!isChecked);

@@ -10,8 +10,8 @@ function CustomMarker({ latitude, longitude, park, setSelectedPark, iconUrl, set
 
   return (
     <Marker latitude={latitude} longitude={longitude}>
-      <div
-        className="relative marker-container"
+      <button
+        className="relative marker-container hover:scale-110 "
         onMouseOver={() => {
           setHovered(true);
           setHoveredPark(park);
@@ -23,7 +23,7 @@ function CustomMarker({ latitude, longitude, park, setSelectedPark, iconUrl, set
         onClick={handleMarkerClick}
       >
         <img src={iconUrl} alt="marker icon" style={{ width: "35px", height: "40px" }} />
-      </div>
+      </button>
 
     </Marker>
   );
