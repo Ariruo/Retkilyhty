@@ -1,6 +1,6 @@
 # Welcome to [Retkilyhty](http://www.retkilyhty.fi)!
 
-TrailTorch is a versatile application that empowers users to easily discover and explore various types of accommodations and points of interest in their area. Whether you're planning a weekend escape, an adventure to a reserved hut, or just curious about nearby attractions, this app has you covered.
+Retkilyhty is a versatile application that empowers users to easily discover and explore various types of accommodations and points of interest in their area. Whether you're planning a weekend escape, an adventure to a reserved hut, or just curious about nearby attractions, this app has you covered.
 
 **Note:** This project is an ongoing work in progress. We're actively developing additional features and improvements. Feel free to star the repository to stay updated!
 
