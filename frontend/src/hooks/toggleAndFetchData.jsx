@@ -10,6 +10,7 @@ function useFetchData(fetchDataFn) {
       if (data.length === 0) { // Check if data has not been fetched yet
         try {
           const fetchedData = await fetchDataFn();
+          
           const preparedData = fetchedData.map((feature) => ({
             type: "Feature",
             properties: {
@@ -17,7 +18,7 @@ function useFetchData(fetchDataFn) {
               name: feature.properties.name,
               tyyppi: feature.properties.tyyppi,
               maakunta: feature.properties.maakunta,
-              kunta: feature.properties.kunta,
+           
               coordinates: feature.geometry.coordinates,
             },
             geometry: {
@@ -28,6 +29,7 @@ function useFetchData(fetchDataFn) {
               ],
             },
           }));
+          
           setData(preparedData);
           setLoading(false);
         } catch (error) {

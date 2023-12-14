@@ -1,4 +1,5 @@
 import React from 'react';
+import logoIcon from '../../assets/Logo_text.png'
 
 const Navbar = () => {
   const handleRefresh = () => {
@@ -7,7 +8,7 @@ const Navbar = () => {
 
   return (
     <img
-      src="assets/logo_text.png"
+      src={logoIcon}
       alt="logo"
       className="w-24 h-24 rounded-full z-10 bg-white pt-3 bg-opacity-80 border border-orange-800"
       style={{

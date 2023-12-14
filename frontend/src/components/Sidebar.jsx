@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+import { IconButton } from '@mui/material';
+import { FaTimes } from 'react-icons/fa';
 
 export default function Sidebar({
   open,
@@ -74,9 +76,26 @@ export default function Sidebar({
       <div
         className={`bg-white z-20 bg-opacity-80 fixed h-screen p-5 pt-8 border border-orange-800 ${sidebarWidth} rounded-r-3xl transform ${sidebarAnimation}`}
       >
-        <button className="absolute top-2 right-2 p-3 text-gray-600 cursor-pointer" onClick={toggleSidebar}>
-          <FontAwesomeIcon icon={open ? faTimes : faBars} size="2x" />
-        </button>
+<IconButton
+  className="absolute top-1 right-1 p-2 cursor-pointer"
+  onClick={toggleSidebar}
+  sx={{
+    position: 'absolute',
+    
+    color: 'black',
+    top: '4px',
+    right: '-0px',
+    zIndex: '1',
+    '&:hover': {
+      transform: 'scale(0.9)',
+    },
+    '& .MuiSvgIcon-root': {
+      fontWeight: 'bold', // Adjust the icon's weight
+    },
+  }}
+>
+<FaTimes className="h-6 w-6 text-gray-700 hover:text-gray-900" />
+</IconButton>
         {open && (
           <label className={`relative inline-flex items-center cursor-pointer top-7 `}>
             <input

@@ -1,32 +1,32 @@
 
 .mapboxgl-popup-close-button button {
-  color:black;
-  font-size: 35px;
-  padding-top: 7px;
-  padding-right: 5px;
- }
-
-
-
-  .on-hover .mapboxgl-popup-tip {
-    display: none;
-    }
-
-
-    .marker-popup-content {
+    color:black;
+    font-size: 35px;
+    padding-top: 7px;
+    padding-right: 5px;
+   }
+  
+  
+  
+    .on-hover .mapboxgl-popup-tip {
       display: none;
-    }
-    
-    /* Media query for large devices (adjust the screen width as needed) */
-    @media screen and (min-width: 768px) {
-      .marker-popup-content {
-        display: block;
-        top: -120px; /* Adjust this value to position it precisely on top of the marker */
-        left: -105px; /* Adjust this value to position it precisely on top of the marker */
-        padding: 10px;
-        z-index: 19;
-        width: 200px; /* Adjust this value as needed */
-        
-        
       }
-    }
+  
+  
+      .marker-popup-content {
+        display: none;
+      }
+      
+      /* Media query for large devices (adjust the screen width as needed) */
+      @media screen and (min-width: 768px) {
+        .marker-popup-content {
+          display: block;
+          top: -120px; /* Adjust this value to position it precisely on top of the marker */
+          left: -105px; /* Adjust this value to position it precisely on top of the marker */
+          padding: 10px;
+          z-index: 19;
+          width: 200px; /* Adjust this value as needed */
+          
+          
+        }
+      }

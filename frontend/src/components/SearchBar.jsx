@@ -15,11 +15,27 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults }) => {
   const placeholderText = searchBarOpen ? "Etsi kohteita" : "";
   const iconSize = searchBarOpen ? "text-gray-500" : "text-gray-500 text-xl"; // Adjust the icon size as needed
 
+  
   const filterData = async (value) => {
     try {
-      const response = await axios.get(`${baseUrl}/api/all?search=${value}`);
-
-      setResults(response.data.features);
+      const response = await axios.get(`${baseUrl}/api/searchbyname/${value}`);
+      const fetchedData = response.data; // Assuming the response contains the fetched data
+  
+      const preparedData = fetchedData.map(item => ({
+        type: 'Feature',
+        properties: {
+          cluster: false,
+          name: item.name,
+          tyyppi: item.tyyppi,
+          maakunta: item.maakunta,
+        },
+        geometry: {
+          type: 'Point',
+          coordinates: [parseFloat(item.latitude), parseFloat(item.longitude)],
+        },
+      }));
+  
+      setResults(preparedData); // Update the results with the transformed data
       setShowSearchResults(value.length > 0);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -69,7 +85,7 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults }) => {
 
   return (
     <div
-      className={`input-wrapper fixed left-10 sm:left-56 first-line:left-10  sm:top-20 pb-2  z-9 h-12 border rounded-md  border-orange-800 shadow-md bg-white top-60 transition-width duration-300 ${
+      className={`input-wrapper fixed left-10 sm:left-72 first-line:  sm:top-20 pb-2  z-9 h-12 border rounded-md  border-orange-800 shadow-md bg-white top-64 transition-width duration-300 ${
         searchBarOpen ? "w-64" : "w-12"
       }`}
       ref={searchBarRef}

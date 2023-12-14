@@ -1,5 +1,9 @@
 import React, { useState, useEffect, lazy, useRef  } from "react";
-import Map, { Marker, Popup, Source, Layer, NavigationControl,GeolocateControl,} from "react-map-gl";
+
+import Map, { Marker, Popup, GeolocateControl,} from "react-map-gl";
+import { IconButton } from '@mui/material'; 
+import { FaTimes } from 'react-icons/fa'; 
+import './popup.css';
 
 import Coordinatecabin from "./Coordinatescabin";
 import getUserCoordinates from "../service/getUserCoordinates";
@@ -8,13 +12,17 @@ import SearchBar from "./Searchbar";
 import SearchResultList from "./SearchResultList";
 import FindClosestMarkerButton from "./FindClosestMarkerButton";
 import SidebarButton from "./SidebarButton";
-import './popup.css';
+import Addlocation from "./AddLocation";
+
 
 
 
 import fetchData from "../api/fetch";
+import useFetchData2 from "../hooks/toggleAndFetchData2";
+
+
 import CustomMarker from "./CustomMarker";
-import useToggleAndFetchData from "../hooks/toggleAndFetchData";
+
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import CustomClusterMarker from "./CustomClusterMarker";
@@ -33,6 +41,7 @@ import nahtavyysIcon from '../../assets/nähtävyys.png'
 import luolaIcon from '../../assets/luola.png'
 import lahdeIcon from '../../assets/lähde.png'
 import ruokailukatosIcon from '../../assets/ruokailukatos.png'
+import Addlocationbutton from "./AddLocationButton";
 
 
 
@@ -42,19 +51,19 @@ export default function Mapp() {
 const MapID =  import.meta.env.VITE_MAPID || import.meta.env.VITE_MAPBOX_TOKEN 
 const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000"; 
 
-const nuotiopaikkaEndpoint = `${baseUrl}/api/allnuotiopaikkapoints`;
-const autiotupaEndpoint = `${baseUrl}/api/allcabinspoints`;
-const varaustupaEndpoint = `${baseUrl}/api/allvaraustupapoints`;
-const kotaEndpoint = `${baseUrl}/api/allkotapoints`;
-const laavuEndpoint = `${baseUrl}/api/alllaavupoints`;
-const paivatupaEndpoint = `${baseUrl}/api/allpaivatupapoints`;
-const kammiEndpoint = `${baseUrl}/api/allkammipoints`;
-const saunaEndpoint = `${baseUrl}/api/allsaunapoints`;
-const lintutorniEndpoint = `${baseUrl}/api/alllintutornipoints`;
-const nahtavyysEndpoint = `${baseUrl}/api/allnahtavyyspoints`;
-const luolaEndpoint = `${baseUrl}/api/allluolapoints`;
-const lahdeEndpoint = `${baseUrl}/api/alllahdepoints`;
-const ruokailukatosEndpoint = `${baseUrl}/api/allruokailukatospoints`;
+const nuotiopaikkaEndpoint = `${baseUrl}/api/nuotiopaikka`;
+const autiotupaEndpoint = `${baseUrl}/api/autiotupa`;
+const varaustupaEndpoint = `${baseUrl}/api/varaustupa`;
+const kotaEndpoint = `${baseUrl}/api/kota`;
+const laavuEndpoint = `${baseUrl}/api/laavu`;
+const paivatupaEndpoint = `${baseUrl}/api/päivätupa`;
+const kammiEndpoint = `${baseUrl}/api/kammi`;
+const saunaEndpoint = `${baseUrl}/api/sauna`;
+const lintutorniEndpoint = `${baseUrl}/api/lintutorni`;
+const nahtavyysEndpoint = `${baseUrl}/api/nähtävyys`;
+const luolaEndpoint = `${baseUrl}/api/luola`;
+const lahdeEndpoint = `${baseUrl}/api/lähde`;
+const ruokailukatosEndpoint = `${baseUrl}/api/ruokailukatos`;
 
  
 
@@ -62,6 +71,7 @@ const [open, setOpen] = useState(false);
 const [distance, setDistance] = useState(null)
 const [userCoordinates, setUserCoordinates] = useState(null);
 const [closestParkIndex, setClosestParkIndex] = useState();
+const [showAddLocation, setShowAddLocation] = useState(false);
 
 const [isLargeScreen, setIsLargeScreen] = useState(false);
 
@@ -80,32 +90,44 @@ const [viewState, setViewState] = useState({
   zoom: 5, 
 });
 const [showCabins, setShowCabins] = useState(true);
-const [nuotiopaikkaData, loadingnuotipaikka] = useToggleAndFetchData(async () => await fetchData(nuotiopaikkaEndpoint));
-const [autiotupaData, loadingautiotupa] = useToggleAndFetchData(async () => await fetchData(autiotupaEndpoint));
+const [nuotiopaikkaData, loadingnuotipaikka] = useFetchData2(async () => await fetchData(nuotiopaikkaEndpoint));
+const [autiotupaData, loadingautiotupa] = useFetchData2(async () => await fetchData(autiotupaEndpoint));
 const [showNuotipaikka, setShowNuotipaikka] = useState(true);
-const [varaustupaData, loadingvaraus ] = useToggleAndFetchData(async () => await fetchData(varaustupaEndpoint));
+const [varaustupaData, loadingvaraus ] = useFetchData2(async () => await fetchData(varaustupaEndpoint));
 const [showVaraustupas, setShowVaraustupas] = useState(true);
-const [kotaData, loadingkota] = useToggleAndFetchData(async () => await fetchData(kotaEndpoint));
+const [kotaData, loadingkota] = useFetchData2(async () => await fetchData(kotaEndpoint));
 const [showKota, setShowKota] = useState(true);
-const [laavuData, loadinglaavu] = useToggleAndFetchData(async () => await fetchData(laavuEndpoint));
+const [laavuData, loadinglaavu] = useFetchData2(async () => await fetchData(laavuEndpoint));
 const [showLaavu, setShowLaavu] = useState(true);
-const [paivatupaData, loadingpaivatupa] = useToggleAndFetchData(async () => await fetchData(paivatupaEndpoint));
+const [paivatupaData, loadingpaivatupa] = useFetchData2(async () => await fetchData(paivatupaEndpoint));
 const [showPaivatupa, setShowPaivatupa] = useState(true);
-const [kammiData, loadingkammi] = useToggleAndFetchData(async () => await fetchData(kammiEndpoint));
+const [kammiData, loadingkammi] = useFetchData2(async () => await fetchData(kammiEndpoint));
 const [showKammi, setShowKammi] = useState(true);
-const [saunaData, loadingsauna] = useToggleAndFetchData(async () => await fetchData(saunaEndpoint));
+const [saunaData, loadingsauna] = useFetchData2(async () => await fetchData(saunaEndpoint));
 const [showSauna, setShowSauna] = useState(true);
-const [lintutorniData, loadinglintutorni] = useToggleAndFetchData(async () => await fetchData(lintutorniEndpoint));
+const [lintutorniData, loadinglintutorni] = useFetchData2(async () => await fetchData(lintutorniEndpoint));
 const [showLintutorni, setShowLintutorni] = useState(true);
-const [nahtavyysData, loadingnahtavyys] = useToggleAndFetchData(async () => await fetchData(nahtavyysEndpoint));
+const [nahtavyysData, loadingnahtavyys] = useFetchData2(async () => await fetchData(nahtavyysEndpoint));
 const [showNahtavyys, setShowNahtavyys] = useState(true);
-const [luolaData, loadingluola] = useToggleAndFetchData(async () => await fetchData(luolaEndpoint));
+const [luolaData, loadingluola] = useFetchData2(async () => await fetchData(luolaEndpoint));
 const [showLuola, setShowLuola] = useState(true);
-const [lahdeData, loadinglahde] = useToggleAndFetchData(async () => await fetchData(lahdeEndpoint));
+const [lahdeData, loadinglahde] = useFetchData2(async () => await fetchData(lahdeEndpoint));
 const [showLahde, setShowLahde] = useState(true);
-const [ruokailukatosData, loadingruokailukatos] = useToggleAndFetchData(async () => await fetchData(ruokailukatosEndpoint));
+const [ruokailukatosData, loadingruokailukatos] = useFetchData2(async () => await fetchData(ruokailukatosEndpoint));
 const [showRuokailukatos, setShowRuokailukatos] = useState(true);
 
+
+
+
+
+  
+ 
+  
+  
+
+const toggleAddLocation = () => {
+  setShowAddLocation(!showAddLocation); // Toggle the visibility state
+};
 
 
     const mapRef = useRef();
@@ -234,46 +256,75 @@ const toggleSidebar = () => {
   setOpen(!open);
 };
 
+
+
+
 const handleResultClick = (park) => {
-  // Swap coordinates and create a new park object
-  const swappedPark = {
+  const newSelectedPark = {
     ...park,
     geometry: {
       type: park.geometry.type,
-      coordinates: [park.geometry.coordinates[1], park.geometry.coordinates[0]],
+      coordinates: [park.geometry.coordinates[0], park.geometry.coordinates[1]],
     },
   };
 
-  setSelectedPark(swappedPark); // Set the park with swapped coordinates
+  setSelectedPark(newSelectedPark);
   setInput("");
   setShowSearchResults(false);
 
-  // Calculate the new zoom level
-  const newZoom = viewState.zoom + 1; // You can adjust the value as needed
+  const newZoom = viewState.zoom + 1;
 
-  // Use map.flyTo to smoothly transition to the new viewState with a zooming effect
   mapRef.current.getMap().easeTo({
-    center: [park.geometry.coordinates[1], park.geometry.coordinates[0]], // Set the new center
-    zoom: newZoom, // Use the updated zoom level
-    essential: true, // This ensures the animation is treated as an essential gesture
-     
+    center: [newSelectedPark.geometry.coordinates[0], newSelectedPark.geometry.coordinates[1]],
+    zoom: newZoom,
+    essential: true,
   });
-// Set showCabins to true when handling the result click
-  setShowLaavu(park.properties.tyyppi === 'Laavu');
-  setShowNuotipaikka(park.properties.tyyppi === 'Nuotiopaikka');
-  setShowCabins(park.properties.tyyppi === 'Autiotupa');
-  setShowVaraustupas(park.properties.tyyppi === 'Varaustupa');
-  setShowKota(park.properties.tyyppi === 'Kota');
-  setShowPaivatupa(park.properties.tyyppi === 'Päivätupa');
-  setShowKammi(park.properties.tyyppi === 'Kammi');
-  setShowSauna(park.properties.tyyppi === 'Sauna');
-  setShowLintutorni(park.properties.tyyppi === 'Lintutorni');
-  setShowNahtavyys(park.properties.tyyppi === 'Nähtävyys');
-  setShowLuola(park.properties.tyyppi === 'Luola');
-  setShowLahde(park.properties.tyyppi === 'Lähde');
-  setShowRuokailukatos(park.properties.tyyppi === 'Ruokailukatos');
 
+  switch (newSelectedPark.properties.tyyppi) {
+    case 'Laavu':
+      setShowLaavu(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Nuotiopaikka':
+      setShowNuotipaikka(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Autiotupa':
+      setShowCabins(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Varaustupa':
+      setShowVaraustupas(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Kota':
+      setShowKota(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Päivätupa':
+      setShowPaivatupa(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Kammi':
+      setShowKammi(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Sauna':
+      setShowSauna(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Lintutorni':
+      setShowLintutorni(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Nähtävyys':
+      setShowNahtavyys(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Luola':
+      setShowLuola(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Lähde':
+      setShowLahde(!newSelectedPark.properties.suljettu);
+      break;
+    case 'Ruokailukatos':
+      setShowRuokailukatos(!newSelectedPark.properties.suljettu);
+      break;
+    default:
+      break;
+  }
 };
+
 
 
 
@@ -449,13 +500,11 @@ const handleFindClosestParkbutton = () => {
 
 
   
-  
+
 
 
    
-  useEffect(() => {
-    console.log(distance);
-  }, [distance]);
+ 
   
 
  
@@ -478,33 +527,49 @@ const handleFindClosestParkbutton = () => {
 
 
 {selectedPark && (
+  <Popup 
+    latitude={selectedPark.geometry.coordinates[1]}
+    longitude={selectedPark.geometry.coordinates[0]}
+    anchor="bottom"
+    closeOnClick={false}
+    onClose={() => {
+      setSelectedPark(null);
+    }}
+    closeButton={false}
   
-            <Popup 
-            latitude={selectedPark.geometry.coordinates[1]}
-            longitude={selectedPark.geometry.coordinates[0]}
-            anchor="bottom"
-            closeOnClick={false}
-            onClose={() => {
-              setSelectedPark(null);
-            }}
-            closeButton={true}
-            className="mapboxgl-popup-close-button"
-            style={{ zIndex: 12 }} 
-            >
-<div>
-  <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
-  <h2 className="mt-1 text-center text-small font-semibold">({selectedPark.properties.tyyppi})</h2>
-</div>
-{distance && (
-              <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
-            )}
-            <Coordinatecabin
-            latitude={selectedPark.geometry.coordinates[1]}
-            longitude={selectedPark.geometry.coordinates[0]}
-            />
-            
-          </Popup>
-       )}
+
+  >
+    <IconButton
+  aria-label="close"
+  onClick={() => {
+    setSelectedPark(null);
+  }}
+  sx={{
+    position: 'absolute',
+    top: '-4px',
+    right: '-5px',
+    zIndex: '1',
+    '&:hover': {
+      transform: 'scale(0.9)', // Reduce the size when hovered
+    },
+  }}
+>
+  <FaTimes className="h-6 w-6 text-gray-700 hover:text-gray-900" />
+</IconButton>
+
+    <div style={{ marginTop: '1rem' }} >
+      <h2 className="text-center text-2xl font-semibold">{selectedPark.properties.name}</h2>
+      <h2 className="mt-1 text-center text-small font-semibold">({selectedPark.properties.tyyppi})</h2>
+    </div>
+    {distance && (
+      <p className="mt-1 text-center font-semibold">{distance.toFixed(2)} Km</p>
+    )}
+    <Coordinatecabin
+      latitude={selectedPark.geometry.coordinates[1]}
+      longitude={selectedPark.geometry.coordinates[0]}
+    />
+  </Popup>
+)}
 
 
 <SearchBar 
@@ -566,6 +631,23 @@ setShowRuokailukatos={setShowRuokailukatos}
 />
 
 
+<div className="relative">
+      <Addlocationbutton toggleAddLocation={toggleAddLocation} showAddLocation={showAddLocation} />
+
+      {showAddLocation && (
+        <Addlocation
+          initialLongitude={viewState.longitude}
+          initialLatitude={viewState.latitude}
+          mapRef={mapRef}
+        />
+      )}
+    </div>
+  
+
+  
+
+
+
 {hoveredPark && isLargeScreen && (
   <Popup
     latitude={hoveredPark.geometry.coordinates[1]}
@@ -600,8 +682,8 @@ setShowRuokailukatos={setShowRuokailukatos}
           return (
             <CustomMarker
             key={index}
-            latitude={latitude}
-            longitude={longitude}
+            latitude={longitude}
+            longitude={latitude}
             handleMarkerHover={handleMarkerHover}
             setSelectedPark={setSelectedPark}
             handleMarkerLeave={handleMarkerLeave}
@@ -640,6 +722,35 @@ setShowRuokailukatos={setShowRuokailukatos}
             
           );
         })}
+
+{showCabins && autiotupa.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster} points={autiotupaData} mapRef={mapRef} viewState={viewState} setViewState={setViewState} backgroundColor="#fd0303" />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+            handleMarkerHover={handleMarkerHover}
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster}
+            iconUrl={autiotupaIcon}
+            distance={distance}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            />
+              
+          );
+        })}
+
+    
 
 
 
@@ -969,6 +1080,9 @@ setShowRuokailukatos={setShowRuokailukatos}
         
         
         />
+
+
+
       </Map>
 
 

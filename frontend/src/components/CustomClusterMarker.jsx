@@ -42,7 +42,7 @@ function CustomClusterMarker({ cluster, backgroundColor, points, onClusterClick,
     
 
 
-    console.log(cluster)
+   
     return (
       <Marker latitude={latitude} longitude={longitude}>
         <div style={style} onClick={handleClusterClick}>
