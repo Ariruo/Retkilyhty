@@ -22,9 +22,9 @@ build_and_push_backend:
 
   script:
   - docker-compose -f docker-compose-prod.yml build # Build and start services
-  - docker tag postgis/postgis ariru/trailtorchbackend:postgis-latest  # Tag postgis image
+  - docker tag backend-postgres ariru/trailtorchbackend:postgis-latest  # Tag postgis image
   - docker push ariru/trailtorchbackend:postgis-latest  # Push postgis image to registry
-  - docker tag ariru/trailtorchbackend:backend-latest ariru/trailtorchbackend:latest  # Tag backend image
+  - docker tag backend-backend ariru/trailtorchbackend:latest  # Tag backend image
   - docker push ariru/trailtorchbackend:latest  # Push backend image to registry
   only:
     - main 
@@ -44,4 +44,4 @@ build_and_push_frontend:
     - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile.frontend .
     - docker push ariru/trailtorchfrontend:latest
   only:
-    - main
+    - main 
