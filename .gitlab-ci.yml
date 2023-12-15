@@ -27,7 +27,7 @@ build_and_push_backend:
   - docker tag ariru/trailtorchbackend:backend-latest ariru/trailtorchbackend:latest  # Tag backend image
   - docker push ariru/trailtorchbackend:latest  # Push backend image to registry
   only:
-    - main
+    - main 
 
 
 build_and_push_frontend:
