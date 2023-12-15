@@ -18,6 +18,7 @@ build_and_push_backend:
     - echo "POSTGRES_HOST=$POSTGRES_HOST" >> .env
     - echo "APPID=$APPID" >> .env
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+    - cd backend
   script:
     - docker-compose -f docker-compose-prod.yml build
     - docker tag postgis/postgis:latest ariru/trailtorchbackend:postgis-latest
