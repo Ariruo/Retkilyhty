@@ -11,17 +11,18 @@ build_and_push_backend:
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
-    - cd backend
-    # Use environment variables from GitLab CI/CD settings
-    - echo "POSTGRES_DB=$POSTGRES_DB" >> backend.env
-    - echo "POSTGRES_USER=$POSTGRES_USER" >> backend.env
-    - echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> backend.env
-    - echo "POSTGRES_PORT=$POSTGRES_PORT" >> backend.env
-    - echo "POSTGRES_HOST=$POSTGRES_HOST" >> backend.env
-    - echo "APPID=$APPID" >> backend.env
+    - echo "POSTGRES_DB=$POSTGRES_DB" >> .env
+    - echo "POSTGRES_USER=$POSTGRES_USER" >> .env
+    - echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env
+    - echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
+    - echo "POSTGRES_HOST=$POSTGRES_HOST" >> .env
+    - echo "APPID=$APPID" >> .env
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
-    - docker build -t ariru/trailtorchbackend:latest -f Dockerfile.backend .
+    - docker-compose -f docker-compose-prod.yml build
+    - docker tag postgis/postgis:latest ariru/trailtorchbackend:postgis-latest
+    - docker push ariru/trailtorchbackend:postgis-latest
+    - docker tag ariru/trailtorchbackend:backend-latest ariru/trailtorchbackend:latest
     - docker push ariru/trailtorchbackend:latest
   only:
     - main
@@ -35,8 +36,6 @@ build_and_push_frontend:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
     - cd frontend
-    # Use environment variables from GitLab CI/CD settings
-    - echo "YOUR_FRONTEND_ENV_VARIABLE=$YOUR_FRONTEND_ENV_VALUE" >> frontend.env
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
     - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile.frontend .
