@@ -1,10 +1,31 @@
-build_and_push_frontend:
-  stage: build
+stages:
+  - build_and_push_images
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+
+build_and_push_backend:
+  stage: build_and_push_images
   image: docker:20.10.16
   services:
     - docker:20.10.16-dind
-  variables:
-    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - cd backend  # Changing directory to the backend folder
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+  script:
+    - docker-compose -f docker-compose-prod.yml build  # Build the images defined in the docker-compose file
+    - docker tag your_postgis_image_name:latest ariru/trailtorchbackend:postgis-latest  # Tag the built PostGIS image
+    - docker push ariru/trailtorchbackend:postgis-latest  # Push the PostGIS image to Docker Hub
+    - docker tag ariru/trailtorchbackend:backend-image ariru/trailtorchbackend:backend-latest  # Tag the backend image
+    - docker push ariru/trailtorchbackend:backend-latest  # Push the backend image to Docker Hub
+  only:
+    - main  # Adjust the branch if needed
+
+build_and_push_frontend:
+  stage: build_and_push_images
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
   before_script:
     - cd frontend  # Changing directory to the frontend folder
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
@@ -13,3 +34,4 @@ build_and_push_frontend:
     - docker push ariru/trailtorchfrontend:latest
   only:
     - main  # Adjust the branch if needed
+
