@@ -5,22 +5,22 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.postgres
-        # Path to the directory containing Dockerfile.postgres
     env_file:
       - .env
     volumes:
       - ./geodata.sql:/docker-entrypoint-initdb.d/geodata.sql
     ports:
       - "5432:5432"
+    image: postgres  # Set the image name for the postgres service
 
   backend:
     build:
       context: .
-      dockerfile: Dockerfile.backend  # Path to the Dockerfile for the backend service
+      dockerfile: Dockerfile.backend
     depends_on:
       - postgres
     env_file:
       - .env
     ports:
       - "9000:9000"
-    image: ariru/trailtorchbackend:backend-latest
+    image: backend  # Set the image name for the backend service
