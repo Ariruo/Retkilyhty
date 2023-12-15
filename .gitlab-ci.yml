@@ -11,13 +11,13 @@ build_and_push_backend:
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
-    - cd backend  # Changing directory to the backend folder
-    - echo "POSTGRES_DB=$POSTGRES_DB" >> .env
-    - echo "POSTGRES_USER=$POSTGRES_USER" >> .env
-    - echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env
-    - echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
-    - echo "POSTGRES_HOST=$POSTGRES_HOST" >> .env
-    - echo "APPID=$APPID" >> .env
+    - cd backend
+    - echo "POSTGRES_DB=geo_data" >> .env
+    - echo "POSTGRES_USER=postgres" >> .env
+    - echo "POSTGRES_PASSWORD=Poro6999" >> .env
+    - echo "POSTGRES_PORT=5432" >> .env
+    - echo "POSTGRES_HOST=postgres" >> .env
+    - echo "APPID=29801f93bb782e8265636bf8520b3f31" >> .env
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
     - docker-compose -f docker-compose-prod.yml build
@@ -26,7 +26,7 @@ build_and_push_backend:
     - docker tag ariru/trailtorchbackend:backend-image ariru/trailtorchbackend:backend-latest
     - docker push ariru/trailtorchbackend:backend-latest
   only:
-    - main  # Adjust the branch if needed
+    - main
 
 build_and_push_frontend:
   stage: build
@@ -36,11 +36,33 @@ build_and_push_frontend:
   variables:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
-    - cd frontend  # Changing directory to the frontend folder
-    - echo "YOUR_FRONTEND_ENV_VARIABLE=$YOUR_FRONTEND_ENV_VALUE" >> .env
+    - cd frontend
+    # Add frontend environment variables if needed
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
     - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile.frontend .
     - docker push ariru/trailtorchfrontend:latest
   only:
-    - main  # Adjust the branch if needed
+    - main
+
+services:
+  postgres:
+    image: postgis/postgis:latest
+    env_file:   
+      - .env    
+    volumes:
+      - ./geodata.sql:/docker-entrypoint-initdb.d/geodata.sql
+    ports:
+      - "5432:5432"
+
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile.backend
+    depends_on:
+      - postgres
+    env_file:   
+      - .env
+    ports:
+      - "9000:9000"
+    image: ariru/trailtorchbackend:backend-latest
