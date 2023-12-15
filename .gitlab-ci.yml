@@ -7,7 +7,7 @@ build_and_push_frontend:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
     - cd frontend  # Changing directory to the frontend folder
-    - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
     - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile .
     - docker push ariru/trailtorchfrontend:latest
