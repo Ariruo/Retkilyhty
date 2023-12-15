@@ -21,12 +21,11 @@ build_and_push_backend:
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
 
   script:
-    - docker-compose -f docker-compose-prod.yml pull  # Pull the required images
-    - docker-compose -f docker-compose-prod.yml build  # Build the images
-    - docker tag postgis/postgis:latest ariru/trailtorchbackend:postgis-latest
-    - docker push ariru/trailtorchbackend:postgis-latest
-    - docker tag ariru/trailtorchbackend:backend-latest ariru/trailtorchbackend:latest
-    - docker push ariru/trailtorchbackend:latest
+  - docker-compose -f docker-compose-prod.yml up --build  # Build and start services
+  - docker tag postgis/postgis:latest ariru/trailtorchbackend:postgis-latest  # Tag postgis image
+  - docker push ariru/trailtorchbackend:postgis-latest  # Push postgis image to registry
+  - docker tag ariru/trailtorchbackend:backend-latest ariru/trailtorchbackend:latest  # Tag backend image
+  - docker push ariru/trailtorchbackend:latest  # Push backend image to registry
   only:
     - main
 
