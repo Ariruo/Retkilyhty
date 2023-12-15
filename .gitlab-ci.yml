@@ -25,7 +25,7 @@ build_and_push_backend:
   - docker tag postgres:latest ariru/trailtorchbackend:postgis-latest  # Tag postgis image
   - docker push ariru/trailtorchbackend:postgis-latest  # Push postgis image to registry
   - docker tag backend:latest ariru/trailtorchbackend:backend-latest  # Tag backend image
-  - docker push ariru/trailtorchbackend:latest  # Push backend image to registry
+  - docker push ariru/trailtorchbackend:backend-latest  # Push backend image to registry
   only:
     - main 
 
