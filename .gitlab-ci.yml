@@ -12,19 +12,17 @@ build_and_push_backend:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
     - cd backend
-    - echo "POSTGRES_DB=geo_data" >> .env
-    - echo "POSTGRES_USER=postgres" >> .env
-    - echo "POSTGRES_PASSWORD=Poro6999" >> .env
-    - echo "POSTGRES_PORT=5432" >> .env
-    - echo "POSTGRES_HOST=postgres" >> .env
-    - echo "APPID=29801f93bb782e8265636bf8520b3f31" >> .env
+    # Use environment variables from GitLab CI/CD settings
+    - echo "POSTGRES_DB=$POSTGRES_DB" >> backend.env
+    - echo "POSTGRES_USER=$POSTGRES_USER" >> backend.env
+    - echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> backend.env
+    - echo "POSTGRES_PORT=$POSTGRES_PORT" >> backend.env
+    - echo "POSTGRES_HOST=$POSTGRES_HOST" >> backend.env
+    - echo "APPID=$APPID" >> backend.env
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
-    - docker-compose -f docker-compose-prod.yml build
-    - docker tag postgis/postgis:latest ariru/trailtorchbackend:postgis-latest
-    - docker push ariru/trailtorchbackend:postgis-latest
-    - docker tag ariru/trailtorchbackend:backend-image ariru/trailtorchbackend:backend-latest
-    - docker push ariru/trailtorchbackend:backend-latest
+    - docker build -t ariru/trailtorchbackend:latest -f Dockerfile.backend .
+    - docker push ariru/trailtorchbackend:latest
   only:
     - main
 
@@ -37,32 +35,11 @@ build_and_push_frontend:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
     - cd frontend
-    # Add frontend environment variables if needed
+    # Use environment variables from GitLab CI/CD settings
+    - echo "YOUR_FRONTEND_ENV_VARIABLE=$YOUR_FRONTEND_ENV_VALUE" >> frontend.env
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
     - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile.frontend .
     - docker push ariru/trailtorchfrontend:latest
   only:
     - main
-
-services:
-  postgres:
-    image: postgis/postgis:latest
-    env_file:   
-      - .env    
-    volumes:
-      - ./geodata.sql:/docker-entrypoint-initdb.d/geodata.sql
-    ports:
-      - "5432:5432"
-
-  backend:
-    build: 
-      context: .
-      dockerfile: Dockerfile.backend
-    depends_on:
-      - postgres
-    env_file:   
-      - .env
-    ports:
-      - "9000:9000"
-    image: ariru/trailtorchbackend:backend-latest
