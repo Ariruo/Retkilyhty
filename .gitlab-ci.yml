@@ -1,25 +1,47 @@
 stages:
-  - build_and_push
+  - build
+  - test
+  - deploy
 
-variables:
-  DOCKER_HUB_BACKEND_REPO: "ariru/trailtorchbackend"
-  DOCKER_HUB_FRONTEND_REPO: "ariru/trailtorchfrontend"
-  DOCKER_BACKEND_TAG: "backend"
-  DOCKER_FRONTEND_TAG: "frontend"
-
-build_and_push:
-  stage: build_and_push
-  image: docker:stable  # Use Docker image to run DinD
+build_and_push_backend:
+  stage: build
+  image: docker:20.10.16
   services:
-    - docker:dind  # Enable DinD service
-  script:
-    # Build and push backend
-    - docker build -t $DOCKER_HUB_BACKEND_REPO:$DOCKER_BACKEND_TAG -f path/to/your/backend/Dockerfile .
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-    - docker push $DOCKER_HUB_BACKEND_REPO:$DOCKER_BACKEND_TAG
+    - docker:20.10.16-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - cd backend
+    - echo "POSTGRES_DB=$POSTGRES_DB" >> .env
+    - echo "POSTGRES_USER=$POSTGRES_USER" >> .env
+    - echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" >> .env
+    - echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
+    - echo "POSTGRES_HOST=$POSTGRES_HOST" >> .env
+    - echo "APPID=$APPID" >> .env
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
 
-    # Build and push frontend
-    - docker build -t $DOCKER_HUB_FRONTEND_REPO:$DOCKER_FRONTEND_TAG -f path/to/your/frontend/Dockerfile .
-    - docker push $DOCKER_HUB_FRONTEND_REPO:$DOCKER_FRONTEND_TAG
+  script:
+  - docker-compose -f docker-compose-prod.yml build # Build and start services
+  - docker tag postgis/postgis ariru/trailtorchbackend:postgis-latest  # Tag postgis image
+  - docker push ariru/trailtorchbackend:postgis-latest  # Push postgis image to registry
+  - docker tag ariru/trailtorchbackend:backend-latest ariru/trailtorchbackend:latest  # Tag backend image
+  - docker push ariru/trailtorchbackend:latest  # Push backend image to registry
   only:
-    - main  # Trigger this pipeline only for changes in the main branch
+    - main 
+
+
+build_and_push_frontend:
+  stage: build
+  image: docker:20.10.16
+  services:
+    - docker:20.10.16-dind
+  variables:
+    DOCKER_TLS_CERTDIR: "/certs"
+  before_script:
+    - cd frontend
+    - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
+  script:
+    - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile.frontend .
+    - docker push ariru/trailtorchfrontend:latest
+  only:
+    - main
