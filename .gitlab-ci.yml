@@ -22,10 +22,10 @@ build_and_push_backend:
 
   script:
   - docker-compose -f docker-compose-prod.yml build # Build and start services
-  - docker tag backend-postgres ariru/trailtorchbackend:postgis-latest  # Tag postgis image
+  - docker tag postgres:latest ariru/trailtorchbackend:postgis-latest  # Tag postgis image
   - docker push ariru/trailtorchbackend:postgis-latest  # Push postgis image to registry
-  - docker tag backend-backend ariru/trailtorchbackend:latest  # Tag backend image
-  - docker push ariru/trailtorchbackend:latest  # Push backend image to registry
+  - docker tag backend:latest ariru/trailtorchbackend:backend-latest  # Tag backend image
+  - docker push ariru/trailtorchbackend:backend-latest  # Push backend image to registry
   only:
     - main 
 
@@ -39,6 +39,9 @@ build_and_push_frontend:
     DOCKER_TLS_CERTDIR: "/certs"
   before_script:
     - cd frontend
+    - echo "VITE_MAPBOX_TOKEN=$VITE_MAPBOX_TOKEN" >> .env
+    - echo "VITE_BACKEND_URL=$VITE_BACKEND_URL" >> .env 
+    - echo "VITE_RECAPTCHA=$VITE_RECAPTCHA" >> .env
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
     - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile.frontend .
