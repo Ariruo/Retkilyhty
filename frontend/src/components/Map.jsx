@@ -16,7 +16,7 @@ import Addlocation from "./AddLocation";
 
 
 
-import SearchBar from "./Searchbar";
+// import SearchBar from "./Searchbar";
 import fetchData from "../api/fetch";
 import useFetchData2 from "../hooks/toggleAndFetchData2";
 
@@ -572,7 +572,7 @@ const handleFindClosestParkbutton = () => {
 )}
 
 
-<SearchBar 
+{/* <SearchBar 
 setResults={setFilteredData} 
 setInput={setInput} 
 input={input} 
@@ -582,7 +582,7 @@ setOpen={setOpen}
 toggleSidebar={toggleSidebar} 
 onClick={handleFindClosestPark}
 
-/>
+/> */}
 
 
 
