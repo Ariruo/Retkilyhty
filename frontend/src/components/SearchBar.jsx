@@ -1,28 +1,23 @@
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { faSearch, faBars } from "@fortawesome/free-solid-svg-icons";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState, useEffect, useRef } from "react";
 
-
-const Searchbar = ({ setResults, setInput, input, setShowSearchResults }) => {
-
-  const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000"; 
-
- 
+function Searchbar({ setResults, setInput, input, setShowSearchResults }) {
+  const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
 
   const [searchBarOpen, setSearchBarOpen] = useState(false);
-  
-  const placeholderText = searchBarOpen ? "Etsi kohteita" : "";
-  const iconSize = searchBarOpen ? "text-gray-500" : "text-gray-500 text-xl"; // Adjust the icon size as needed
 
-  
-  const filterData = async (value) => {
+  const placeholderText = searchBarOpen ? "Etsi kohteita" : "";
+  const iconSize = searchBarOpen ? "text-gray-500" : "text-gray-500 text-xl";
+
+  async function filterData(value) {
     try {
       const response = await axios.get(`${baseUrl}/api/searchbyname/${value}`);
-      const fetchedData = response.data; // Assuming the response contains the fetched data
-  
-      const preparedData = fetchedData.map(item => ({
-        type: 'Feature',
+      const fetchedData = response.data;
+
+      const preparedData = fetchedData.map((item) => ({
+        type: "Feature",
         properties: {
           cluster: false,
           name: item.name,
@@ -30,38 +25,29 @@ const Searchbar = ({ setResults, setInput, input, setShowSearchResults }) => {
           maakunta: item.maakunta,
         },
         geometry: {
-          type: 'Point',
-          coordinates: [parseFloat(item.latitude), parseFloat(item.longitude)],
+          type: "Point",
+          coordinates: [
+            parseFloat(item.latitude),
+            parseFloat(item.longitude),
+          ],
         },
       }));
-  
-      setResults(preparedData); // Update the results with the transformed data
+
+      setResults(preparedData);
       setShowSearchResults(value.length > 0);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
-  };
+  }
 
-  const handleChange = (value) => {
+  function handleChange(value) {
     setInput(value);
     filterData(value);
-    
-  };
+  }
 
   const toggleSearchBar = () => {
-    if (!searchBarOpen) {
-      // Clear the input field when the search bar is opened
-      setInput("");
-      // Close the search bar and set showShowSearchResults to false
-  setSearchBarOpen(!searchBarOpen);
-
-  // Set showShowSearchResults to false when the search bar is closed
-  setShowSearchResults(!searchBarOpen);
-    }
-    
-    // Close the search bar and set showShowSearchResults to false
-    setSearchBarOpen(!searchBarOpen);
-    setShowSearchResults(false); // Set showShowSearchResults to false
+    setSearchBarOpen((prevOpen) => !prevOpen);
+    setShowSearchResults(false);
   };
 
   const searchBarRef = useRef(null);
@@ -70,8 +56,6 @@ const Searchbar = ({ setResults, setInput, input, setShowSearchResults }) => {
     const handleClickOutside = (event) => {
       if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
         setSearchBarOpen(false);
-        
-        // Set showShowSearchResults to false when the search bar is closed
         setShowSearchResults(false);
       }
     };
@@ -106,6 +90,6 @@ const Searchbar = ({ setResults, setInput, input, setShowSearchResults }) => {
       />
     </div>
   );
-};
+}
 
 export default Searchbar;
