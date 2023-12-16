@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useState, useEffect, useRef } from "react";
 
 
-const SearchBar = ({ setResults, setInput, input, setShowSearchResults }) => {
+const Searchbar = ({ setResults, setInput, input, setShowSearchResults }) => {
 
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000"; 
 
@@ -108,4 +108,4 @@ const SearchBar = ({ setResults, setInput, input, setShowSearchResults }) => {
   );
 };
 
-export default SearchBar;
+export default Searchbar;
