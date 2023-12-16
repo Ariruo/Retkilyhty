@@ -8,7 +8,7 @@ import './popup.css';
 import Coordinatecabin from "./Coordinatescabin";
 import getUserCoordinates from "../service/getUserCoordinates";
 import calculateDistance from "../service/calculateDistance"; 
-import SearchBar from "./Searchbar";
+
 import SearchResultList from "./SearchResultList";
 import FindClosestMarkerButton from "./FindClosestMarkerButton";
 import SidebarButton from "./SidebarButton";
@@ -16,7 +16,7 @@ import Addlocation from "./AddLocation";
 
 
 
-
+import SearchBar from "./Searchbar";
 import fetchData from "../api/fetch";
 import useFetchData2 from "../hooks/toggleAndFetchData2";
 

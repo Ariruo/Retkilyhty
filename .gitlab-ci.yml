@@ -18,6 +18,7 @@ build_and_push_backend:
     - echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
     - echo "POSTGRES_HOST=$POSTGRES_HOST" >> .env
     - echo "APPID=$APPID" >> .env
+    - cat .env
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
 
   script:
@@ -42,9 +43,10 @@ build_and_push_frontend:
     - echo "VITE_MAPBOX_TOKEN=$VITE_MAPBOX_TOKEN" >> .env
     - echo "VITE_BACKEND_URL=$VITE_BACKEND_URL" >> .env 
     - echo "VITE_RECAPTCHA=$VITE_RECAPTCHA" >> .env
+    - cat .env  # Output the contents of .env for debugging
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
     - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile.frontend .
     - docker push ariru/trailtorchfrontend:latest
   only:
-    - main 
+    - main
