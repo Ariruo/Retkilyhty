@@ -22,8 +22,8 @@ import useFetchData2 from "../hooks/toggleAndFetchData2";
 
 
 import CustomMarker from "./CustomMarker";
-import Searchbar from "./Searchbar";
 
+import Searchbar from "./Searchbar";
 import 'mapbox-gl/dist/mapbox-gl.css';
 
 import CustomClusterMarker from "./CustomClusterMarker";

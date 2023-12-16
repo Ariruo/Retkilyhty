@@ -3,7 +3,7 @@ import axios from "axios";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-function Searchbar({ setResults, setInput, input, setShowSearchResults }) {
+export default function Searchbar({ setResults, setInput, input, setShowSearchResults }) {
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
 
   const [searchBarOpen, setSearchBarOpen] = useState(false);
@@ -92,4 +92,4 @@ function Searchbar({ setResults, setInput, input, setShowSearchResults }) {
   );
 }
 
-export default Searchbar;
+
