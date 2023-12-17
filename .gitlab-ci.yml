@@ -62,7 +62,8 @@ connect_to_ec2:
     - chmod 600 ~/.ssh/trailpair.pem  # Set proper permissions
     - ssh-keyscan -H 34.237.198.148 >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
   script:
-    - ssh -i ~/.ssh/trailpair.pem ec2-user@34.237.198.148 "sudo -u postgres pg_dump -U postgres -d geo_data > /home/ec2-user/backup_file.sql"
+    - ssh -i ~/.ssh/trailpair.pem ec2-user@34.237.198.148 "pg_dump -U postgres -d geo_data > /home/ec2-user/backup_file.sql"
+
     - scp -i ~/.ssh/trailpair.pem ec2-user@34.237.198.148:/home/ec2-user/backup_file.sql ./backup_file.sql
     - aws s3 cp ./backup_file.sql s3://databasee/geodata.sql
   only:
