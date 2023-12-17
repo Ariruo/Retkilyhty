@@ -58,7 +58,7 @@ connect_to_ec2:
   before_script:
     - apt-get update && apt-get install -y openssh-client
     - mkdir -p ~/.ssh  # Ensure the ~/.ssh directory exists
-    - echo "$SSH_PRIVATE_KEY" | base64 -d > ~/.ssh/trailpair.pem  # Decoding and writing the private key
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/trailpair.pem  
     - chmod 600 ~/.ssh/trailpair.pem  # Set proper permissions
     - ssh-keyscan -H 34.237.198.148 >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
   script:
