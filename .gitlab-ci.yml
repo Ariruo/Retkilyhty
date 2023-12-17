@@ -2,6 +2,7 @@ stages:
   - build
   - test
   - deploy
+  - connect_to_ec2
 
 build_and_push_backend:
   stage: build
@@ -50,7 +51,7 @@ build_and_push_frontend:
     - docker push ariru/trailtorchfrontend:latest
   only:
     - main
-    
+
 connect_to_ec2:
   stage: connect_to_ec2
   image: ubuntu:latest  # Using Ubuntu image for basic commands
