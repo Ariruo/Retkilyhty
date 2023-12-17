@@ -62,7 +62,9 @@ connect_to_ec2:
     - chmod 600 ~/.ssh/trailpair.pem  # Set proper permissions
     - ssh-keyscan -H 34.237.198.148 >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
   script:
-    - ssh -i ~/.ssh/trailpair.pem ec2-user@34.237.198.148 "echo 'Connected to EC2 instance'"
+    - ssh -i ~/.ssh/trailpair.pem ec2-user@34.237.198.148 "docker-compose exec postgres pg_dump -U postgres -d geo_data > backup_file.sql"
+    - scp -i ~/.ssh/trailpair.pem ec2-user@34.237.198.148:backup_file.sql ./backup_file.sql
+    - aws s3 cp ./backup_file.sql s3://databasee/geodata.sql
   only:
     - main  # Trigger this job only from a schedule or manuall
 
