@@ -64,6 +64,6 @@ connect_to_ec2:
   script:
     - ssh -i "C:\\Users\\d_sha\\trailpair.pem" ec2-user@34.237.198.148 "echo 'Connected to EC2 instance'"
   only:
-    - schedules  # Trigger this job only from a schedule or manually
+    - main  # Trigger this job only from a schedule or manually
 
 
