@@ -50,3 +50,18 @@ build_and_push_frontend:
     - docker push ariru/trailtorchfrontend:latest
   only:
     - main
+    
+connect_to_ec2:
+  stage: connect_to_ec2
+  image: ubuntu:latest  # Using Ubuntu image for basic commands
+  before_script:
+    - apt-get update && apt-get install -y openssh-client  # Install SSH client
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa  # Set SSH private key
+    - chmod 600 ~/.ssh/id_rsa  # Set permissions for the SSH key
+    - ssh-keyscan -H 34.237.198.148 >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
+  script:
+    - ssh -i "C:\\Users\\d_sha\\trailpair.pem" ec2-user@34.237.198.148 "echo 'Connected to EC2 instance'"
+  only:
+    - schedules  # Trigger this job only from a schedule or manually
+
+
