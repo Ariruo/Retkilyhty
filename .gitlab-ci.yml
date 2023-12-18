@@ -60,10 +60,12 @@ connect_to_ec2:
     - mkdir -p ~/.ssh  # Ensure the ~/.ssh directory exists
     - echo "$SSH_PRIVATE_KEY" > ~/.ssh/trailpair.pem  
     - chmod 600 ~/.ssh/trailpair.pem  # Set proper permissions
-    - ssh-keyscan -H 34.237.198.148 >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
+    - ssh-keyscan -H  $BACKEND_IP >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
   script:
-    - ssh -i ~/.ssh/trailpair.pem ec2-user@34.237.198.148 "cd /usr/local/bin && PGPASSWORD=$POSTGRES_PASSWORD docker-compose exec postgres pg_dump -U $POSTGRES_USER -w $POSTGRES_DB > /tmp/backup.sql"
-    - ssh -i ~/.ssh/trailpair.pem ec2-user@34.237.198.148 "cd /tmp && aws s3 cp /tmp/backup.sql s3://databasee/backup.sql"
+    - ssh -i ~/.ssh/trailpair.pem ec2-user@$BACKEND_IP "cd /usr/local/bin && PGPASSWORD=$POSTGRES_PASSWORD docker-compose exec postgres pg_dump -U $POSTGRES_USER -w $POSTGRES_DB > /tmp/backup.sql"
+    - scp -i ~/.ssh/trailpair.pem ec2-user@$BACKEND_IP:/tmp/backup.sql /usr/local/bin/backup.sql
+    - ssh -i ~/.ssh/trailpair.pem ec2-user@$BACKEND_IP "aws s3 cp /tmp/backup.sql s3://databasee/backup.sql"
+    - ssh -i ~/.ssh/trailpair.pem ec2-user@$BACKEND_IP "mv /usr/local/bin/backup.sql /usr/local/bin/geodata.sql"
 
   only:
     - main  # Trigger this job only from a schedule or manual action
