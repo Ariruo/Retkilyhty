@@ -24,13 +24,18 @@ build_and_push_backend:
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
 
   script:
-  - docker-compose -f docker-compose-prod.yml build # Build and start services
-  - docker tag postgres:latest ariru/trailtorchbackend:postgis-latest  # Tag postgis image
-  - docker push ariru/trailtorchbackend:postgis-latest  # Push postgis image to registry
-  - docker tag backend:latest ariru/trailtorchbackend:backend-latest  # Tag backend image
-  - docker push ariru/trailtorchbackend:backend-latest  # Push backend image to registry
+    - docker-compose -f docker-compose-prod.yml build # Build and start services
+    - docker tag postgres:latest ariru/trailtorchbackend:postgis-latest  # Tag postgis image
+    - docker push ariru/trailtorchbackend:postgis-latest  # Push postgis image to registry
+    - docker tag backend:latest ariru/trailtorchbackend:backend-latest  # Tag backend image
+    - docker push ariru/trailtorchbackend:backend-latest  # Push backend image to registry
+
+  artifacts:
+    paths:
+      - docker-compose-dev.yml  # Add docker-compose-dev.yml as an artifact
   only:
-    - main 
+    - main
+
 
 
 build_and_push_frontend:
@@ -87,9 +92,10 @@ deploy_backend:
     - echo "POSTGRES_PORT=$POSTGRES_PORT" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
     - echo "POSTGRES_HOST=postgres" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
     - echo "APPID=$APPID" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "aws s3 cp s3://databasee/geodata.sql /usr/local/bin/geodata.sql"
    
   script:
-    - scp -i ~/.ssh/$KEY.pem ./backend/docker-compose-dev.yml ec2-user@$BACKEND_IP:/usr/local/bin/docker-compose-dev.yml
+    - scp -i ~/.ssh/$KEY.pem docker-compose-dev.yml ec2-user@$BACKEND_IP:/usr/local/bin/docker-compose-dev.yml
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "cd /usr/local/bin && docker-compose -f docker-compose-dev.yml up -d"
   only:
     - main
