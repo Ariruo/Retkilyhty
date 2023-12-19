@@ -2,7 +2,8 @@ stages:
   - build
   - test
   - deploy
-  - connect_to_ec2
+  - refresh_and_backup_sql_file
+  - deploy_backend
 
 build_and_push_backend:
   stage: build
@@ -19,16 +20,22 @@ build_and_push_backend:
     - echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
     - echo "POSTGRES_HOST=$POSTGRES_HOST" >> .env
     - echo "APPID=$APPID" >> .env
+    - cat .env
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
 
   script:
-  - docker-compose -f docker-compose-prod.yml build # Build and start services
-  - docker tag postgres:latest ariru/trailtorchbackend:postgis-latest  # Tag postgis image
-  - docker push ariru/trailtorchbackend:postgis-latest  # Push postgis image to registry
-  - docker tag backend:latest ariru/trailtorchbackend:backend-latest  # Tag backend image
-  - docker push ariru/trailtorchbackend:backend-latest  # Push backend image to registry
+    - docker-compose -f docker-compose-prod.yml build # Build and start services
+    - docker tag postgres:latest ariru/trailtorchbackend:postgis-latest  # Tag postgis image
+    - docker push ariru/trailtorchbackend:postgis-latest  # Push postgis image to registry
+    - docker tag backend:latest ariru/trailtorchbackend:backend-latest  # Tag backend image
+    - docker push ariru/trailtorchbackend:backend-latest  # Push backend image to registry
+
+  artifacts:
+    paths:
+      - docker-compose-dev.yml  # Add docker-compose-dev.yml as an artifact
   only:
-    - main 
+    - main
+
 
 
 build_and_push_frontend:
@@ -43,6 +50,7 @@ build_and_push_frontend:
     - echo "VITE_MAPBOX_TOKEN=$VITE_MAPBOX_TOKEN" >> .env
     - echo "VITE_BACKEND_URL=$VITE_BACKEND_URL" >> .env 
     - echo "VITE_RECAPTCHA=$VITE_RECAPTCHA" >> .env
+    - cat .env  # Output the contents of .env for debugging
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
     - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile.frontend .
@@ -50,21 +58,49 @@ build_and_push_frontend:
   only:
     - main
 
-stages:
-  - upload_to_s3
-
-connect_to_ec2:
-  stage: connect_to_ec2
-  image: ubuntu:latest  # Using Ubuntu image for basic commands
+refresh_and_backup_sql_file:
+  stage: refresh_and_backup_sql_file
+  image: ubuntu:latest
   before_script:
-    - apt-get update && apt-get install -y openssh-client  # Install SSH client
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa  # Set SSH private key
-    - chmod 600 ~/.ssh/id_rsa  # Set permissions for the SSH key
-    - ssh-keyscan -H 34.237.198.148 >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
+    - apt-get update && apt-get install -y openssh-client
+    - mkdir -p ~/.ssh  # Ensure the ~/.ssh directory exists
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/$KEY.pem  
+    - chmod 600 ~/.ssh/$KEY.pem  # Set proper permissions
+    - ssh-keyscan -H  $BACKEND_IP >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
   script:
-    - ssh -i "C:\\Users\\d_sha\\trailpair.pem" ec2-user@34.237.198.148 "echo 'Connected to EC2 instance'"
-  only:
-    - schedules  # Trigger this job only from a schedule or manually
+  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "cd /usr/local/bin
+    PGPASSWORD=$POSTGRES_PASSWORD docker-compose exec postgres pg_dump -U $POSTGRES_USER -d $POSTGRES_DB -t $POSTGRES_DB -E UTF8 > /tmp/backup.sql"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "aws s3 cp /tmp/backup.sql s3://databasee/backup.sql"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo mv -f /tmp/backup.sql /usr/local/bin/geodata.sql"
 
+  only:
+    - schedule  # Trigger this job only from a schedule or manual action
+
+deploy_backend:
+  stage: deploy_backend
+  image: ubuntu:latest
+  before_script:
+    - apt-get update && apt-get install -y openssh-client
+  
+    - mkdir -p ~/.ssh  # Ensure the ~/.ssh directory exists
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/$KEY.pem  
+    - chmod 600 ~/.ssh/$KEY.pem  # Set proper permissions
+    - ssh-keyscan -H $BACKEND_IP >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
+    - echo "POSTGRES_DB=$POSTGRES_DB" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_USER=$POSTGRES_USER" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_PORT=$POSTGRES_PORT" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_HOST=postgres" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "APPID=$APPID" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo aws s3 cp s3://databasee/geodata.sql /usr/local/bin/geodata.sql"
+   
+  script:
+  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo wget -O /usr/local/bin/docker-compose-prod.yml https://gitlab.com/Ariruo/Retkilyhty/-/raw/main/backend/docker-compose-prod.yml"
+  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo /usr/local/bin/docker-compose -f /usr/local/bin/docker-compose-dev.yml up"
+
+
+   
+  only:
+    - main
 
 

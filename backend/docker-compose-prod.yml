@@ -12,6 +12,7 @@ services:
     ports:
       - "5432:5432"
     image: postgres  # Set the image name for the postgres service
+    container_name: postgis
 
   backend:
     build:
@@ -24,3 +25,4 @@ services:
     ports:
       - "9000:9000"
     image: backend  # Set the image name for the backend service
+    container_name: backend
