@@ -3,6 +3,7 @@ stages:
   - test
   - deploy
   - refresh_and_backup_sql_file
+  - deploy_backend
 
 build_and_push_backend:
   stage: build
@@ -62,18 +63,35 @@ refresh_and_backup_sql_file:
     - chmod 600 ~/.ssh/$KEY.pem  # Set proper permissions
     - ssh-keyscan -H  $BACKEND_IP >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
   script:
-  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "cd /usr/local/bin && \
-    echo 'POSTGRES_DB=$POSTGRES_DB' >> .env && \
-    echo 'POSTGRES_USER=$POSTGRES_USER' >> .env && \
-    echo 'POSTGRES_PASSWORD=$POSTGRES_PASSWORD' >> .env && \
-    echo 'POSTGRES_PORT=$POSTGRES_PORT' >> .env && \
-    echo 'POSTGRES_HOST=$POSTGRES_HOST' >> .env && \
-    echo 'APPID=$APPID' >> .env && \
-    PGPASSWORD=$POSTGRES_PASSWORD docker-compose exec postgres pg_dump -U $POSTGRES_USER -w $POSTGRES_DB > /tmp/backup.sql"
+  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "cd /usr/local/bin
+    PGPASSWORD=$POSTGRES_PASSWORD docker-compose exec postgres pg_dump -U $POSTGRES_USER -d $POSTGRES_DB -t $POSTGRES_DB -E UTF8 > /tmp/backup.sql"
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "aws s3 cp /tmp/backup.sql s3://databasee/backup.sql"
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo mv -f /tmp/backup.sql /usr/local/bin/geodata.sql"
 
   only:
-    - main  # Trigger this job only from a schedule or manual action
+    - schedule  # Trigger this job only from a schedule or manual action
+
+deploy_backend:
+  stage: deploy_backend
+  image: ubuntu:latest
+  before_script:
+    - apt-get update && apt-get install -y openssh-client
+    - apt-get install -y awscli  # Install AWS CLI
+    - mkdir -p ~/.ssh  # Ensure the ~/.ssh directory exists
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/$KEY.pem  
+    - chmod 600 ~/.ssh/$KEY.pem  # Set proper permissions
+    - ssh-keyscan -H $BACKEND_IP >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
+    - echo "POSTGRES_DB=$POSTGRES_DB" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_USER=$POSTGRES_USER" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_PORT=$POSTGRES_PORT" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_HOST=postgres" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "APPID=$APPID" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - aws s3 cp s3://databasee/geodata.sql /usr/local/bin/geodata.sql  # Download geodata.sql from S3
+  script:
+    - scp -i ~/.ssh/$KEY.pem ./backend/docker-compose-dev.yml ec2-user@$BACKEND_IP:/usr/local/bin/docker-compose-dev.yml
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "cd /usr/local/bin && docker-compose -f docker-compose-dev.yml up -d"
+  only:
+    - main
 
 
