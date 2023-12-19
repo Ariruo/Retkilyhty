@@ -87,7 +87,7 @@ deploy_backend:
     - echo "POSTGRES_PORT=$POSTGRES_PORT" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
     - echo "POSTGRES_HOST=postgres" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
     - echo "APPID=$APPID" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
-    - sudo aws s3 cp s3://databasee/geodata.sql /usr/local/bin/geodata.sql  # Download geodata.sql from S3
+   
   script:
     - scp -i ~/.ssh/$KEY.pem ./backend/docker-compose-dev.yml ec2-user@$BACKEND_IP:/usr/local/bin/docker-compose-dev.yml
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "cd /usr/local/bin && docker-compose -f docker-compose-dev.yml up -d"
