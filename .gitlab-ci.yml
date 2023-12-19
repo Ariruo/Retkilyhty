@@ -98,7 +98,7 @@ deploy_backend:
    ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo wget -O /usr/local/bin/docker-compose-prod.yml https://gitlab.com/Ariruo/Retkilyhty/-/raw/main/backend/docker-compose-prod.yml"
 
 
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "cd /usr/local/bin && docker-compose -f docker-compose-dev.yml up -d"
+   
   only:
     - main
 
