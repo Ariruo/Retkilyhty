@@ -95,7 +95,8 @@ deploy_backend:
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo aws s3 cp s3://databasee/geodata.sql /usr/local/bin/geodata.sql"
    
   script:
-    - curl --output /usr/local/bin/docker-compose-prod.yml --location "https://gitlab.com/Ariruo/Retkilyhty/-/raw/main/backend/docker-compose-prod.yml"
+   - wget -O /usr/local/bin/docker-compose-prod.yml "https://gitlab.com/Ariruo/Retkilyhty/-/raw/main/backend/docker-compose-prod.yml"
+
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "cd /usr/local/bin && docker-compose -f docker-compose-dev.yml up -d"
   only:
     - main
