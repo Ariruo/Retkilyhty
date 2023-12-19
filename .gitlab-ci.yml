@@ -92,7 +92,7 @@ deploy_backend:
     - echo "POSTGRES_PORT=$POSTGRES_PORT" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
     - echo "POSTGRES_HOST=postgres" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
     - echo "APPID=$APPID" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "aws s3 cp s3://databasee/geodata.sql /usr/local/bin/geodata.sql"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo aws s3 cp s3://databasee/geodata.sql /usr/local/bin/geodata.sql"
    
   script:
     - scp -i ~/.ssh/$KEY.pem docker-compose-dev.yml ec2-user@$BACKEND_IP:/usr/local/bin/docker-compose-dev.yml
