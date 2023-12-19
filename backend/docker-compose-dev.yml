@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: ariru/trailtorchbackend:postgis-latest  # Use the new repository and tag
+    env_file:   
+      - .env    
+    volumes:
+      - ./geodata.sql:/docker-entrypoint-initdb.d/geodata.sql
+    ports:
+      - "5432:5432"  # Expose PostgreSQL port
+    container_name: postgis
+
+  backend:
+    image: ariru/trailtorchbackend:backend-latest  # Use your existing backend image
+    depends_on:
+      - postgres
+    env_file:   
+      - .env   
+    
+    ports:
+      - "9000:9000"  # Adjust port as per your backend's configuration
+    container_name: backend
