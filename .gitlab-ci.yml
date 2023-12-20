@@ -50,7 +50,6 @@ build_and_push_frontend:
     - echo "VITE_MAPBOX_TOKEN=$VITE_MAPBOX_TOKEN" >> .env
     - echo "VITE_BACKEND_URL=$VITE_BACKEND_URL" >> .env 
     - echo "VITE_RECAPTCHA=$VITE_RECAPTCHA" >> .env
-    - cat .env  # Output the contents of .env for debugging
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
     - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile.frontend .
@@ -118,7 +117,7 @@ deploy_frontend:
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker stop \$(sudo docker ps -aq) || true"
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker rm \$(sudo docker ps -aq) || true"
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker pull ariru/trailtorchfrontend:latest"
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker run -d -p 9000:9000 --name frontend_container ariru/trailtorchfrontend:latest"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker run -d -p 8000:8000 --name frontend_container ariru/trailtorchfrontend:latest"
 
 
 
