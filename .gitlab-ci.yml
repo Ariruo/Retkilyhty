@@ -1,9 +1,9 @@
 stages:
   - build
-  - test
   - deploy
   - refresh_and_backup_sql_file
   - deploy_backend
+  - deploy_frontend
 
 build_and_push_backend:
   stage: build
@@ -100,9 +100,25 @@ deploy_backend:
   - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo /usr/local/bin/docker-compose -f /usr/local/bin/docker-compose-dev.yml down"
   - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo /usr/local/bin/docker-compose -f /usr/local/bin/docker-compose-dev.yml up -d"
 
-
-   
   only:
     - main
+
+
+deploy_frontend:
+  stage: deploy_frontend
+  image: ubuntu:latest
+  before_script:
+    - apt-get update && apt-get install -y openssh-client
+    - mkdir -p ~/.ssh  # Ensure the ~/.ssh directory exists
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/$KEY.pem  
+    - chmod 600 ~/.ssh/$KEY.pem  # Set proper permissions
+    - ssh-keyscan -H  $FRONTEND_IP >> ~/.ssh/known_hosts  # Add Frontend EC2 host to known_hosts file
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD"
+  script:
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker stop \$(sudo docker ps -aq) || true"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker rm \$(sudo docker ps -aq) || true"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker pull ariru/trailtorchfrontend:latest"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker run -d -p 9000:9000 --name frontend_container ariru/trailtorchfrontend:latest"
+
 
 
