@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
 
 export default function Searchbar({ setResults, setInput, input, setShowSearchResults }) {
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";

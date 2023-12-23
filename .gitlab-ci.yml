@@ -119,5 +119,6 @@ deploy_frontend:
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker pull ariru/trailtorchfrontend:latest"
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker run -d -p 8000:8000 --name frontend_container ariru/trailtorchfrontend:latest"
 
-
+  only:
+    - main
 

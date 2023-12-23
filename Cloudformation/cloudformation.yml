@@ -1,0 +1,312 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation Template for Frontend and Backend EC2 Instances
+
+Parameters:
+
+  KeyName:
+    Description: Name of an existing EC2 KeyPair to enable SSH access to the instances
+    Type: AWS::EC2::KeyPair::KeyName
+    ConstraintDescription: Must be the name of an existing EC2 
+    
+  DockerUsername:
+    Description: Docker Hub Username
+    Type: String
+
+  DockerPassword:
+    Description: Docker Hub Password
+    Type: String
+
+  PostgresDB:
+    Description: Name of the Postgres database
+    Type: String
+
+  PostgresUser:
+    Description: Username for Postgres
+    Type: String
+
+  PostgresPassword:
+    Description: Password for Postgres
+    Type: String
+
+  PostgresPort:
+    Description: Port for Postgres
+    Type: Number
+
+  PostgresHost:
+    Description: Hostname for Postgres
+    Type: String
+
+
+    
+
+Resources:
+
+  DBdump:
+    Type: AWS::S3::Bucket
+    Properties:
+      Tags:
+        - Key: Name
+          Value: DBdump
+
+  S3AccessRoleBackend:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: S3AccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                  - s3:PutObject
+                Resource:
+                  - "arn:aws:s3:::databasee/*"
+                  - "arn:aws:s3:::DBdump/*"
+    
+
+  S3AccessBackendInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Roles:
+        - !Ref S3AccessRoleBackend
+  
+
+  FrontendInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      SecurityGroups:
+        - !Ref FrontendSecurityGroup
+      KeyName: !Ref KeyName
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          sudo yum update -y
+          sudo amazon-linux-extras install docker -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+
+          # Docker login and pull image
+
+          sudo docker login -u ${DockerUsername} -p ${DockerPassword}
+          sudo docker pull ariru/trailtorchfrontend:latest
+          sudo docker run -d -p 8000:8000 --name frontend_container ariru/trailtorchfrontend:latest
+
+          # Nginx configuration
+
+          sudo amazon-linux-extras install nginx1 -y
+          sudo systemctl enable nginx
+          sudo systemctl start nginx
+
+          
+
+          echo "user nginx;
+          worker_processes auto;
+          error_log /var/log/nginx/error.log;
+          pid /run/nginx.pid;
+
+          events {
+              worker_connections 1024;
+          }
+
+          http {
+              include /etc/nginx/mime.types;
+              default_type application/octet-stream;
+              log_format main '\$remote_addr - \$remote_user [\$time_local] \"\$request\" ' '\$status \$body_bytes_sent \"\$http_referer\" ' '\"\$http_user_agent\" \"\$http_x_forwarded_for\"';
+              access_log /var/log/nginx/access.log main;
+              sendfile on;
+              tcp_nopush on;
+              tcp_nodelay on;
+              keepalive_timeout 65;
+              types_hash_max_size 2048;
+
+              include /etc/nginx/conf.d/*.conf;
+
+              server {
+                  listen 80 default_server;
+                  listen [::]:80 default_server;
+                  server_name www.retkilyhty.fi;
+
+                  location / {
+                      proxy_pass http://localhost:8000;
+                      proxy_set_header Host \$host;
+                      proxy_set_header X-Real-IP \$remote_addr;
+                  }
+              }
+          }" > /etc/nginx/nginx.conf
+
+          systemctl restart nginx 
+
+          # Certbot installation and certificate generation
+
+          sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y
+          sudo yum-config-manager --enable epel
+          sudo yum install certbot python-certbot-nginx -y
+          sudo certbot --nginx -d www.retkilyhty.fi --agree-tos --email trailtorchinfo@gmail.com
+      Tags:
+        - Key: Name
+          Value: Frontend
+
+  BackendInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      KeyName: !Ref KeyName
+      ImageId: !FindInMap [RegionMap, !Ref "AWS::Region", AMI]
+      IamInstanceProfile: !Ref S3AccessBackendInstanceProfile
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          sudo yum update -y
+
+          # Docker installation and image pull
+          sudo amazon-linux-extras install docker -y
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          sudo curl -L "https://github.com/docker/compose/releases/download//v2.23.3/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          sudo systemctl restart docker
+
+          
+
+
+          echo "POSTGRES_DB=${PostgresDB}" | sudo tee -a /usr/local/bin/.env
+          echo "POSTGRES_USER=${PostgresUser}" | sudo tee -a /usr/local/bin/.env
+          echo "POSTGRES_PASSWORD=${PostgresPassword}" | sudo tee -a /usr/local/bin/.env
+          echo "POSTGRES_PORT=${PostgresPort}" | sudo tee -a /usr/local/bin/.env
+          echo "POSTGRES_HOST=${PostgresHost}" | sudo tee -a /usr/local/bin/.env
+          
+          sudo aws s3 cp s3://databasee/geodata.sql /usr/local/bin/geodata.sql
+          sudo wget -O /usr/local/bin/docker-compose-dev.yml https://gitlab.com/Ariruo/Retkilyhty/-/raw/main/backend/docker-compose-dev.yml
+          sudo /usr/local/bin/docker-compose -f /usr/local/bin/docker-compose-dev.yml up -d
+
+          # Nginx configuration
+          sudo amazon-linux-extras install nginx1 -y
+          sudo systemctl enable nginx
+          sudo systemctl start nginx
+          echo "user nginx;
+          worker_processes auto;
+          error_log /var/log/nginx/error.log;
+          pid /run/nginx.pid;
+
+          events {
+              worker_connections 1024;
+          }
+
+          http {
+              include /etc/nginx/mime.types;
+              default_type application/octet-stream;
+              log_format main '\$remote_addr - \$remote_user [\$time_local] \"\$request\" ' '\$status \$body_bytes_sent \"\$http_referer\" ' '\"\$http_user_agent\" \"\$http_x_forwarded_for\"';
+              access_log /var/log/nginx/access.log main;
+              sendfile on;
+              tcp_nopush on;
+              tcp_nodelay on;
+              keepalive_timeout 65;
+              types_hash_max_size 2048;
+
+              include /etc/nginx/conf.d/*.conf;
+
+              server {
+                  listen 80 default_server;
+                  listen [::]:80 default_server;
+                  server_name www.retkilyhty.fi;
+
+                  location / {
+                      proxy_pass http://localhost:9000;
+                      proxy_set_header Host \$host;
+                      proxy_set_header X-Real-IP \$remote_addr;
+                  }
+              }
+          }" > /etc/nginx/nginx.conf
+          systemctl restart nginx 
+
+          # Certbot installatisystemctl restart nginx on and certificate generation
+          sudo yum install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -y
+          sudo yum-config-manager --enable epel
+          sudo yum install certbot python-certbot-nginx -y
+          sudo certbot --nginx -d api.www.retkilyhty.fi --agree-tos --email trailtorchinfo@gmail.com
+
+      SecurityGroups:
+        - !Ref BackendSecurityGroup
+      Tags:
+        - Key: Name
+          Value: Backend
+
+  FrontendSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for Frontend EC2 Instance
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 8000
+          ToPort: 8000
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+
+  BackendSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for Backend EC2 Instance
+      SecurityGroupIngress:
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 9000
+          ToPort: 9000
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+
+  EIPTargetbackend:
+    Type: AWS::EC2::EIPAssociation
+    Properties: 
+      AllocationId: eipalloc-0bb855b1c54df265a
+      InstanceId: !Ref BackendInstance
+
+  EIPTargefrontend:
+    Type: AWS::EC2::EIPAssociation
+    Properties: 
+      AllocationId: eipalloc-03cdc7ef20610e07f
+      InstanceId: !Ref FrontendInstance
+
+Mappings:
+  RegionMap:
+    us-east-1:
+      AMI: ami-0fc61db8544a617ed # Amazon Linux 2 AMI with Kernel 5.10 for us-east-1
+
+Outputs:
+  FrontendInstanceIP:
+    Description: Public IP address of the Frontend EC2 instance
+    Value: !GetAtt FrontendInstance.PublicIp
+
+  BackendInstanceIP:
+    Description: Public IP address of the Backend EC2 instance
+    Value: !GetAtt BackendInstance.PublicIp
