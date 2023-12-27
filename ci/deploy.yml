@@ -1,0 +1,49 @@
+# This file is used to deploy the backend to the AWS EC2 instance.
+# deploy_backend:
+
+deploy_backend:
+  stage: deploy_backend
+  image: ubuntu:latest
+  before_script:
+    - apt-get update && apt-get install -y openssh-client
+  
+    - mkdir -p ~/.ssh  # Ensure the ~/.ssh directory exists
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/$KEY.pem  
+    - chmod 600 ~/.ssh/$KEY.pem  # Set proper permissions
+    - ssh-keyscan -H $BACKEND_IP >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
+    - echo "POSTGRES_DB=$POSTGRES_DB" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_USER=$POSTGRES_USER" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_PASSWORD=$POSTGRES_PASSWORD" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_PORT=$POSTGRES_PORT" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "POSTGRES_HOST=postgres" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - echo "APPID=$APPID" | ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo tee -a /usr/local/bin/.env"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo aws s3 cp s3://databasee/geodata.sql /usr/local/bin/geodata.sql"
+   
+  script:
+  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo wget -O /usr/local/bin/docker-compose-dev.yml https://gitlab.com/Ariruo/Retkilyhty/-/raw/main/backend/docker-compose-dev.yml"
+  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo /usr/local/bin/docker-compose -f /usr/local/bin/docker-compose-dev.yml down"
+  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo /usr/local/bin/docker-compose -f /usr/local/bin/docker-compose-dev.yml up -d"
+
+  only:
+    - main
+
+# This file is used to deploy the frontend to the AWS EC2 instance.
+
+deploy_frontend:
+  stage: deploy_frontend
+  image: ubuntu:latest
+  before_script:
+    - apt-get update && apt-get install -y openssh-client
+    - mkdir -p ~/.ssh  # Ensure the ~/.ssh directory exists
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/$KEY.pem  
+    - chmod 600 ~/.ssh/$KEY.pem  # Set proper permissions
+    - ssh-keyscan -H  $FRONTEND_IP >> ~/.ssh/known_hosts  # Add Frontend EC2 host to known_hosts file
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD"
+  script:
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker stop \$(sudo docker ps -aq) || true"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker rm \$(sudo docker ps -aq) || true"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker pull ariru/trailtorchfrontend:latest"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker run -d -p 8000:8000 --name frontend_container ariru/trailtorchfrontend:latest"
+
+  only:
+    - main
