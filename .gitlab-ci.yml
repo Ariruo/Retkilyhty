@@ -1,7 +1,7 @@
 include:
   - local: ci/build.yml
   - local: ci/deploy.yml
-  - local: ci/backup.yml
+  - local: ci/backup_database.yml
 
 
 stages:
