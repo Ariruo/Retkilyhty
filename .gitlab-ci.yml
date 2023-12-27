@@ -11,8 +11,6 @@ stages:
   - backup_database
   - deploy_backend
   - deploy_frontend
-  - sonarqubebackend
-  - sonarqubefrontend
 
 
 
