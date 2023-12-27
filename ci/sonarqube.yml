@@ -1,0 +1,31 @@
+#sonaruqube backend
+
+sonarqubebackend:
+  stage: deploy
+  image: ubuntu:latest
+  before_script:
+    - apt-get update && apt-get install -y openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/$KEY.pem
+    - chmod 600 ~/.ssh/$KEY.pem
+  script:
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP 'docker pull sonarqube:lts-community'
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP 'docker run -d --name sonarqube -p 9200:9200 sonarqube:lts-community'
+  only:
+    - main
+
+#sonarqube frontend
+
+sonarqubefrontend:
+  stage: deploy
+  image: ubuntu:latest
+  before_script:
+    - apt-get update && apt-get install -y openssh-client
+    - mkdir -p ~/.ssh
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/$KEY.pem
+    - chmod 600 ~/.ssh/$KEY.pem
+  script:
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP 'docker pull sonarqube:lts-community'
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP 'docker run -d --name sonarqube -p 9200:9200 sonarqube:lts-community'
+  only:
+    - main
