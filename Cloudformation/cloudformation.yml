@@ -262,6 +262,10 @@ Resources:
           IpProtocol: tcp
           FromPort: 443
           ToPort: 443
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 9200
+          ToPort: 9200
 
   BackendSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -284,6 +288,10 @@ Resources:
           IpProtocol: tcp
           FromPort: 443
           ToPort: 443
+        - CidrIp: 0.0.0.0/0
+          IpProtocol: tcp
+          FromPort: 9200
+          ToPort: 9200
 
   EIPTargetbackend:
     Type: AWS::EC2::EIPAssociation
