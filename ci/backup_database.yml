@@ -1,0 +1,17 @@
+backup_database:
+  stage: backup_database
+  image: ubuntu:latest
+  before_script:
+    - apt-get update && apt-get install -y openssh-client
+    - mkdir -p ~/.ssh  # Ensure the ~/.ssh directory exists
+    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/$KEY.pem  
+    - chmod 600 ~/.ssh/$KEY.pem  # Set proper permissions
+    - ssh-keyscan -H  $BACKEND_IP >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
+  script:
+  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "cd /usr/local/bin
+    PGPASSWORD=$POSTGRES_PASSWORD docker-compose exec postgres pg_dump -U $POSTGRES_USER -d $POSTGRES_DB -t $POSTGRES_DB -E UTF8 > /tmp/backup.sql"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "aws s3 cp /tmp/backup.sql s3://databasee/backup.sql"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo mv -f /tmp/backup.sql /usr/local/bin/geodata.sql"
+
+  only:
+    - schedule  # Trigger this job only from a schedule or manual action
