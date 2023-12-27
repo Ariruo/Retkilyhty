@@ -8,8 +8,8 @@ sonarqubebackend:
     - chmod 600 ~/.ssh/$KEY.pem  # Set proper permissions
     - ssh-keyscan -H $BACKEND_IP >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
   script:
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP 'docker pull sonarqube:lts-community'
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP 'docker run -d --name sonarqube -p 9200:9200 sonarqube:lts-community'
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP 'sudo docker pull sonarqube:lts-community'
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP 'sudo docker run -d --name sonarqube -p 9200:9200 sonarqube:lts-community'
   only:
     - main
 
@@ -24,7 +24,7 @@ sonarqubefrontend:
     - ssh-keyscan -H $FRONTEND_IP >> ~/.ssh/known_hosts  # Add Frontend EC2 host to known_hosts file
     
   script:
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP 'docker pull sonarqube:lts-community'
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP 'docker run -d --name sonarqube -p 9200:9200 sonarqube:lts-community'
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP 'sudo docker pull sonarqube:lts-community'
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP 'sudo docker run -d --name sonarqube -p 9200:9200 sonarqube:lts-community'
   only:
     - main
