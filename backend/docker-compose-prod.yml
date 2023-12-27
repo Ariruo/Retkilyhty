@@ -9,6 +9,7 @@ services:
       - .env
     volumes:
       - ./geodata.sql:/docker-entrypoint-initdb.d/geodata.sql
+      - pgdata:/var/lib/postgresql/data 
     ports:
       - "5432:5432"
     image: postgres  # Set the image name for the postgres service
@@ -26,3 +27,6 @@ services:
       - "9000:9000"
     image: backend  # Set the image name for the backend service
     container_name: backend
+
+volumes:
+  pgdata:  # Persistent volume for ongoing changes
