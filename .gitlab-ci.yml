@@ -3,20 +3,44 @@ include:
   - local: ci/deploy.yml
   - local: ci/backup_database.yml
 
-
-
 stages:
   - build
   - deploy
   - backup_database
   - deploy_backend
   - deploy_frontend
+  - terraform_plan
+  - terraform_apply
+  - terraform_destroy
 
+# Define Terraform jobs
+stages:
+  - terraform_plan
+  - terraform_apply
+  - terraform_destroy
 
+terraform_plan:
+  stage: terraform_plan
+  script:
+    - cd terraform
+    - terraform init
+    - terraform plan -out=tfplan
+  only:
+    - iac
 
+terraform_apply:
+  stage: terraform_apply
+  script:
+    - cd terraform
+    - terraform apply tfplan
+  only:
+    - iac
 
-
-
-
-
+terraform_destroy:
+  stage: terraform_destroy
+  script:
+    - cd terraform
+    - terraform destroy
+  only:
+    - iac
 
