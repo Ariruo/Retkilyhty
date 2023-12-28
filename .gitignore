@@ -7,3 +7,5 @@ IaC/
 # Logs
 *.log
 .env
+terraform
+Cloudformation
