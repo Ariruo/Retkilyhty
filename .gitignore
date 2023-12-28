@@ -8,6 +8,6 @@ IaC/
 *.log
 .env
 
-CloudFormation/
+cloudformation/
 terraform/
 ```
