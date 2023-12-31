@@ -1,47 +1,40 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
-// Custom hook for fetching data
-function useFetchData(fetchDataFn) {
+function useFetchData2(fetchDataFn) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
-      if (data.length === 0) { // Check if data has not been fetched yet
+      if (data.length === 0) {
         try {
           const fetchedData = await fetchDataFn();
-          
-          const preparedData = fetchedData.map((feature) => ({
-            type: "Feature",
+         
+          const preparedData = fetchedData.map(item => ({
+            type: 'Feature',
             properties: {
               cluster: false,
-              name: feature.properties.name,
-              tyyppi: feature.properties.tyyppi,
-              maakunta: feature.properties.maakunta,
-           
-              coordinates: feature.geometry.coordinates,
+              name: item.name,
+              tyyppi: item.tyyppi,
+              maakunta: item.maakunta,
             },
             geometry: {
-              type: "Point",
-              coordinates: [
-                feature.geometry.coordinates[1], // Swap latitude and longitude
-                feature.geometry.coordinates[0],
-              ],
+              type: 'Point',
+              coordinates: [parseFloat(item.latitude), parseFloat(item.longitude)],
             },
           }));
-          
           setData(preparedData);
           setLoading(false);
         } catch (error) {
-          console.error("Error fetching data:", error);
+          console.error('Error fetching data:', error);
         }
       }
     };
 
-    fetchData();
-  }, []); // Include 'data' as a dependency to trigger the effect when data changes
+    fetchData(); // Invoke the function
+  }, []); // Data length added as dependency
 
   return [data, loading];
 }
 
-export default useFetchData;
+export default useFetchData2;

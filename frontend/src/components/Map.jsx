@@ -1,31 +1,20 @@
 import React, { useState, useEffect, lazy, useRef  } from "react";
-
 import Map, { Marker, Popup, GeolocateControl,} from "react-map-gl";
 import { IconButton } from '@mui/material'; 
 import { FaTimes } from 'react-icons/fa'; 
 import './popup.css';
-
 import Coordinatecabin from "./Coordinatescabin";
 import getUserCoordinates from "../service/getUserCoordinates";
 import calculateDistance from "../service/calculateDistance"; 
-
 import SearchResultList from "./SearchResultList";
 import FindClosestMarkerButton from "./FindClosestMarkerButton";
 import SidebarButton from "./SidebarButton";
 import Addlocation from "./AddLocation";
-
-
-
-
 import fetchData from "../api/fetch";
-import useFetchData2 from "../hooks/toggleAndFetchData2";
-
-
+import useFetchData from "../hooks/toggleAndFetchData";
 import CustomMarker from "./CustomMarker";
-
 import Searchbar from "./Searchbar";
 import 'mapbox-gl/dist/mapbox-gl.css';
-
 import CustomClusterMarker from "./CustomClusterMarker";
 import useCluster from "../hooks/useCluster";
 import Sidebar from "./Sidebar";
@@ -45,9 +34,7 @@ import ruokailukatosIcon from '../../assets/ruokailukatos.png'
 import Addlocationbutton from "./AddLocationButton";
 
 
-
 export default function Mapp() {
-
 
 const MapID =  import.meta.env.VITE_MAPID || import.meta.env.VITE_MAPBOX_TOKEN 
 const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000"; 
@@ -65,8 +52,6 @@ const nahtavyysEndpoint = `${baseUrl}/api/nähtävyys`;
 const luolaEndpoint = `${baseUrl}/api/luola`;
 const lahdeEndpoint = `${baseUrl}/api/lähde`;
 const ruokailukatosEndpoint = `${baseUrl}/api/ruokailukatos`;
-
- 
 
 const [open, setOpen] = useState(false);
 const [distance, setDistance] = useState(null)
@@ -91,40 +76,34 @@ const [viewState, setViewState] = useState({
   zoom: 5, 
 });
 const [showCabins, setShowCabins] = useState(true);
-const [nuotiopaikkaData, loadingnuotipaikka] = useFetchData2(async () => await fetchData(nuotiopaikkaEndpoint));
-const [autiotupaData, loadingautiotupa] = useFetchData2(async () => await fetchData(autiotupaEndpoint));
+const [nuotiopaikkaData, loadingnuotipaikka] = useFetchData(async () => await fetchData(nuotiopaikkaEndpoint));
+const [autiotupaData, loadingautiotupa] = useFetchData(async () => await fetchData(autiotupaEndpoint));
 const [showNuotipaikka, setShowNuotipaikka] = useState(true);
-const [varaustupaData, loadingvaraus ] = useFetchData2(async () => await fetchData(varaustupaEndpoint));
+const [varaustupaData, loadingvaraus ] = useFetchData(async () => await fetchData(varaustupaEndpoint));
 const [showVaraustupas, setShowVaraustupas] = useState(true);
-const [kotaData, loadingkota] = useFetchData2(async () => await fetchData(kotaEndpoint));
+const [kotaData, loadingkota] = useFetchData(async () => await fetchData(kotaEndpoint));
 const [showKota, setShowKota] = useState(true);
-const [laavuData, loadinglaavu] = useFetchData2(async () => await fetchData(laavuEndpoint));
+const [laavuData, loadinglaavu] = useFetchData(async () => await fetchData(laavuEndpoint));
 const [showLaavu, setShowLaavu] = useState(true);
-const [paivatupaData, loadingpaivatupa] = useFetchData2(async () => await fetchData(paivatupaEndpoint));
+const [paivatupaData, loadingpaivatupa] = useFetchData(async () => await fetchData(paivatupaEndpoint));
 const [showPaivatupa, setShowPaivatupa] = useState(true);
-const [kammiData, loadingkammi] = useFetchData2(async () => await fetchData(kammiEndpoint));
+const [kammiData, loadingkammi] = useFetchData(async () => await fetchData(kammiEndpoint));
 const [showKammi, setShowKammi] = useState(true);
-const [saunaData, loadingsauna] = useFetchData2(async () => await fetchData(saunaEndpoint));
+const [saunaData, loadingsauna] = useFetchData(async () => await fetchData(saunaEndpoint));
 const [showSauna, setShowSauna] = useState(true);
-const [lintutorniData, loadinglintutorni] = useFetchData2(async () => await fetchData(lintutorniEndpoint));
+const [lintutorniData, loadinglintutorni] = useFetchData(async () => await fetchData(lintutorniEndpoint));
 const [showLintutorni, setShowLintutorni] = useState(true);
-const [nahtavyysData, loadingnahtavyys] = useFetchData2(async () => await fetchData(nahtavyysEndpoint));
+const [nahtavyysData, loadingnahtavyys] = useFetchData(async () => await fetchData(nahtavyysEndpoint));
 const [showNahtavyys, setShowNahtavyys] = useState(true);
-const [luolaData, loadingluola] = useFetchData2(async () => await fetchData(luolaEndpoint));
+const [luolaData, loadingluola] = useFetchData(async () => await fetchData(luolaEndpoint));
 const [showLuola, setShowLuola] = useState(true);
-const [lahdeData, loadinglahde] = useFetchData2(async () => await fetchData(lahdeEndpoint));
+const [lahdeData, loadinglahde] = useFetchData(async () => await fetchData(lahdeEndpoint));
 const [showLahde, setShowLahde] = useState(true);
-const [ruokailukatosData, loadingruokailukatos] = useFetchData2(async () => await fetchData(ruokailukatosEndpoint));
+const [ruokailukatosData, loadingruokailukatos] = useFetchData(async () => await fetchData(ruokailukatosEndpoint));
 const [showRuokailukatos, setShowRuokailukatos] = useState(true);
 
 
 
-
-
-  
- 
-  
-  
 
 const toggleAddLocation = () => {
   setShowAddLocation(!showAddLocation); // Toggle the visibility state
@@ -645,11 +624,7 @@ setShowRuokailukatos={setShowRuokailukatos}
     </div>
   
 
-  
-
-
-
-{hoveredPark && isLargeScreen && (
+  {hoveredPark && isLargeScreen && (
   <Popup
     latitude={hoveredPark.geometry.coordinates[1]}
     longitude={hoveredPark.geometry.coordinates[0]}
@@ -667,9 +642,6 @@ setShowRuokailukatos={setShowRuokailukatos}
    
   </Popup>
 )}
-
-
-
 
 {showCabins && autiotupa.map((cluster, index) => {
           const [longitude, latitude] = cluster.geometry.coordinates;
@@ -753,11 +725,6 @@ setShowRuokailukatos={setShowRuokailukatos}
 
     
 
-
-
-
-             
- 
 {showNuotipaikka && nuotiopaikka.map((cluster, index) => {
           const [longitude, latitude] = cluster.geometry.coordinates;
           const {cluster: isCluster} = cluster.properties;
@@ -1056,22 +1023,8 @@ setShowRuokailukatos={setShowRuokailukatos}
             
           );
         })}
-   
-   
 
-
-
-  
- 
-
- 
-
-
-
-    
-       
-     
-        <GeolocateControl
+      <GeolocateControl
         positionOptions={{ enableHighAccuracy: true }}
         trackUserLocation={true}
         showUserHeading={true}
