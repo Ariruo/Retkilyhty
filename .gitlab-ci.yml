@@ -30,3 +30,4 @@ sonarcloud-check:
     - master
     - develop
     - main
+    - dev
