@@ -1,23 +1,18 @@
-include:
-  - local: ci/build.yml
-  - local: ci/deploy.yml
-  - local: ci/backup_database.yml
-
 stages:
   - build
   - deploy
   - backup_database
   - deploy_backend
   - deploy_frontend
-  - validate   # Adding the Terraform validation stage
-  - plan       # Adding the Terraform planning stage
+  - validate
+  - plan
 
 variables:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
   GIT_DEPTH: "0"
 
 sonarcloud-check:
-  stage: build  # Assigning the job to the 'build' stage
+  stage: build
   image:
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
@@ -35,7 +30,7 @@ sonarcloud-check:
     - dev
 
 validate:
-  stage: validate  # Defining the Terraform validation stage
+  stage: validate
   image:
     name: hashicorp/terraform:light
     entrypoint:
@@ -46,32 +41,19 @@ validate:
     - terraform validate
   only:
     variables:
-      - $RUN_TERRAFORM_VALIDATION == "true"  # Manually trigger with this variable
+      - $RUN_TERRAFORM_VALIDATION == "true"
 
 plan:
-  stage: plan  # Defining the Terraform planning stage
+  stage: plan
   image:
     name: hashicorp/terraform:light
     entrypoint:
       - '/usr/bin/env'
       - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
   script:
-
-
     - terraform init
     - terraform plan -out=tfplan -var="KeyName=${KeyName}" -var="REGISTRY_USER=${REGISTRY_USER}" -var="REGISTRY_PASSWORD=${REGISTRY_PASSWORD}" -var="POSTGRES_DB=${POSTGRES_DB}" -var="POSTGRES_USER=${POSTGRES_USER}" -var="POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" -var="POSTGRES_PORT=${POSTGRES_PORT}" -var="POSTGRES_HOST=${POSTGRES_HOST}"
   artifacts:
     paths:
-      - tfplan 
-
-
-    only:
-      variables:
-      - $RUN_TERRAFORM_PLANNING == "true"  
-
-  
-
-
-
+      - tfplan
    
-
