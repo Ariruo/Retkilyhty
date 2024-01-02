@@ -9,6 +9,8 @@ stages:
   - backup_database
   - deploy_backend
   - deploy_frontend
+  - validate   # Adding the Terraform validation stage
+  - plan       # Adding the Terraform planning stage
 
 variables:
   SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
@@ -31,3 +33,34 @@ sonarcloud-check:
     - develop
     - main
     - dev
+
+validate:
+  stage: validate  # Defining the Terraform validation stage
+  image:
+    name: hashicorp/terraform:light
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - terraform init
+    - terraform validate
+  only:
+    variables:
+      - $RUN_TERRAFORM_VALIDATION == "true"  # Manually trigger with this variable
+
+plan:
+  stage: plan  # Defining the Terraform planning stage
+  image:
+    name: hashicorp/terraform:light
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - terraform init
+    - terraform plan -out=tfplan -var="KeyName=${KeyName}" -var="REGISTRY_USER=${REGISTRY_USER}" -var="REGISTRY_PASSWORD=${REGISTRY_PASSWORD}" -var="POSTGRES_DB=${POSTGRES_DB}" -var="POSTGRES_USER=${POSTGRES_USER}" -var="POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" -var="POSTGRES_PORT=${POSTGRES_PORT}" -var="POSTGRES_HOST=${POSTGRES_HOST}"
+  artifacts:
+    paths:
+      - tfplan 
+  only:
+    variables:
+      - $RUN_TERRAFORM_PLANNING == "true"  # Manually trigger with this variable
