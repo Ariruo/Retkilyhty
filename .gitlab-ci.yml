@@ -67,7 +67,7 @@ plan:
 
     only:
       variables:
-      - $RUN_TERRAFORM_PLANNING == "true"  # Manually trigger with this variable
+      - $RUN_TERRAFORM_PLANNING == "true"  
 
   
 
