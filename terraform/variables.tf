@@ -45,10 +45,3 @@ variable "POSTGRES_HOST" {
   type        = string
 }
 
-variable "AWS_ACCESS_KEY" {
-  description = "AWS Access Key"
-}
-
-variable "AWS_SECRET_ACCESS_KEY" {
-  description = "AWS Secret Access Key"
-}
