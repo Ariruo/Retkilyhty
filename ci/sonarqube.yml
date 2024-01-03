@@ -1,30 +1,21 @@
-sonarqubebackend:
-  stage: deploy
-  image: ubuntu:latest
-  before_script:
-    - apt-get update && apt-get install -y openssh-client
-    - mkdir -p ~/.ssh  # Ensure the ~/.ssh directory exists
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/$KEY.pem  
-    - chmod 600 ~/.ssh/$KEY.pem  # Set proper permissions
-    - ssh-keyscan -H $BACKEND_IP >> ~/.ssh/known_hosts  # Add EC2 host to known_hosts file
-  script:
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP 'sudo docker pull sonarqube:lts-community'
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP 'sudo docker run -d --name sonarqube -p 9200:9200 sonarqube:lts-community'
-  only:
-    - main
+variables:
+  SONAR_USER_HOME: "${CI_PROJECT_DIR}/.sonar"
+  GIT_DEPTH: "0"
 
-sonarqubefrontend:
-  stage: deploy
-  image: ubuntu:latest
-  before_script:
-    - apt-get update && apt-get install -y openssh-client
-    - mkdir -p ~/.ssh  # Ensure the ~/.ssh directory exists
-    - echo "$SSH_PRIVATE_KEY" > ~/.ssh/$KEY.pem  
-    - chmod 600 ~/.ssh/$KEY.pem  # Set proper permissions
-    - ssh-keyscan -H $FRONTEND_IP >> ~/.ssh/known_hosts  # Add Frontend EC2 host to known_hosts file
-    
+sonarcloud-check:
+  stage: build
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  cache:
+    key: "${CI_JOB_NAME}"
+    paths:
+      - .sonar/cache
   script:
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP 'sudo docker pull sonarqube:lts-community'
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP 'sudo docker run -d --name sonarqube -p 9200:9200 sonarqube:lts-community'
+    - sonar-scanner
   only:
+    - merge_requests
+    - master
+    - develop
     - main
+    - dev

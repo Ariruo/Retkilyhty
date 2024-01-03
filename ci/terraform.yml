@@ -1,0 +1,60 @@
+terraform_validate:
+  stage: terraform_validate
+  image:
+    name: hashicorp/terraform:light
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - cd terraform/
+    - terraform init
+    - terraform validate
+  only:
+    variables:
+      - $RUN_TERRAFORM_VALIDATION == "true"
+
+terraform_plan:
+  stage: terraform_plan
+  image:
+    name: hashicorp/terraform:light
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - cd terraform/
+    - terraform init
+    - terraform plan -out=tfplan -var="KeyName=${KeyName}" -var="REGISTRY_USER=${REGISTRY_USER}" -var="REGISTRY_PASSWORD=${REGISTRY_PASSWORD}" -var="POSTGRES_DB=${POSTGRES_DB}" -var="POSTGRES_USER=${POSTGRES_USER}" -var="POSTGRES_PASSWORD=${POSTGRES_PASSWORD}" -var="POSTGRES_PORT=${POSTGRES_PORT}" -var="POSTGRES_HOST=${POSTGRES_HOST}"
+  artifacts:
+    paths:
+      - tfplan
+  only:
+    variables:
+      - $RUN_TERRAFORM_PLAN == "true"
+
+terraform_apply:
+  stage: terraform_apply
+  image:
+    name: hashicorp/terraform:light
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - cd terraform/
+    - terraform apply tfplan
+  only:
+    variables:
+      - $RUN_TERRAFORM_APPLY == "true"
+
+terraform_destroy:
+  stage: terraform_destroy
+  image:
+    name: hashicorp/terraform:light
+    entrypoint:
+      - '/usr/bin/env'
+      - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+  script:
+    - cd terraform/
+    - terraform destroy -auto-approve
+  only:
+    variables:
+      - $RUN_TERRAFORM_DESTROY == "true"
