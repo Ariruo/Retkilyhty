@@ -51,10 +51,16 @@ resource "aws_iam_instance_profile" "s3_access_backend_instance_profile" {
 resource "aws_s3_bucket" "dbdump" {
   bucket = "DBdump"
 
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+
   tags = {
     Name = "DBdump"
   }
 }
+
 
 
 output "role_name" {
