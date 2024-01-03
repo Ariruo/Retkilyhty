@@ -7,7 +7,16 @@ IaC/
 # Logs
 *.log
 .env
+.vscode
+
 
 cloudformation/
-terraform/
-```
+
+
+
+# Exclude backend and frontend folders
+
+
+# Include folders inside terraform directory
+
+
