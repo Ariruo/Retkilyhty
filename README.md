@@ -11,6 +11,7 @@ Retkilyhty is a versatile application that empowers users to easily discover and
 - [Technologies](#technologies)
 - [Installation](#installation)
 - [Hosting](#hosting)
+- [infrastructure](#Infrastructure)
   
 ## Features
 
@@ -37,20 +38,63 @@ TrailTorch is powered by the following technologies:
 
 ### Third-Party Data Sources
 
-TrailTorch leverages data from various sources, including the [Tulikartta](https://www.tulikartta.fi/) API, for cabin location information, and it integrates with [OpenWeatherMap](https://openweathermap.org/) for up-to-date weather details.
+Retkilyhty leverages data from various sources, including the [Tulikartta](https://www.tulikartta.fi/) API, for  location information, and it integrates with [OpenWeatherMap](https://openweathermap.org/) for up-to-date weather details.
 
 ## Installation
 
 To use this app effectively, you'll need an [OpenWeatherMap](https://openweathermap.org/) API key and a [Mapbox](https://www.mapbox.com/) API key. You also can have [Recapcha](https://developers.google.com/recaptcha) key
 
-1. Clone the repository.
-2. Navigate to both the frontend and backend directories and execute `npm install`.
-3. In the frontend, start the server using `npm run dev`. (you can also use the dockerfile.frontend)
-4. In the backend, launch database and backend within the docker-compose prod`. (you need to have env file which has postgres settings)
+1. **Clone the repository.**
+
+2. **Backend Setup:**
+
+   - Navigate to the backend directory.
+   - Run the following Docker command to start the backend server and database:
+
+
+ ```bash
+  docker-compose -f docker-compose-prod.yml build
+ ```
+     
+     docker-compose -f docker-compose-prod.yml up
+  
+
+   - Ensure you have an env file containing PostgreSQL settings.
+
+3. **Frontend Setup:**
+
+   - Navigate to the frontend directory.
+   
+    
+
+   - Create the Docker image for the frontend:
+
+     ```bash
+     docker build -t my-frontend-image -f dockerfile.frontend .
+     ```
+
+   - Start the frontend container:
+
+     ```bash
+     docker run -p 8000:8000 my-frontend-image
+     ```
+
+   - Ensure you have an env file in the frontend directory containing necessary configurations.
+
+
+
+
+
+
 
 ## Hosting
 
 TrailTorch is hosted on AWS, ensuring reliable performance and accessibility to users across the globe.
+
+## Infrastructure
+
+<img src="retkilyhty.png" alt="Infrastructure Diagram" width="400"/>
+
 
 ## Contributing
 
