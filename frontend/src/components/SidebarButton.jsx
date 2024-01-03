@@ -1,7 +1,7 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faXmark,  faBars  } from '@fortawesome/free-solid-svg-icons';
+
 
 const SidebarButton = ({ open, toggleSidebar }) => {
     const hamburgerIconTransition = open ? "transition duration-300 ease-in-out transform rotate-180" : "transition duration-300 ease-in-out transform rotate-0";

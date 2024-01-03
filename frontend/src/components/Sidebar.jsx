@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
+
 import { IconButton } from '@mui/material';
 import { FaTimes } from 'react-icons/fa';
 
@@ -69,7 +67,7 @@ export default function Sidebar({
 
   const sidebarWidth = open ? 'w-70 transition-width duration-300' : 'w-0 transition-width duration-300';
   const sidebarAnimation = open ? 'translate-x-0' : '-translate-x-full';
-  const hamburgerIconTransition = open ? 'transition duration-300 ease-in-out transform rotate-180' : 'transition duration-300 ease-in-out transform rotate-0';
+ 
 
   return (
     <div className="flex">

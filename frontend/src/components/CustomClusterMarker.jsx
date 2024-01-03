@@ -1,7 +1,7 @@
 import React  from "react";
 import { Marker } from "react-map-gl";
 
-function CustomClusterMarker({ cluster, backgroundColor, points, onClusterClick, mapRef, setViewState, viewState }) {
+function CustomClusterMarker({ cluster, backgroundColor, points, mapRef}) {
   const [longitude, latitude] = cluster.geometry.coordinates;
   const { cluster: isCluster, point_count: pointCount } = cluster.properties;
 
@@ -45,7 +45,7 @@ function CustomClusterMarker({ cluster, backgroundColor, points, onClusterClick,
    
     return (
       <Marker latitude={latitude} longitude={longitude}>
-        <div style={style} onClick={handleClusterClick}>
+        <div style={style} onClick={handleClusterClick} role="button">
           {pointCount}
         </div>
       </Marker>

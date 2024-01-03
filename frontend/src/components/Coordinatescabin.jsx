@@ -6,20 +6,12 @@ import axios from 'axios';
 
 const Coordinatecabin = ({ latitude, longitude }) => {
   const [temperature, setTemperature] = useState('');
-  const [description, setDescription] = useState('');
   const [visibility, setVisibility] = useState('');
   const [windSpeed, setWindSpeed] = useState('');
-  const [updatedAt, setUpdatedAt] = useState('');
   const [error, setError] = useState('');
   const [icon, setIcon] = useState('');
   const [sunrise, setSunrise] = useState('');
   const [sunset, setSunset] = useState('');
-  const [showExtraData, setShowExtraData] = useState(false);
-
-  const toggleExtraData = () => {
-    setShowExtraData(!showExtraData);
-  };
-  
 
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
   
@@ -31,18 +23,10 @@ const Coordinatecabin = ({ latitude, longitude }) => {
         );
 
         const data = response.data;
-
-        const currentTime = new Date();
-        const hours = currentTime.getHours().toString().padStart(2, '0');
-        const minutes = currentTime.getMinutes().toString().padStart(2, '0');
-        const seconds = currentTime.getSeconds().toString().padStart(2, '0');
-        const formattedTime = `${hours}:${minutes}`;
-
+        
         setTemperature(data?.main?.temp || '');
-        setDescription(data?.weather[0]?.description || '');
         setVisibility(data?.visibility || '');
         setWindSpeed(data?.wind?.speed || '');
-        setUpdatedAt(formattedTime); 
         setIcon(data?.weather[0]?.icon || '');
 
         const sunriseTime = new Date(data?.sys?.sunrise * 1000);

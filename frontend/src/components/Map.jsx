@@ -1,5 +1,5 @@
-import React, { useState, useEffect, lazy, useRef  } from "react";
-import Map, { Marker, Popup, GeolocateControl,} from "react-map-gl";
+import React, { useState, useEffect, useRef  } from "react";
+import Map, { Popup, GeolocateControl,} from "react-map-gl";
 import { IconButton } from '@mui/material'; 
 import { FaTimes } from 'react-icons/fa'; 
 import './popup.css';
@@ -76,30 +76,30 @@ const [viewState, setViewState] = useState({
   zoom: 5, 
 });
 const [showCabins, setShowCabins] = useState(true);
-const [nuotiopaikkaData, loadingnuotipaikka] = useFetchData(async () => await fetchData(nuotiopaikkaEndpoint));
-const [autiotupaData, loadingautiotupa] = useFetchData(async () => await fetchData(autiotupaEndpoint));
+const [nuotiopaikkaData] = useFetchData(async () => await fetchData(nuotiopaikkaEndpoint));
+const [autiotupaData] = useFetchData(async () => await fetchData(autiotupaEndpoint));
 const [showNuotipaikka, setShowNuotipaikka] = useState(true);
-const [varaustupaData, loadingvaraus ] = useFetchData(async () => await fetchData(varaustupaEndpoint));
+const [varaustupaData ] = useFetchData(async () => await fetchData(varaustupaEndpoint));
 const [showVaraustupas, setShowVaraustupas] = useState(true);
-const [kotaData, loadingkota] = useFetchData(async () => await fetchData(kotaEndpoint));
+const [kotaData] = useFetchData(async () => await fetchData(kotaEndpoint));
 const [showKota, setShowKota] = useState(true);
-const [laavuData, loadinglaavu] = useFetchData(async () => await fetchData(laavuEndpoint));
+const [laavuData] = useFetchData(async () => await fetchData(laavuEndpoint));
 const [showLaavu, setShowLaavu] = useState(true);
-const [paivatupaData, loadingpaivatupa] = useFetchData(async () => await fetchData(paivatupaEndpoint));
+const [paivatupaData] = useFetchData(async () => await fetchData(paivatupaEndpoint));
 const [showPaivatupa, setShowPaivatupa] = useState(true);
-const [kammiData, loadingkammi] = useFetchData(async () => await fetchData(kammiEndpoint));
+const [kammiData] = useFetchData(async () => await fetchData(kammiEndpoint));
 const [showKammi, setShowKammi] = useState(true);
-const [saunaData, loadingsauna] = useFetchData(async () => await fetchData(saunaEndpoint));
+const [saunaData] = useFetchData(async () => await fetchData(saunaEndpoint));
 const [showSauna, setShowSauna] = useState(true);
-const [lintutorniData, loadinglintutorni] = useFetchData(async () => await fetchData(lintutorniEndpoint));
+const [lintutorniData] = useFetchData(async () => await fetchData(lintutorniEndpoint));
 const [showLintutorni, setShowLintutorni] = useState(true);
-const [nahtavyysData, loadingnahtavyys] = useFetchData(async () => await fetchData(nahtavyysEndpoint));
+const [nahtavyysData] = useFetchData(async () => await fetchData(nahtavyysEndpoint));
 const [showNahtavyys, setShowNahtavyys] = useState(true);
-const [luolaData, loadingluola] = useFetchData(async () => await fetchData(luolaEndpoint));
+const [luolaData] = useFetchData(async () => await fetchData(luolaEndpoint));
 const [showLuola, setShowLuola] = useState(true);
-const [lahdeData, loadinglahde] = useFetchData(async () => await fetchData(lahdeEndpoint));
+const [lahdeData] = useFetchData(async () => await fetchData(lahdeEndpoint));
 const [showLahde, setShowLahde] = useState(true);
-const [ruokailukatosData, loadingruokailukatos] = useFetchData(async () => await fetchData(ruokailukatosEndpoint));
+const [ruokailukatosData] = useFetchData(async () => await fetchData(ruokailukatosEndpoint));
 const [showRuokailukatos, setShowRuokailukatos] = useState(true);
 
 

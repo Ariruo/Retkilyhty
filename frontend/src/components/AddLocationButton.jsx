@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 
-const Addlocationbutton = ({ toggleAddLocation, showAddLocation }) => {
+const Addlocationbutton = ({ toggleAddLocation}) => {
   const [isActive, setIsActive] = useState(false);
-  const isMarkerPresent = showAddLocation; // Consider showAddLocation to determine if marker is present
-
+  
   const handleClick = () => {
     setIsActive(!isActive);
     toggleAddLocation(); // Toggle the location here if needed on button click

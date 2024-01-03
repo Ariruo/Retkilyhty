@@ -10,10 +10,9 @@ import {
   InputLabel,
   Dialog,
   DialogTitle,
-  Typography,
   DialogActions,
 } from '@mui/material';
-import { FaTimes, FaTruckMonster } from 'react-icons/fa';
+import { FaTimes } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import ReCAPTCHA from "react-google-recaptcha";
 import 'react-toastify/dist/ReactToastify.css';
@@ -37,11 +36,9 @@ const AddLocation = ({ initialLongitude, initialLatitude, mapRef }) => {
   const [verified, setVerified] = useState(false);
 
   const getCurrentZoom = () => {
-    if (mapRef && mapRef.current && mapRef.current.getMap) {
-      return mapRef.current.getMap().getZoom();
-    }
-    return 10; // Default zoom level if the reference is not available
+    return mapRef?.current?.getMap?.()?.getZoom?.();
   };
+  
 
   const currentZoom = getCurrentZoom();
   const offsetMultiplier = 0.00030 * Math.pow(2, 15 - currentZoom);

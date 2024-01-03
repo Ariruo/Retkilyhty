@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 
-function useFetchData2(fetchDataFn) {
+function useFetchData(fetchDataFn) {
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+ 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +34,7 @@ function useFetchData2(fetchDataFn) {
     fetchData(); // Invoke the function
   }, []); // Data length added as dependency
 
-  return [data, loading];
+  return [data];
 }
 
-export default useFetchData2;
+export default useFetchData;
