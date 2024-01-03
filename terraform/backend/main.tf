@@ -48,6 +48,7 @@ resource "aws_instance" "backend_instance" {
   ami           = var.ami_id
   instance_type = "t2.micro"
   key_name      = var.KeyName
+  associate_public_ip_address = false
   iam_instance_profile = module.iam.profile_name
   tags = {
     Name = "Backend"

@@ -50,6 +50,7 @@ resource "aws_instance" "frontend_instance" {
   ami           = var.ami_id
   instance_type = "t2.micro"
   key_name      = var.KeyName
+  associate_public_ip_address = false
   tags = {
     Name = "Frontend"
   }
