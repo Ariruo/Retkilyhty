@@ -21,7 +21,6 @@ const AddLocation = ({ initialLongitude, initialLatitude, mapRef }) => {
 
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000"; 
   const sitekey = import.meta.env.VITE_RECAPTCHA
-
   const addendpoint = `${baseUrl}/api/add`;
 
   const [markerCoords, setMarkerCoords] = useState({ longitude: initialLongitude, latitude: initialLatitude });
