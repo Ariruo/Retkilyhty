@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite';
+import { UserConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-export default defineConfig({
+const config: UserConfig = {
   plugins: [react()],
   server: {
     host: true,
@@ -9,14 +9,15 @@ export default defineConfig({
     port: 8000,
   },
   build: {
-    chunkSizeWarningLimit: 1500, // Adjust the value as needed
+    chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
         manualChunks: {
           mapbox: ['react-map-gl', 'mapbox-gl'],
-          // customComponents: ['CustomMarker'], // Corrected the component name here
         },
       },
     },
   },
-});
+};
+
+export default config;

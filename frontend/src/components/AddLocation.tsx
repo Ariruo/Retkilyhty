@@ -16,46 +16,64 @@ import { FaTimes } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import ReCAPTCHA from "react-google-recaptcha";
 import 'react-toastify/dist/ReactToastify.css';
+import { AddLocationProps } from '../types/props';
 
-const AddLocation = ({ initialLongitude, initialLatitude, mapRef }) => {
 
-  const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000"; 
-  const sitekey = import.meta.env.VITE_RECAPTCHA
+
+
+const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLatitude, mapRef }) => {
+
+  const baseUrl: string = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
+  const sitekey: string = import.meta.env.VITE_RECAPTCHA
+
+
+  
   const addendpoint = `${baseUrl}/api/add`;
 
-  const [markerCoords, setMarkerCoords] = useState({ longitude: initialLongitude, latitude: initialLatitude });
-  const [formData, setFormData] = useState({
+  const [markerCoords, setMarkerCoords] = useState<{ longitude: number; latitude: number }>({
+    longitude: initialLongitude,
+    latitude: initialLatitude,
+  });
+  
+  const [formData, setFormData] = useState<{
+    name: string;
+    tyyppi: string;
+    maakunta: string;
+  }>({
     name: '',
     tyyppi: '',
     maakunta: '',
   });
-  const [showPopup, setShowPopup] = useState(false);
-  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
-  const [showDragPopup, setShowDragPopup] = useState(true); 
-  const [verified, setVerified] = useState(false);
+  
+  const [showPopup, setShowPopup] = useState<boolean>(false);
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState<boolean>(false);
+  const [showDragPopup, setShowDragPopup] = useState<boolean>(true);
+  const [verified, setVerified] = useState<boolean>(false);
 
   const getCurrentZoom = () => {
-    return mapRef?.current?.getMap?.()?.getZoom?.();
+    return mapRef?.current?.getMap?.()?.getZoom();
   };
   
 
   const currentZoom = getCurrentZoom();
-  const offsetMultiplier = 0.00030 * Math.pow(2, 15 - currentZoom);
+  const offsetMultiplier = 0.00030 * Math.pow(2, 15 - (currentZoom ?? 0));
 
   const handleMarkerClick = () => {
     setShowDragPopup(false); // Hide the drag popup when marker is clicked
    ; // Show the main popup when marker is clicked
   };
 
-  const handleMarkerDragEnd = (event) => {
-    const { lng, lat } = event.lngLat;
-    const updatedCoords = { longitude: lng, latitude: lat };
-    setMarkerCoords(updatedCoords);
-    setShowPopup(true);
-    setShowDragPopup(false);
+  const handleMarkerDragEnd = (event: { lngLat: { lng: number; lat: number } } | undefined) => {
+    if (event) {
+      const { lng, lat } = event.lngLat;
+      const updatedCoords = { longitude: lng, latitude: lat };
+      setMarkerCoords(updatedCoords);
+      setShowPopup(true);
+      setShowDragPopup(false);
+    }
   };
-
-  const handleVerifyRecaptcha = (response) => {
+  
+  const handleVerifyRecaptcha = (response: string | null) => {
     if (response) {
       setVerified(true);
     }
@@ -70,7 +88,7 @@ const AddLocation = ({ initialLongitude, initialLatitude, mapRef }) => {
   };
   
 
-  const handleConfirmation = async (confirmed) => {
+  const handleConfirmation = async (confirmed: boolean) => {
     if (confirmed) {
       // Prepare data to send to the backend
       const dataToSend = {
@@ -144,8 +162,7 @@ const AddLocation = ({ initialLongitude, initialLatitude, mapRef }) => {
             closeButton={false}
             anchor="bottom"
             className="custom-popup"
-            tipSize={5}
-            dynamicPosition={true}
+            
             closeOnClick={false}
           >
             <Box sx={{ padding: '25px' }}>
@@ -249,15 +266,15 @@ const AddLocation = ({ initialLongitude, initialLatitude, mapRef }) => {
         latitude={markerCoords.latitude + offsetMultiplier} 
           closeButton={false}
           anchor="bottom"
-          tipSize={5}
+         
         >
           <Box sx={{ padding: '10px' }}>
-            <p>Siirrä minut haluamaasi kohtaan ja lisää kohde</p>
+            <p >Siirrä minut haluamaasi kohtaan ja lisää kohde</p>
           </Box>
         </Popup>
       )}
 
-      <ToastContainer />
+      <ToastContainer /> 
     </>
   );
 };

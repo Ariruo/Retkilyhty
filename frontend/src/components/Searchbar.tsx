@@ -2,8 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
+import { SearchbarProps } from "../types/props";
+import { ApiData } from "../types/api";
 
-export default function Searchbar({ setResults, setInput, input, setShowSearchResults }) {
+
+const Searchbar: React.FC<SearchbarProps> =({ setResults, setInput, input, setShowSearchResults }) => {
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
 
   const [searchBarOpen, setSearchBarOpen] = useState(false);
@@ -11,12 +14,15 @@ export default function Searchbar({ setResults, setInput, input, setShowSearchRe
   const placeholderText = searchBarOpen ? "Etsi kohteita" : "";
   const iconSize = searchBarOpen ? "text-gray-500" : "text-gray-500 text-xl";
 
-  async function filterData(value) {
+  
+
+  async function filterData(value: string) {
     try {
       const response = await axios.get(`${baseUrl}/api/searchbyname/${value}`);
       const fetchedData = response.data;
+    
 
-      const preparedData = fetchedData.map((item) => ({
+      const preparedData = fetchedData.map((item: ApiData) => ({
         type: "Feature",
         properties: {
           cluster: false,
@@ -27,8 +33,8 @@ export default function Searchbar({ setResults, setInput, input, setShowSearchRe
         geometry: {
           type: "Point",
           coordinates: [
-            parseFloat(item.latitude),
-            parseFloat(item.longitude),
+            item.latitude,
+            item.longitude,
           ],
         },
       }));
@@ -40,7 +46,7 @@ export default function Searchbar({ setResults, setInput, input, setShowSearchRe
     }
   }
 
-  function handleChange(value) {
+  function handleChange(value: string) {
     setInput(value);
     filterData(value);
   }
@@ -50,18 +56,18 @@ export default function Searchbar({ setResults, setInput, input, setShowSearchRe
     setShowSearchResults(false);
   };
 
-  const searchBarRef = useRef(null);
+  const searchBarRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchBarRef.current && !searchBarRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (searchBarRef.current instanceof HTMLElement && !searchBarRef.current.contains(event.target as Node)) {
         setSearchBarOpen(false);
         setShowSearchResults(false);
       }
     };
-
+  
     document.addEventListener("click", handleClickOutside);
-
+  
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
@@ -93,3 +99,4 @@ export default function Searchbar({ setResults, setInput, input, setShowSearchRe
 }
 
 
+export default Searchbar;

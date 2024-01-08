@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
 import WeatherIcon from './Weathericon';
+import { CoordinateCabinProps } from '../types/props';
 
 import axios from 'axios';
 
-const Coordinatecabin = ({ latitude, longitude }) => {
+const Coordinatecabin: React.FC<CoordinateCabinProps> = ({ latitude, longitude }) => {
   const [temperature, setTemperature] = useState('');
   const [visibility, setVisibility] = useState('');
   const [windSpeed, setWindSpeed] = useState('');
@@ -13,7 +14,7 @@ const Coordinatecabin = ({ latitude, longitude }) => {
   const [sunrise, setSunrise] = useState('');
   const [sunset, setSunset] = useState('');
 
-  const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
+  const baseUrl: string = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
   
   useEffect(() => {
     const fetchWeatherByCoordinates = async () => {
@@ -45,7 +46,7 @@ const Coordinatecabin = ({ latitude, longitude }) => {
     fetchWeatherByCoordinates();
   }, [latitude, longitude]);
 
-  const roundedTemperature = Math.round(temperature);
+  const roundedTemperature = Math.round(Number(temperature));
 
   return (
     <div className="flex flex-col items-center justify-center mt-[-20px] ">

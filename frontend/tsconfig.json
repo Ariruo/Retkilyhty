@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+      "target": "esnext",
+      "module": "esnext",
+      "types": ["vite/client"],
+      "jsx": "react",
+      "strict": true,
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+    },
+    "include": ["src/**/*"] // Update the include path to point to your source directory
+  }
+  

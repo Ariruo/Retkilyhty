@@ -2,8 +2,9 @@ import React, { useState } from 'react';
 
 import { IconButton } from '@mui/material';
 import { FaTimes } from 'react-icons/fa';
+import { SidebarProps } from '../types/props';
 
-export default function Sidebar({
+const Sidebar: React.FC<SidebarProps> = ({
   open,
   toggleSidebar,
   showCabins,
@@ -32,7 +33,7 @@ export default function Sidebar({
   setShowLahde,
   showRuokailukatos,
   setShowRuokailukatos,
-}) {
+}) => {
   const [isChecked, setIsChecked] = useState(true);
 
   const toggleAll = () => {
@@ -52,7 +53,7 @@ export default function Sidebar({
     setShowRuokailukatos(!isChecked);
   };
 
-  const renderCheckbox = (label, checked, setShow) => (
+  const renderCheckbox = (label: string, checked: boolean, setShow: React.Dispatch<React.SetStateAction<boolean>>) => (
     <label
       className={`mb-2 font-sans font-Montserrat flex items-center cursor-pointer ${
         checked
@@ -132,3 +133,5 @@ export default function Sidebar({
     </div>
   );
 }
+
+export default Sidebar;

@@ -1,7 +1,10 @@
 import { useState, useEffect } from 'react';
 
-function useFetchData(fetchDataFn) {
-  const [data, setData] = useState([]);
+import { ApiData } from '../types/api';
+import { CustomPointFeature } from '../types/api';
+
+function useFetchData2(fetchDataFn: () => Promise<ApiData[]>) {
+  const [data, setData] = useState<CustomPointFeature[]>([]);
  
 
   useEffect(() => {
@@ -10,7 +13,7 @@ function useFetchData(fetchDataFn) {
         try {
           const fetchedData = await fetchDataFn();
          
-          const preparedData = fetchedData.map(item => ({
+          const preparedData:CustomPointFeature[] = fetchedData.map(item => ({
             type: 'Feature',
             properties: {
               cluster: false,
@@ -20,11 +23,11 @@ function useFetchData(fetchDataFn) {
             },
             geometry: {
               type: 'Point',
-              coordinates: [parseFloat(item.latitude), parseFloat(item.longitude)],
+              coordinates: [item.latitude, item.longitude],
             },
           }));
           setData(preparedData);
-          setLoading(false);
+         
         } catch (error) {
           console.error('Error fetching data:', error);
         }
@@ -37,4 +40,4 @@ function useFetchData(fetchDataFn) {
   return [data];
 }
 
-export default useFetchData;
+export default useFetchData2;

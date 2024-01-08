@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { AddLocationButtonProps } from '../types/props';
 
-const Addlocationbutton = ({ toggleAddLocation}) => {
+
+const Addlocationbutton: React.FC<AddLocationButtonProps> = ({ toggleAddLocation }) => {
   const [isActive, setIsActive] = useState(false);
   
   const handleClick = () => {
