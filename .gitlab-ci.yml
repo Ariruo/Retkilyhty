@@ -11,10 +11,10 @@ stages:
   - backup_database
   - deploy_backend
   - deploy_frontend
-  - validate
-  - plan
-  - apply
-  - destroy
+  - terraform_validate
+  - terraform_plan
+  - terraform_apply
+  - terraform_destroy
 
 
    
