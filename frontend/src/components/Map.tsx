@@ -197,7 +197,7 @@ const bounds = mapRef.current
 
  
    
-    console.log(nuotiopaikka)
+   
 
 
     useEffect(() => {
