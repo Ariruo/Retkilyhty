@@ -8,7 +8,7 @@ interface SidebarButtonProps {
 }
 
 const SidebarButton: React.FC<SidebarButtonProps> = ({ open, toggleSidebar }) => {
-  const hamburgerIconTransition = open ? "transition duration-300 ease-in-out transform rotate-180" : "transition duration-300 ease-in-out transform rotate-0  hover:bg-opacity-90";
+  const hamburgerIconTransition = open ? "transition duration-300 ease-in-out transform rotate-180" : "transition duration-300 ease-in-out transform rotate-0  hover:bg-opacity-90 active:bg-orange-800";
 
   return (
     <div

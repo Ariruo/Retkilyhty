@@ -75,7 +75,7 @@ const Searchbar: React.FC<SearchbarProps> =({ setResults, setInput, input, setSh
 
   return (
     <div
-      className={`input-wrapper fixed left-10 sm:left-72 first-line:  sm:top-20 pb-2  z-9 h-12 border rounded-md  border-orange-800 shadow-md bg-white top-64 transition-width duration-300 ${
+      className={`input-wrapper fixed left-10 sm:left-72 first-line:  sm:top-20 z-9 h-12 border rounded-md  border-orange-800 shadow-md bg-white top-64 transition-width duration-300 ${
         searchBarOpen ? "w-64" : "w-12"
       } hover:bg-opacity-90`}
       ref={searchBarRef}
