@@ -8,11 +8,12 @@ interface SidebarButtonProps {
 }
 
 const SidebarButton: React.FC<SidebarButtonProps> = ({ open, toggleSidebar }) => {
-  const hamburgerIconTransition = open ? "transition duration-300 ease-in-out transform rotate-180" : "transition duration-300 ease-in-out transform rotate-0  hover:bg-opacity-90";
+  const hamburgerIconTransition = open ? "transition duration-300 ease-in-out transform rotate-180" : "transition duration-300 ease-in-out transform rotate-0  hover:bg-opacity-90 active:bg-orange-800";
 
   return (
     <div
       className={`fixed top-4 md:top-20 md:left-24 left-10 cursor-pointer ${hamburgerIconTransition} bg-white p-2 rounded-md shadow-md border border-orange-800  active:bg-orange-800`}
+      title="valikko" 
     >
       <FontAwesomeIcon
         size="2x"

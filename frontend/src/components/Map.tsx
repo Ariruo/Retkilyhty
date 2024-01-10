@@ -116,11 +116,6 @@ const toggleAddLocation = () => {
 const mapRef = useRef<any>(null);
 const geoControlRef = useRef<any>(null);
 
-useEffect(() => {
-  // Activate as soon as the control is loaded
-  geoControlRef.current?.trigger()
-}, [geoControlRef.current]);
-
 
 
 const bounds = mapRef.current
@@ -221,7 +216,10 @@ const toggleSidebar = () => {
         mapboxAccessToken={MapID}
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
-        
+        onLoad={() => {
+          // This function will run once the map is fully loaded
+          geoControlRef.current?.trigger();
+        }}
         mapStyle="mapbox://styles/mapbox/outdoors-v12"
         style={{ width: "100vw", height: "100vh", position: "relative", top: 0, left: 0 }}
         ref={mapRef}

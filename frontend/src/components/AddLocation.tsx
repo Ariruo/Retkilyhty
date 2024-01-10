@@ -171,15 +171,18 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
                 onClick={() => setShowPopup(false)}
                 sx={{
                   position: 'absolute',
-                  top: '-4px',
-                  right: '-5px',
+                  top: '-0px',
+                  right: '-0px',
                   zIndex: '1',
                   '&:hover': {
-                    transform: 'scale(0.9)', // Reduce the size when hovered
+                    transform: 'scale(0.9)',
+                  },
+                  '&:hover:focus-visible': {
+                    outline: '0,1px solid gray',
                   },
                 }}
               >
-                <FaTimes className="h-6 w-6 text-gray-700 hover:text-gray-900" />
+                <FaTimes className="h-5 w-5 text-black" />
               </IconButton>
               <form
                 onSubmit={(e) => {
