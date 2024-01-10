@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect }  from 'react';
 import calculateDistance from '../service/calculateDistance';
 import { ClosestParkProps } from '../types/props';
 
@@ -6,6 +6,10 @@ import { CustomPointFeature } from '../types/api';
 import nearbyicon from '../../assets/nearby-icon-15.jpg'; 
 
 import { PointFeature } from 'supercluster';
+
+
+
+
 
 
 const FindClosestMarkerButton: React.FC<ClosestParkProps> = ({
@@ -90,6 +94,28 @@ const FindClosestMarkerButton: React.FC<ClosestParkProps> = ({
     }
   };
 
+  const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    const handleTouchStart = () => {
+      setIsActive(true);
+    };
+
+    const handleTouchEnd = () => {
+      setIsActive(false);
+    };
+
+    const button = document.getElementById('closestMarkerButton');
+    button?.addEventListener('touchstart', handleTouchStart);
+    button?.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      button?.removeEventListener('touchstart', handleTouchStart);
+      button?.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, []);
+
+
  const handleFindClosestParkbutton = () => {
   if (userCoordinates) {
     const allDataPoints = [
@@ -168,22 +194,16 @@ const FindClosestMarkerButton: React.FC<ClosestParkProps> = ({
   }
 };
   return (
-<button
-  className={`z-8 fixed bg-white p-2 rounded-md shadow-md cursor-pointer top-24 left-10 md:top-20 md:left-40 border border-orange-800 hover:bg-opacity-90 ${
-    // Inline CSS for active state
-    `
-    active:bg-orange-800
-    `
-  }`}
-  onClick={handleFindClosestParkbutton}
-  title="Etsi lähimpiä kohteita"
->
-  <img
-    src={nearbyicon}
-    alt="nearby.png"
-    style={{ width: '30px', height: '30px' }}
-  />
-</button>
+    <button
+      id="closestMarkerButton"
+      className={`z-8 fixed bg-white p-2  rounded-md shadow-md cursor-pointer top-24 left-10 md:top-20 md:left-40 border border-orange-800 hover:bg-opacity-90 ${
+        isActive ? 'bg-orange-800' : ''
+      }`}
+      onClick={handleFindClosestParkbutton}
+      title="Etsi lähimpiä kohteita"
+    >
+      <img src={nearbyicon} alt="nearby.png" style={{ width: '30px', height: '30px' }} />
+    </button>
   );
 };
 
