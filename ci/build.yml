@@ -48,7 +48,7 @@ build_and_push_frontend:
     - echo "VITE_RECAPTCHA=$VITE_RECAPTCHA" >> .env
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
   script:
-    - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile.frontend .
+    - docker build -t ariru/trailtorchfrontend:latest -f Dockerfile.frontend-prod .
     - docker push ariru/trailtorchfrontend:latest
   only:
     - main

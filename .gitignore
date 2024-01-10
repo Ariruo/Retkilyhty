@@ -1,6 +1,7 @@
 # OSX
 .DS_Store
 
+dist/
 # Node
 node_modules
 IaC/
@@ -11,7 +12,8 @@ IaC/
 
 
 cloudformation/
-
+terraform
+    
 
 
 # Exclude backend and frontend folders

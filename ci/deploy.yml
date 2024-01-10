@@ -45,7 +45,7 @@ deploy_frontend:
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker rm \$(sudo docker ps -aq) || true"
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker image prune -a --filter 'until=24h'"
     - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker pull ariru/trailtorchfrontend:latest"
-    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker run -d -p 8000:8000 --name frontend_container ariru/trailtorchfrontend:latest"
+    - ssh -i ~/.ssh/$KEY.pem ec2-user@$FRONTEND_IP "sudo docker run -d -p 8000:80 --name frontend_container ariru/trailtorchfrontend:latest"
 
   only:
     - main

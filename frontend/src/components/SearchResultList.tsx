@@ -30,7 +30,7 @@ const SearchResultList: React.FC<SearchResultListProps> = ({
   
 }) => {
   const handleResultClick = (result: CustomPointFeature) => {
-    console.log(result)
+   
     const newSelectedPark: CustomPointFeature = {
       ...result,
       geometry: {

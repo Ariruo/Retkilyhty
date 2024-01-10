@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef, Dispatch,SetStateAction   } from "react";
 import Map, {  GeolocateControl} from "react-map-gl";
-
 import './popup.css';
-
 import getUserCoordinates from "../service/getUserCoordinates";
 import calculateDistance from "../service/calculateDistance"; 
 import SearchResultList from "./SearchResultList";
@@ -197,6 +195,7 @@ const bounds = mapRef.current
 
  
    
+   
 
 
     useEffect(() => {
@@ -239,7 +238,6 @@ const toggleSidebar = () => {
   results={FilteredData}
   mapRef={mapRef}
   selectedPark={selectedPark}
-  
   input={input} 
   setInput={setInput}
   setShowSearchResults={setShowSearchResults}
@@ -280,10 +278,6 @@ toggleSidebar={toggleSidebar}
 
 
 />
-
-
-
-
 
 <FindClosestMarkerButton
   userCoordinates={userCoordinates}

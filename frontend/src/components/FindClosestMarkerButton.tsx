@@ -1,10 +1,13 @@
 import React from 'react';
 import calculateDistance from '../service/calculateDistance';
 import { ClosestParkProps } from '../types/props';
-import {GeoJsonProperties} from 'geojson';
-import { CustomPointFeature } from '../types/api';
+import { Button } from '@mui/material';
 
-import { PointFeature } from 'supercluster';
+
+import { CustomPointFeature } from '../types/api';
+import closestbuttonicon from '../../assets/nearby-icon-15.jpg';
+
+
 
 
 const FindClosestMarkerButton: React.FC<ClosestParkProps> = ({
@@ -168,11 +171,11 @@ const FindClosestMarkerButton: React.FC<ClosestParkProps> = ({
 };
   return (
     <button
-      className="z-8 fixed bg-white p-2  rounded-md shadow-md cursor-pointer top-24 left-10 md:top-20 md:left-40 border border-orange-800"
-      onClick={handleFindClosestParkbutton}
-    >
-      <img src="assets/nearby-icon-15.jpg" alt="nearby.png" style={{ width: '30px', height: '30px' }} />
-    </button>
+    className="z-8 fixed bg-white p-2 rounded-md shadow-md cursor-pointer top-24 left-10 md:top-20 md:left-40 border border-orange-800 transition duration-300 ease-in-out hover:bg-opacity-90 active:bg-orange-800"
+    onClick={handleFindClosestParkbutton}
+  >
+    <img src={closestbuttonicon} alt="nearby.png" style={{ width: '30px', height: '30px' }} />
+  </button>
   );
 };
 
