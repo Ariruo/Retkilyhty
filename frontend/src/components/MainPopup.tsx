@@ -27,6 +27,7 @@ const MainPopup: React.FC<MainPopupProps> = ({ selectedPark, setSelectedPark, di
           setSelectedPark(null);
         }}
         closeButton={false}
+        
       
       >
         <IconButton
