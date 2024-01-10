@@ -77,12 +77,12 @@ const Searchbar: React.FC<SearchbarProps> =({ setResults, setInput, input, setSh
     <div
       className={`input-wrapper fixed left-10 sm:left-72 first-line:  sm:top-20 pb-2  z-9 h-12 border rounded-md  border-orange-800 shadow-md bg-white top-64 transition-width duration-300 ${
         searchBarOpen ? "w-64" : "w-12"
-      }`}
+      } hover:bg-opacity-90`}
       ref={searchBarRef}
     >
       {searchBarOpen && (
         <input
-          className={`bg-transparent focus:outline-none text-gray-600 placeholder-gray-400 w-75 h-29 pl-2 pr-2 mt-4 text-lg`}
+          className={`bg-transparent focus:outline-none text-gray-600 placeholder-gray-400 w-75 h-29 pl-2 pr-2 mt-4 text-lg `}
           placeholder={placeholderText}
           value={input}
           onChange={(e) => handleChange(e.target.value)}
