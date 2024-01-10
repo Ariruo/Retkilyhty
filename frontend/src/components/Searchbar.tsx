@@ -79,6 +79,7 @@ const Searchbar: React.FC<SearchbarProps> =({ setResults, setInput, input, setSh
         searchBarOpen ? "w-64" : "w-12"
       } hover:bg-opacity-90`}
       ref={searchBarRef}
+      title="etsi kohteita" 
     >
       {searchBarOpen && (
         <input

@@ -20,6 +20,7 @@ const Addlocationbutton: React.FC<AddLocationButtonProps> = ({ toggleAddLocation
         borderColor: isActive ? 'white' : '#9A3412', // Change the border color based on isActive
         borderWidth: '1px', // Set the border width
       }}
+      title="Lisää kohde kartalle" // Adding a title attribute for tooltip
     >
       <img
         src={addbuttonicon}
