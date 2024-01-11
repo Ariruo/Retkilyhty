@@ -24,7 +24,7 @@ const CustomMarker: React.FC<CustomMarkerProps> = ({ latitude, longitude, park, 
   return (
     <Marker latitude={latitude} longitude={longitude}>
       <button
-        className="relative marker-container hover:scale-110"
+        className="relative marker-container hover:scale-110 active:scale-x-95"
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
         onClick={handleMarkerClick}

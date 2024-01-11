@@ -4,9 +4,38 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
 import { SearchbarProps } from "../types/props";
 import { ApiData } from "../types/api";
+import SearchResultList from "./SearchResultList";
 
 
-const Searchbar: React.FC<SearchbarProps> =({ setResults, setInput, input, setShowSearchResults }) => {
+const Searchbar: React.FC<SearchbarProps> = ({
+  setResults,
+  setInput,
+  input,
+  setShowSearchResults,
+  open,
+  setOpen,
+  toggleSidebar,
+  viewState,
+  results,
+  mapRef,
+  selectedPark,
+  setShowCabins,
+  setShowKammi,
+  setShowSauna,
+  setShowLintutorni,
+  setShowNahtavyys,
+  setShowNuotipaikka,
+  setShowPaivatupa,
+  setShowRuokailukatos,
+  setShowVaraustupas,
+  setShowLahde,
+  setShowKota,
+  setShowLaavu,
+  setShowLuola,
+  FilteredData,
+  setSelectedPark,
+  showSearchResults
+}) => {
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
 
   const [searchBarOpen, setSearchBarOpen] = useState(false);
@@ -76,7 +105,7 @@ const Searchbar: React.FC<SearchbarProps> =({ setResults, setInput, input, setSh
   return (
     <div
       className={`input-wrapper  fixed left-10 sm:left-72 first-line:  sm:top-20 z-9 h-12 border rounded-md  border-orange-800 shadow-md bg-white top-64 transition-width duration-300  ${
-        searchBarOpen ? " w-64" : "w-12"
+        searchBarOpen ? " w-64 " : "w-12 hover:bg-opacity-90"
       }`}
       ref={searchBarRef}
       title="etsi kohteita" 
@@ -95,7 +124,37 @@ const Searchbar: React.FC<SearchbarProps> =({ setResults, setInput, input, setSh
         className={`absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer ${iconSize} `}
         onClick={toggleSearchBar}
       />
-    </div>
+     
+    
+     {showSearchResults && FilteredData && FilteredData.length > 0 && (
+      <div className="pt-1"> 
+        <SearchResultList
+          viewState={viewState}
+          results={FilteredData}
+          mapRef={mapRef}
+          selectedPark={selectedPark}
+          input={input} 
+          setInput={setInput}
+          setShowSearchResults={setShowSearchResults}
+          setSelectedPark={setSelectedPark}
+          setShowCabins={setShowCabins}
+          setShowKammi={setShowKammi}
+          setShowSauna={setShowSauna}
+          setShowLintutorni={setShowLintutorni}
+          setShowNahtavyys={setShowNahtavyys}
+          setShowNuotipaikka={setShowNuotipaikka}
+          setShowPaivatupa={setShowPaivatupa}
+          setShowRuokailukatos={setShowRuokailukatos}
+          setShowVaraustupas={setShowVaraustupas}
+          setShowLahde={setShowLahde}
+          setShowKota={setShowKota}
+          setShowLaavu={setShowLaavu}
+          setShowLuola={setShowLuola}
+        />
+      </div>
+    )}
+  </div>
+    
   );
 };
 

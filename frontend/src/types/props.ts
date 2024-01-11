@@ -141,6 +141,29 @@ export interface SearchbarProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   toggleSidebar: () => void;
+  results:  CustomPointFeature[];
+  mapRef: React.MutableRefObject<any>; // Change 'any' to the specific type if available
+  selectedPark: CustomPointFeature | null;
+  
+  setSelectedPark: React.Dispatch<React.SetStateAction<CustomPointFeature | null>>;
+  FilteredData: CustomPointFeature[]
+  showSearchResults: boolean;
+  
+  
+  viewState: { zoom: number }; // Change the type to the appropriate one
+  setShowCabins: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowVaraustupas: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowNuotipaikka: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowKota: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowLaavu: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowPaivatupa: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowKammi: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowSauna: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowLintutorni: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowNahtavyys: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowLuola: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowLahde: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowRuokailukatos: React.Dispatch<React.SetStateAction<boolean>>;
  
 }
 
@@ -167,6 +190,7 @@ export interface SearchResultListProps {
   setShowLuola: React.Dispatch<React.SetStateAction<boolean>>;
   setShowLahde: React.Dispatch<React.SetStateAction<boolean>>;
   setShowRuokailukatos: React.Dispatch<React.SetStateAction<boolean>>;
+  FilteredData: CustomPointFeature[]
 
 }
 

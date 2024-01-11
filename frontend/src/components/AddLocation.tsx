@@ -149,7 +149,7 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
         longitude={markerCoords.longitude}
         latitude={markerCoords.latitude}
         draggable
-        
+       
         onDragStart={handleMarkerClick} // Attach the click event handler to show the popup
         onDragEnd={handleMarkerDragEnd}
       >
@@ -182,7 +182,7 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
                   },
                 }}
               >
-                <FaTimes className="h-5 w-5 text-black" />
+                <FaTimes className="h-5 w-5 text-black active:scale-x-75" />
               </IconButton>
               <form
                 onSubmit={(e) => {

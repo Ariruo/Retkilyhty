@@ -50,7 +50,7 @@ const CustomClusterMarker: FC<CustomClusterMarkerProps> = ({
 
     return (
       <Marker latitude={latitude} longitude={longitude}>
-        <div style={style} onClick={handleClusterClick}>
+        <div style={style} onClick={handleClusterClick} className="active:scale-y-75">
           {pointCount}
         </div>
       </Marker>

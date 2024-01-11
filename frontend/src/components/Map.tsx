@@ -227,35 +227,36 @@ const toggleSidebar = () => {
         >
 
 
+<Searchbar 
+        setSelectedPark={setSelectedPark}
+        FilteredData={FilteredData}
+        setResults={setFilteredData} 
+        setInput={setInput} 
+        input={input} 
+        setShowSearchResults={setShowSearchResults} 
+        open={open}
+        setOpen={setOpen}
+        toggleSidebar={toggleSidebar} 
+        viewState={viewState}
+        results={FilteredData}
+        mapRef={mapRef}
+        selectedPark={selectedPark}
+        setShowCabins={setShowCabins}
+        setShowKammi={setShowKammi}
+        setShowSauna={setShowSauna}
+        setShowLintutorni={setShowLintutorni}
+        setShowNahtavyys={setShowNahtavyys}
+        setShowNuotipaikka={setShowNuotipaikka}
+        setShowPaivatupa={setShowPaivatupa}
+        setShowRuokailukatos={setShowRuokailukatos}
+        setShowVaraustupas={setShowVaraustupas}
+        setShowLahde={setShowLahde}
+        setShowKota={setShowKota}
+        setShowLaavu={setShowLaavu}
+        setShowLuola={setShowLuola}
+        showSearchResults={showSearchResults}
+      />
 
-
-{showSearchResults && FilteredData && FilteredData.length > 0 && 
-  <SearchResultList
-
-  viewState={viewState}
-  results={FilteredData}
-  mapRef={mapRef}
-  selectedPark={selectedPark}
-  input={input} 
-  setInput={setInput}
-  setShowSearchResults={setShowSearchResults}
-  setSelectedPark={setSelectedPark}
-  setShowCabins={setShowCabins}
-  setShowKammi={setShowKammi}
-  setShowSauna={setShowSauna}
-  setShowLintutorni={setShowLintutorni}
-  setShowNahtavyys={setShowNahtavyys}
-  setShowNuotipaikka={setShowNuotipaikka}
-  setShowPaivatupa={setShowPaivatupa}
-  setShowRuokailukatos={setShowRuokailukatos}
-  setShowVaraustupas={setShowVaraustupas}
-  setShowLahde={setShowLahde}
-  setShowKota={setShowKota}
-  setShowLaavu={setShowLaavu}
-  setShowLuola={setShowLuola}
-
-
-  />}
 
 
 <MainPopup
@@ -265,17 +266,7 @@ const toggleSidebar = () => {
       />
 
 
-<Searchbar 
-setResults={setFilteredData} 
-setInput={setInput} 
-input={input} 
-setShowSearchResults={setShowSearchResults} 
-open={open}
-setOpen={setOpen}
-toggleSidebar={toggleSidebar} 
 
-
-/>
 
 <FindClosestMarkerButton
   userCoordinates={userCoordinates}
@@ -373,6 +364,35 @@ hoveredPark={hoveredPark}
 distance={distance ?? 0} 
 isLargeScreen={isLargeScreen} 
 />
+
+{/* {showSearchResults && FilteredData && FilteredData.length > 0 && 
+  <SearchResultList
+
+  viewState={viewState}
+  results={FilteredData}
+  mapRef={mapRef}
+  selectedPark={selectedPark}
+  input={input} 
+  setInput={setInput}
+  setShowSearchResults={setShowSearchResults}
+  setSelectedPark={setSelectedPark}
+  setShowCabins={setShowCabins}
+  setShowKammi={setShowKammi}
+  setShowSauna={setShowSauna}
+  setShowLintutorni={setShowLintutorni}
+  setShowNahtavyys={setShowNahtavyys}
+  setShowNuotipaikka={setShowNuotipaikka}
+  setShowPaivatupa={setShowPaivatupa}
+  setShowRuokailukatos={setShowRuokailukatos}
+  setShowVaraustupas={setShowVaraustupas}
+  setShowLahde={setShowLahde}
+  setShowKota={setShowKota}
+  setShowLaavu={setShowLaavu}
+  setShowLuola={setShowLuola}
+
+
+  />} */}
+
 
 {showCabins && autiotupa.map((cluster, index) => {
           const [longitude, latitude] = cluster.geometry.coordinates;

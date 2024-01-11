@@ -48,7 +48,7 @@ const MainPopup: React.FC<MainPopupProps> = ({ selectedPark, setSelectedPark, di
             },
           }}
         >
-          <FaTimes className="h-5 w-5 text-black" />
+          <FaTimes className="h-5 w-5 text-black active:scale-x-75" />
         </IconButton>
 
         <div style={{ marginTop: '1rem' }}>

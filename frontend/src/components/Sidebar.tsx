@@ -66,17 +66,18 @@ const Sidebar: React.FC<SidebarProps> = ({
     </label>
   );
 
-  const sidebarWidth = open ? 'w-70 transition-width duration-300' : 'w-0 transition-width duration-300';
-  const sidebarAnimation = open ? 'translate-x-0' : '-translate-x-full';
+  const sidebarWidth = open ? 'w-70 transition-width duration-300 ease-in-out' : 'w-0 transition-width duration-300 ease-in-out';
+  const sidebarAnimation = open ? 'transform translate-x-0 transition-transform duration-300 ease-in-out' : 'transform -translate-x-full transition-transform duration-300 ease-in-out';
+  
  
 
   return (
     <div className="flex">
       <div
-        className={`bg-white z-20 bg-opacity-80 fixed h-screen p-5 pt-8 border border-orange-800 ${sidebarWidth} rounded-r-3xl transform ${sidebarAnimation}`}
+        className={`bg-white  z-20 bg-opacity-80 fixed h-screen p-5 pt-8 border border-orange-800 ${sidebarWidth} rounded-r-3xl transform ${sidebarAnimation}`}
       >
 <IconButton
-  className="absolute top-1 right-1 p-2 cursor-pointer"
+  className="absolute top-1 right-1 p-2 cursor-pointer "
   onClick={toggleSidebar}
   sx={{
     position: 'absolute',
@@ -93,7 +94,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     },
   }}
 >
-<FaTimes className="h-6 w-6 text-gray-700 hover:text-gray-900" />
+<FaTimes className="h-6 w-6 text-gray-700 hover:text-gray-900  active:scale-x-75" />
 </IconButton>
         {open && (
           <label className={`relative inline-flex items-center cursor-pointer top-7 `}>
