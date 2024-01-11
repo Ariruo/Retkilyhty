@@ -105,7 +105,7 @@ const Searchbar: React.FC<SearchbarProps> = ({
   return (
     <div
       className={`input-wrapper  fixed left-10 sm:left-72 first-line:  sm:top-20 z-9 h-12 border rounded-md  border-orange-800 shadow-md bg-white top-64 transition-width duration-300  ${
-        searchBarOpen ? " w-64 " : "w-12 hover:bg-opacity-90"
+        searchBarOpen ? " w-64  " : "w-12 hover:bg-opacity-90 active:scale-x-90 "
       }`}
       ref={searchBarRef}
       title="etsi kohteita" 
@@ -129,6 +129,7 @@ const Searchbar: React.FC<SearchbarProps> = ({
      {showSearchResults && FilteredData && FilteredData.length > 0 && (
       <div className="pt-1"> 
         <SearchResultList
+          FilteredData={FilteredData}
           viewState={viewState}
           results={FilteredData}
           mapRef={mapRef}

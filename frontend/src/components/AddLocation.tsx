@@ -182,7 +182,7 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
                   },
                 }}
               >
-                <FaTimes className="h-5 w-5 text-black active:scale-x-75" />
+                <FaTimes className="h-5 w-5 text-black active:scale-x-90" />
               </IconButton>
               <form
                 onSubmit={(e) => {
