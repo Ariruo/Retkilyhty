@@ -12,7 +12,7 @@ const SidebarButton: React.FC<SidebarButtonProps> = ({ open, toggleSidebar }) =>
 
   return (
     <div
-      className={`fixed top-4 md:top-20 md:left-24 left-10 cursor-pointer ${hamburgerIconTransition} bg-white p-2 rounded-md shadow-md border border-orange-800  active:bg-orange-800`}
+      className={`fixed top-4 md:top-20 md:left-24 left-10 cursor-pointer ${hamburgerIconTransition} bg-white p-2 rounded-md shadow-md border border-orange-800   active:scale-x-75 transition-transform`}
       title="valikko" 
     >
       <FontAwesomeIcon
