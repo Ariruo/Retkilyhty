@@ -24,7 +24,7 @@
 
 }
 
-@media screen and (min-width: 768px) {
+
   .main-popup {
 
     top: -20px; /* Adjust this value to position it precisely on top of the marker */
@@ -33,4 +33,3 @@
     
     
   }
-}

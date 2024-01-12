@@ -1,6 +1,6 @@
 
       /* Media query for large devices (adjust the screen width as needed) */
-      @media screen and (min-width: 768px) {
+      
         .marker-popup-content {
       
           top: -21px; /* Adjust this value to position it precisely on top of the marker */
@@ -10,4 +10,4 @@
           
           
         }
-      }
+      
