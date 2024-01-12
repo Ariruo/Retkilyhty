@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { ApiData } from '../types/api';
 import { CustomPointFeature } from '../types/api';
 
-function useFetchData2(fetchDataFn: () => Promise<ApiData[]>) {
+function useFetchData(fetchDataFn: () => Promise<ApiData[]>) {
   const [data, setData] = useState<CustomPointFeature[]>([]);
  
 
@@ -40,4 +40,4 @@ function useFetchData2(fetchDataFn: () => Promise<ApiData[]>) {
   return [data];
 }
 
-export default useFetchData2;
+export default useFetchData;

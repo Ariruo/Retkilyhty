@@ -365,33 +365,7 @@ distance={distance ?? 0}
 isLargeScreen={isLargeScreen} 
 />
 
-{/* {showSearchResults && FilteredData && FilteredData.length > 0 && 
-  <SearchResultList
 
-  viewState={viewState}
-  results={FilteredData}
-  mapRef={mapRef}
-  selectedPark={selectedPark}
-  input={input} 
-  setInput={setInput}
-  setShowSearchResults={setShowSearchResults}
-  setSelectedPark={setSelectedPark}
-  setShowCabins={setShowCabins}
-  setShowKammi={setShowKammi}
-  setShowSauna={setShowSauna}
-  setShowLintutorni={setShowLintutorni}
-  setShowNahtavyys={setShowNahtavyys}
-  setShowNuotipaikka={setShowNuotipaikka}
-  setShowPaivatupa={setShowPaivatupa}
-  setShowRuokailukatos={setShowRuokailukatos}
-  setShowVaraustupas={setShowVaraustupas}
-  setShowLahde={setShowLahde}
-  setShowKota={setShowKota}
-  setShowLaavu={setShowLaavu}
-  setShowLuola={setShowLuola}
-
-
-  />} */}
 
 
 {showCabins && autiotupa.map((cluster, index) => {

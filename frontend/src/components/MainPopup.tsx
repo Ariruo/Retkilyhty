@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Popup } from 'react-map-gl';
 import { IconButton, CircularProgress } from '@mui/material'; // Import CircularProgress from Material-UI
-
+import './mainPopupStyles.css'
 import { FaTimes } from 'react-icons/fa'; // Replace with your icon library
 
 import { MainPopupProps } from '../types/props';
@@ -27,7 +27,7 @@ const MainPopup: React.FC<MainPopupProps> = ({ selectedPark, setSelectedPark, di
           setSelectedPark(null);
         }}
         closeButton={false}
-        
+        className="custom-popup"
       
       >
         <IconButton

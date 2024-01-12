@@ -172,7 +172,7 @@ const debouncedHandleFindClosestPark = debounce(handleFindClosestParkbutton, 200
 
   return (
     <button
-    className="active:scale-x-90 active:bg-orange-800 transition-transform z-8 fixed bg-white p-2 rounded-md shadow-md cursor-pointer top-24 left-10 md:top-20 md:left-40 border border-orange-800 hover:bg-opacity-90"
+    className="active:scale-x-90 active:scale-y-90  transition-transform z-8 fixed bg-white p-2 rounded-md shadow-md cursor-pointer top-24 left-10 md:top-20 md:left-40 border border-orange-800 hover:bg-opacity-90"
       onClick={debouncedHandleFindClosestPark}
       title="Etsi lähimpiä kohteita" 
     >
