@@ -1,6 +1,6 @@
 import React from 'react';
 import { Popup } from 'react-map-gl';
-import '../styles/mainPopupStyles.css';
+import '../styles/popup.css';
 import {HoverPopupProps} from '../types/props';
 
 const HoverPopup: React.FC<HoverPopupProps> =({ hoveredPark, distance, isLargeScreen }) => {
@@ -11,6 +11,7 @@ const HoverPopup: React.FC<HoverPopupProps> =({ hoveredPark, distance, isLargeSc
         longitude={hoveredPark.geometry.coordinates[0]}
         closeButton={false}
         className="marker-popup-content"
+        
       >
         <p className="font-semibold text-center">{hoveredPark.properties.name}</p>
         <p className="text-center text-xxs">({hoveredPark.properties.tyyppi})</p>

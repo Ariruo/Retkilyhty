@@ -1,25 +1,36 @@
 .mapboxgl-popup-content {
-    border-radius: 10px;
-    
-    padding: 10px; /* Add padding */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a box shadow */
-    color: #333333; /* Set text color */
-    font-size: 14px; /* Set font size */
-    font-family: 'Montserrat'
-    
-  }
+  border-radius: 10px;
+
+  padding: 10px; /* Add padding */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a box shadow */
+  color: #333333; /* Set text color */
+  font-size: 14px; /* Set font size */
+  font-family: 'Montserrat'
+
+}
 
 .mapboxgl-popup-content-wrapper {
-    padding: 1%; /* Remove the default padding */
-  }
+  padding: 1%; /* Remove the default padding */
+}
 
-  .main-popup .mapboxgl-popup-content {
-    border-radius: 10px;
-    border: 1px solid rgb(154, 52, 18);
-    padding: 10px; /* Add padding */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a box shadow */
-    color: #333333; /* Set text color */
-    font-size: 14px; /* Set font size */
-    font-family: 'Montserrat'
+.main-popup .mapboxgl-popup-content {
+  border-radius: 10px;
+  
+  padding: 10px; /* Add padding */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a box shadow */
+  color: #333333; /* Set text color */
+  font-size: 14px; /* Set font size */
+  font-family: 'Montserrat'
+
+}
+
+@media screen and (min-width: 768px) {
+  .main-popup {
+
+    top: -20px; /* Adjust this value to position it precisely on top of the marker */
+    left: 0px; /* Adjust this value to position it precisely on top of the marker */
+  
+    
     
   }
+}
