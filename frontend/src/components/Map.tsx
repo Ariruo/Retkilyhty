@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, Dispatch,SetStateAction   } from "react";
 import Map, {  GeolocateControl} from "react-map-gl";
-import '../styles/popup.css';
+
 import getUserCoordinates from "../service/getUserCoordinates";
 import calculateDistance from "../service/calculateDistance"; 
-import SearchResultList from "./SearchResultList";
+
 import FindClosestMarkerButton from "./FindClosestMarkerButton";
 import SidebarButton from "./SidebarButton";
 import Addlocation from "./AddLocation";

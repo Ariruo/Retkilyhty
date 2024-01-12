@@ -1,6 +1,6 @@
 import React from 'react';
 import { Popup } from 'react-map-gl';
-import './popup.css';
+import '../styles/mainPopupStyles.css';
 import {HoverPopupProps} from '../types/props';
 
 const HoverPopup: React.FC<HoverPopupProps> =({ hoveredPark, distance, isLargeScreen }) => {
