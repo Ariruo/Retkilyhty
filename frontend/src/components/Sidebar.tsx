@@ -83,8 +83,8 @@ const renderCheckbox = (label: string, checked: boolean, setShow: React.Dispatch
       checked
         ? 'bg-orange-800 text-white border border-orange-900 shadow-md'
         : 'bg-gray-200 text-gray-700 border border-gray-300 shadow-sm'
-    } rounded-md p-1 backdrop-blur-md transition-colors duration-300 text-sm hover:opacity-75`} // Added hover styles
-    style={{ maxWidth: '60%' }} // Add max-width or set a fixed width
+    } rounded-md p-1 backdrop-blur-md transition-colors duration-300 text-s hover:opacity-75`} // Added hover styles
+    style={{ maxWidth: '73%' }} // Add max-width or set a fixed width
     onClick={() => setShow(!checked)}
   >
     {label}
@@ -99,7 +99,7 @@ const renderCheckbox = (label: string, checked: boolean, setShow: React.Dispatch
       onClose={toggleSidebar}
     >
       <div className="min-h-screen flex flex-row bg-gray-100">
-        <div className="flex flex-col w-52 bg-white rounded-r-3xl overflow-hidden z-10">
+        <div className="flex flex-col w-48 bg-white rounded-r-3xl overflow-hidden z-10">
           <div className="flex items-center justify-center h-20 shadow-md z-20">
             <img
               src={logoIcon}
@@ -143,7 +143,7 @@ const renderCheckbox = (label: string, checked: boolean, setShow: React.Dispatch
               {submenuOpen && (
                 
                 
-                <div className="pl-12 pt-3 ">
+                <div className="pl-11 pt-3 ">
                 {renderCheckbox("Autiotupa", showCabins, setShowCabins)}
                 {renderCheckbox("Varaustupas", showVaraustupas, setShowVaraustupas)}
                 {renderCheckbox("Nuotipaikka", showNuotipaikka, setShowNuotipaikka)}
