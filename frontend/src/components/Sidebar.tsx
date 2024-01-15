@@ -4,7 +4,8 @@ import { IconButton, Drawer } from '@mui/material';
 import { FaTimes, FaBars } from 'react-icons/fa';
 import { SidebarProps } from '../types/props';
 import logoIcon from '../../assets/Logo_text.png'
-import marker from '../../assets/marker_sidebar.png'
+import envelope from '../../assets/envelope.png'
+import marker from '../../assets/sidebar-marker.png'
 
 const StyledIconButton = styled(IconButton)({
   position: 'absolute',
@@ -54,7 +55,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   setShowRuokailukatos,
 }) => {
   const [isChecked, setIsChecked] = useState(true);
-  const [menuOpen, setMenuOpen] = useState(false);
+
   const [submenuOpen, setSubmenuOpen] = useState(true);
 
   const toggleAll = () => {
@@ -91,6 +92,14 @@ const renderCheckbox = (label: string, checked: boolean, setShow: React.Dispatch
   </label>
 );
 
+const handleContactClick = () => {
+  const emailAddress = 'trailtorchinfo@gmail.com';
+  const subject = 'Palaute'; // Optional subject
+
+  const mailtoLink = `mailto:${emailAddress}?subject=${encodeURIComponent(subject)}`;
+
+  window.location.href = mailtoLink;
+};
 
   return (
     <Drawer
@@ -119,12 +128,12 @@ const renderCheckbox = (label: string, checked: boolean, setShow: React.Dispatch
   <img 
     src={marker}
     alt="Marker"
-    style={{ width: '22px', height: '30px', marginTop: '-7px' }}
+    style={{ width: '22px', height: '22px', marginTop: '-7px' }}
   />
 </span>
 
 
-<span className="text-sm font-medium">Kohteet</span>
+<span className="text-m font-medium pr-2">Kohteet</span>
 
 <svg
   sidebar-toggle-item
@@ -140,30 +149,67 @@ const renderCheckbox = (label: string, checked: boolean, setShow: React.Dispatch
   ></path>
 </svg>
 </a>
-              {submenuOpen && (
-                
-                
-                <div className="pl-11 pt-3 ">
-                {renderCheckbox("Autiotupa", showCabins, setShowCabins)}
-                {renderCheckbox("Varaustupas", showVaraustupas, setShowVaraustupas)}
-                {renderCheckbox("Nuotipaikka", showNuotipaikka, setShowNuotipaikka)}
-                {renderCheckbox("Kota", showKota, setShowKota)}
-                {renderCheckbox("Laavu", showLaavu, setShowLaavu)}
-                {renderCheckbox("Päivätupa", showPaivatupa, setShowPaivatupa)}
-                {renderCheckbox("Kammi", showKammi, setShowKammi)}
-                {renderCheckbox("Sauna", showSauna, setShowSauna)}
-                {renderCheckbox("Lintutorni", showLintutorni, setShowLintutorni)}
-                {renderCheckbox("Nähtävyys", showNahtavyys, setShowNahtavyys)}
-                {renderCheckbox("Luola", showLuola, setShowLuola)}
-                {renderCheckbox("Lähde", showLahde, setShowLahde)}
-                {renderCheckbox("Ruokailukatos", showRuokailukatos, setShowRuokailukatos)}
-                </div>
-              )}
+{submenuOpen && (
+  <div>
+    <label className={`relative inline-flex items-center cursor-pointer left-11 top-2 pb-3 `}>
+      <input
+        type="checkbox"
+        checked={isChecked}
+        className="sr-only peer focus:outline-none"
+        onClick={toggleAll}
+      />
+      <div
+        className={`w-11 h-6 bg-gray-700 peer rounded-full dark:black peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-800 border shadow`}
+        // Removed border-orange-800 and added border-orange-900
+      ></div>
+      <span className="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"></span>
+    </label>
+    
+    <div className="pl-11 pt-3 ">
+      {renderCheckbox("Autiotupa", showCabins, setShowCabins)}
+      {renderCheckbox("Varaustupas", showVaraustupas, setShowVaraustupas)}
+      {renderCheckbox("Nuotipaikka", showNuotipaikka, setShowNuotipaikka)}
+      {renderCheckbox("Kota", showKota, setShowKota)}
+      {renderCheckbox("Laavu", showLaavu, setShowLaavu)}
+      {renderCheckbox("Päivätupa", showPaivatupa, setShowPaivatupa)}
+      {renderCheckbox("Kammi", showKammi, setShowKammi)}
+      {renderCheckbox("Sauna", showSauna, setShowSauna)}
+      {renderCheckbox("Lintutorni", showLintutorni, setShowLintutorni)}
+      {renderCheckbox("Nähtävyys", showNahtavyys, setShowNahtavyys)}
+      {renderCheckbox("Luola", showLuola, setShowLuola)}
+      {renderCheckbox("Lähde", showLahde, setShowLahde)}
+      {renderCheckbox("Ruokailukatos", showRuokailukatos, setShowRuokailukatos)}
+    </div>
+  </div>
+)}
+              
               
             </li>
+            
+            <li>
+              <a
+                href="#"
+                className="flex flex-row items-center h-12 transform hover:bg-gray-50 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
+                onClick={handleContactClick}
+              >
+                <span className="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400">
+                 
+               
+  <img 
+    src={envelope}
+    alt="Marker"
+    style={{ width: '22px', height: '22px',  }}
+  />
+</span>
+                <span className="text-m font-medium">Ota yhteyttä</span>
+                
+              </a>
+            </li>
           </ul>
+          <div className="mt-auto p-4 text-center text-gray-500 text-sm">
+            &copy; {new Date().getFullYear()} Retkilyhty
+          </div>
         </div>
-        
       </div>
     </Drawer>
   );
