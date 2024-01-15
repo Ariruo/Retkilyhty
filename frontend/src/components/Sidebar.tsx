@@ -144,7 +144,7 @@ return (
 
             {submenuOpen && (
               <div>
-                <label className={`relative inline-flex items-center  left-11 top-2 pb-3 `}>
+                <label className={`relative inline-flex items-center lg:cursor-pointer left-11 top-2 pb-3 `}>
                   <input
                     type="checkbox"
                     checked={isChecked}
