@@ -44,7 +44,10 @@ const app = new Koa();
 const { Pool } = pkg;
 
 app.use(bodyParser());
-app.use(cors());
+app.use(cors({
+  origin: 'https://www.retkilyhty.fi/',
+  credentials: true,
+}));
 
 // Middleware below this line is only reached if JWT token is valid
 
@@ -70,6 +73,8 @@ app.use(async (ctx, next) => {
     ctx.throw(401, 'Unauthorized');
   }
 });
+
+
 
 
 
