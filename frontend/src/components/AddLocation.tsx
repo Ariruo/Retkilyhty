@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Marker, Popup } from 'react-map-gl';
 import {
   Box,
@@ -11,12 +11,16 @@ import {
   Dialog,
   DialogTitle,
   DialogActions,
+  
 } from '@mui/material';
 import { FaTimes } from 'react-icons/fa';
 import { ToastContainer, toast } from 'react-toastify';
 import ReCAPTCHA from "react-google-recaptcha";
 import 'react-toastify/dist/ReactToastify.css';
 import { AddLocationProps } from '../types/props';
+import { useSelector } from 'react-redux';
+import { selectToken, selectUserId, selectUsername } from '../redux/reducers/userReducer';
+
 
 
 
@@ -25,10 +29,16 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
 
   const baseUrl: string = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
   const sitekey: string = import.meta.env.VITE_RECAPTCHA
+  
+  const userState = useSelector((state) => state.user);
+  const userId = selectUserId(userState)
+  const userToken = selectToken(userState)
+  
 
+  const addendpoint = `${baseUrl}/api/add`;
+  
 
   
-  const addendpoint = `${baseUrl}/api/add`;
 
   const [markerCoords, setMarkerCoords] = useState<{ longitude: number; latitude: number }>({
     longitude: initialLongitude,
@@ -44,7 +54,8 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
     tyyppi: '',
     maakunta: '',
   });
-  
+
+ 
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [confirmationDialogOpen, setConfirmationDialogOpen] = useState<boolean>(false);
   const [showDragPopup, setShowDragPopup] = useState<boolean>(true);
@@ -53,7 +64,10 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
   const getCurrentZoom = () => {
     return mapRef?.current?.getMap?.()?.getZoom();
   };
+
+
   
+ 
 
   const currentZoom = getCurrentZoom();
   const offsetMultiplier = 0.00030 * Math.pow(2, 15 - (currentZoom ?? 0));
@@ -72,6 +86,8 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
       setShowDragPopup(false);
     }
   };
+
+  
   
   const handleVerifyRecaptcha = (response: string | null) => {
     if (response) {
@@ -93,15 +109,22 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
       // Prepare data to send to the backend
       const dataToSend = {
         ...formData,
+        tyyppi: formData.tyyppi === 'Oma kohde (näkyy vain sinulle)' ? 'Oma kohde' : formData.tyyppi,
         longitude: markerCoords.longitude,
         latitude: markerCoords.latitude,
+        user_id: userId,
+        
       };
-
+     
+console.log(dataToSend)
       try {
+        
+  
         const response = await fetch(addendpoint, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${userToken}`, // Include the token in the Authorization header
           },
           body: JSON.stringify(dataToSend),
         });
@@ -137,7 +160,13 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
     setConfirmationDialogOpen(false);
   };
 
-  const tyyppiOptions = ['Autiotupa','Päivätupa', 'Kammi', 'Kota', "Laavu", 'Lähde','Lintutorni', 'Luola', 'Nähtävyys', 'Ruokailukatos', 'Sauna', 'Nuotipaikka', 'Varaustupa'];
+  const tyyppiOptions = [
+    'Autiotupa', 'Päivätupa', 'Kammi', 'Kota', 'Laavu', 'Lähde', 'Lintutorni', 'Luola',
+    'Nähtävyys', 'Ruokailukatos', 'Sauna', 'Nuotipaikka', 'Varaustupa', 
+    ...(userId && userToken ? ['Oma kohde (näkyy vain sinulle)'] : []),
+  ];
+  
+  
   const maakuntaOptions = [
     'Ahvenanmaa', 'Keski-Suomi', 'Keski-Pohjanmaa', 'Itä-Suomi', 'Varsinais-Suomi', 'Kainuu', 'Kymenlaakso', 'Lappi', 'Pohjois-Karjala', 'Pohjois-Pohjanmaa', 'Pohjois-Savo', 'Pohjanmaa', 'Päijät-Häme', 'Pirkanmaa', 'Satakunta', 'Etelä-Karjala', 'Etelä-Pohjanmaa', 'Etelä-Savo', 'Häme', 'Uusimaa'
   ];
@@ -161,7 +190,7 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
             onClose={() => setShowPopup(false)}
             closeButton={false}
             anchor="bottom"
-            className="custom-popup"
+           
             
             closeOnClick={false}
           >
@@ -190,7 +219,11 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
                   handleSubmit();
                 }}
               >
-                <TextField
+          
+            
+
+
+      <TextField
                   label="Nimi"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -198,21 +231,27 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
                   fullWidth
                   sx={{ marginBottom: '10px' }}
                 />
+              
+  
+          
                 <InputLabel id="demo-simple-select-standard-label">Tyyppi</InputLabel>
-                <Select
-                  id="demo-simple-select-standard"
-                  value={formData.tyyppi}
-                  onChange={(e) => setFormData({ ...formData, tyyppi: e.target.value })}
-                  required
-                  fullWidth
-                  sx={{ marginBottom: '10px' }}
-                >
-                  {tyyppiOptions.map((option, index) => (
-                    <MenuItem key={index} value={option}>
-                      {option}
-                    </MenuItem>
-                  ))}
-                </Select>
+                
+        <Select
+          id="demo-simple-select-standard"
+          value={formData.tyyppi}
+          onChange={(e) => setFormData({ ...formData, tyyppi: e.target.value })}
+          required
+          fullWidth
+          sx={{ marginBottom: '10px' }}
+        >
+          {tyyppiOptions.map((option, index) => (
+            <MenuItem key={index} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+       
+      
                 <InputLabel id="demo-simple-select-standard-label">Maakunta</InputLabel>
                 <Select
                   labelId="demo-simple-select-standard-label"

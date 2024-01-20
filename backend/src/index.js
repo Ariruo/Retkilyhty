@@ -4,24 +4,202 @@ import bodyParser from 'koa-bodyparser';
 import fetch from 'node-fetch';
 import cors from 'kcors';
 import pkg from 'pg';
+import jwt from 'koa-jwt';
+import jsonwebtoken from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 import { config } from 'dotenv';
 config();
 
 const appId = process.env.APPID || process.env.API_KEY;
-
+const jwtSecret = process.env.JWT_SECRET 
 const mapURI = process.env.MAP_ENDPOINT || 'http://api.openweathermap.org/data/2.5';
+const unprotectedRoutes = [
+  '/api/login',
+  '/api/register',
+  '/api/weatherbycoordinates',
+  '/api/forecastbycoordinates',
+  '/api/add',
+  '/api/:tyyppi',
+  '/api/searchbyname/:name',
+  '/api/autiotupa',
+  '/api/varaustupa',
+  '/api/nuotiopaikka',
+  '/api/laavu',
+  '/api/päivätupa',
+  '/api/nähävyys',  
+  '/api/kammi',
+  '/api/ruokailukatos',
+  '/api/lähde',
+  '/api/luola',
+  '/api/kota',
+  '/api/sauna',
+  '/api/lintutorni',
+
+]; 
 
 const port = process.env.PORT || 9000;
 const router = new Router();
 const app = new Koa();
 const { Pool } = pkg;
-app.use(bodyParser());
 
+app.use(bodyParser());
 app.use(cors());
+
+// Middleware below this line is only reached if JWT token is valid
+
+
+// app.use(jwt({ secret: jwtSecret }).unless({ path: unprotectedRoutes }));
+
+const optionally_protected = jwt({
+  secret: jwtSecret,
+  passthrough: true, // Allows requests without valid tokens to pass through
+});
+
+app.use(async (ctx, next) => {
+  try {
+    // If it's the protected route, check for the JWT token
+    if (ctx.path === '/api/userpoints') {
+      await jwt({ secret: jwtSecret })(ctx, next);
+    } else {
+      // If it's not the protected route, move on to the next middleware
+      await next();
+    }
+  } catch (error) {
+    console.error('Error during JWT validation:', error);
+    ctx.throw(401, 'Unauthorized');
+  }
+});
+
+
+
 
 app.use(router.routes());
 app.use(router.allowedMethods());
+
+
+// Route to generate JWT token (Login)
+router.post('/api/login', async (ctx) => {
+  try {
+    const { username, password } = ctx.request.body;
+
+    // Find the user by their username or email in the database
+    const userQuery = `
+      SELECT id, username, password_hash
+      FROM users
+      WHERE username = $1 OR email = $1;
+    `;
+    const userResult = await pool.query(userQuery, [username]);
+
+    if (userResult.rows.length === 0) {
+      ctx.status = 401; // Unauthorized
+      ctx.body = { error: 'Invalid username or email' };
+      return;
+    }
+
+    const user = userResult.rows[0];
+
+    // Compare the provided password with the hashed password in the database
+    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
+
+    if (!isPasswordValid) {
+      ctx.status = 401; // Unauthorized
+      ctx.body = { error: 'Invalid password' };
+      return;
+    }
+
+    // Generate JWT token
+    const token = jsonwebtoken.sign(
+      { id: user.id, username: user.username },
+      jwtSecret,
+      { expiresIn: '1h' }
+    );
+
+    // Include user_id and username in the response
+    ctx.body = {
+      token,
+      user_id: user.id,
+      username: user.username,
+    };
+  } catch (error) {
+    console.error('Error during login:', error);
+    ctx.throw(500, 'Internal Server Error');
+  }
+});
+
+
+router.get('/api/userpoints', async (ctx) => {
+  try {
+    console.log('Request Headers:', ctx.headers);
+
+    if (ctx.state.user) {
+      const { id } = ctx.state.user;
+      console.log('Decoded Token:', ctx.state.user);
+      console.log('User ID:', id);
+
+      const query = `
+  SELECT
+    id,
+    ST_X(geom::geometry) AS longitude,
+    ST_Y(geom::geometry) AS latitude,
+    name,
+    tyyppi,
+    maakunta
+  FROM
+    geo_data
+  WHERE
+    user_id = $1 AND
+    tyyppi = 'Oma kohde';
+`;
+
+
+      const { rows } = await pool.query(query, [id]);
+
+      ctx.type = 'application/json';
+      ctx.body = rows;
+    } else {
+      ctx.status = 401; // Unauthorized
+      ctx.body = { error: 'User not authenticated' };
+    }
+  } catch (error) {
+    console.error('Error fetching geopoints for user:', error);
+    ctx.throw(500, 'Internal Server Error');
+  }
+});
+
+
+router.post('/api/register', async (ctx) => {
+  try {
+    const { email, username, password } = ctx.request.body;
+
+    // You should hash the password before storing it in the database for security
+    // For simplicity, you can use a library like bcrypt
+
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Insert the user into the 'users' table
+    const insertUserQuery = `
+      INSERT INTO users (email, username, password_hash)
+      VALUES ($1, $2, $3)
+      RETURNING id;
+    `;
+    const values = [email, username, hashedPassword];
+
+    const { rows } = await pool.query(insertUserQuery, values);
+
+    ctx.status = 201; // Created
+    ctx.body = {
+      message: 'User registered successfully!',
+      userId: rows[0].id,
+      username: username,
+    };
+  } catch (error) {
+    console.error('Error registering user:', error);
+    ctx.throw(500, 'Internal Server Error');
+  }
+});
+
 
 const fetchWeatherByCoordinates = async (lon, lat) => {
   const endpoint = `${mapURI}/weather?lat=${lat}&lon=${lon}&appid=${appId}&units=metric`;
@@ -72,39 +250,61 @@ const pool = new Pool({
 
 
 
-
-
-
-
-
-
-
-router.post('/api/add', async (ctx) => {
-  console.log('Request Body:', ctx.request.body); // Log the request body
+router.post('/api/add', optionally_protected, async (ctx) => {
   try {
-    const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
+    console.log('Request Headers:', ctx.headers); // Log headers for debugging
 
-    // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta)
-    const insertQuery = `
-      INSERT INTO geo_data (geom, name, tyyppi, maakunta)
-      VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5)
-      RETURNING id;
-    `;
-    const values = [latitude, longitude, name, tyyppi, maakunta];
+    // Check if there is a user in the context
+    if (ctx.state.user) {
+      const userId = ctx.state.user.id; // Assuming the user object has an 'id' property
 
-    const { rows } = await pool.query(insertQuery, values);
+      console.log('Decoded Token:', ctx.state.user); // Log decoded token for debugging
+      console.log('User ID:', userId);
 
-    ctx.status = 201; // Created
-    ctx.body = {
-      message: 'added successfully!',
-      Id: rows[0].id,
-    };
+      const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
+
+      // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta, user_id)
+      const insertQuery = `
+        INSERT INTO geo_data (geom, name, tyyppi, maakunta, user_id)
+        VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5, $6)
+        RETURNING id;
+      `;
+      const values = [latitude, longitude, name, tyyppi, maakunta, userId];
+
+      const { rows } = await pool.query(insertQuery, values);
+
+      ctx.status = 201; // Created
+      ctx.body = {
+        message: 'added successfully!',
+        Id: rows[0].id,
+      };
+    } else {
+      // If there is no user, proceed with the existing logic (without user_id)
+      console.log('No user found, proceeding without user_id.');
+
+      const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
+
+      // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta)
+      const insertQuery = `
+        INSERT INTO geo_data (geom, name, tyyppi, maakunta)
+        VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5)
+        RETURNING id;
+      `;
+      const values = [latitude, longitude, name, tyyppi, maakunta];
+
+      const { rows } = await pool.query(insertQuery, values);
+
+      ctx.status = 201; // Created
+      ctx.body = {
+        message: 'added successfully!',
+        Id: rows[0].id,
+      };
+    }
   } catch (error) {
     console.error('Error adding cabin:', error);
     ctx.throw(500, 'Internal Server Error');
   }
 });
-
 
 
 
@@ -169,6 +369,8 @@ const searchByName = async (name) => {
   }
 };
 
+
+
 router.get('/api/searchbyname/:name', async (ctx) => {
   const { name } = ctx.params;
   try {
@@ -180,19 +382,6 @@ router.get('/api/searchbyname/:name', async (ctx) => {
     ctx.throw(500, 'Internal Server Error');
   }
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

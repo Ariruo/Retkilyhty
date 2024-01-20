@@ -96,6 +96,8 @@ const SearchResultList: React.FC<SearchResultListProps> = ({
     }
   };
 
+  console.log(results)
+
   return (
     <div className="absolute z-9 bg-white flex flex-col shadow-md rounded-lg max-h-60 overflow-y-auto pl-2 scrollbar-thin scrollbar-thumb-bg-gray-600 scrollbar-track-gray-100">
       {results.map((result: CustomPointFeature, id: number) => (

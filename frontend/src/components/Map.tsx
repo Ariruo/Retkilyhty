@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useRef, Dispatch,SetStateAction   } from "react";
-import Map, {  GeolocateControl} from "react-map-gl";
-
+import Map, {GeolocateControl} from "react-map-gl";
 import getUserCoordinates from "../service/getUserCoordinates";
 import calculateDistance from "../service/calculateDistance"; 
-
 import FindClosestMarkerButton from "./FindClosestMarkerButton";
 import SidebarButton from "./SidebarButton";
 import Addlocation from "./AddLocation";
@@ -29,16 +27,29 @@ import luolaIcon from '../../assets/luola.png'
 import lahdeIcon from '../../assets/lähde.png'
 import ruokailukatosIcon from '../../assets/ruokailukatos.png'
 import Addlocationbutton from "./AddLocationButton";
+import RegisterPage from "./RegisterPage";
+import usermarker from '../../assets/user_marker.png'
+import Login from "./Login";
 
 import { CustomPointFeature,ClusterData,CustomProperties } from "../types/api";
 import { Coordinates, userCoordinates, } from "../types/props";
 import MainPopup from "./MainPopup";
 import HoverPopup from "./HoverPopup";
 import { PointFeature } from 'supercluster';
-import { BBox} from 'geojson';
+import { BBox } from 'geojson';
+
+import { useSelector } from 'react-redux';
+import { selectToken } from '../redux/reducers/userReducer';
+
 
 
 export default function Mapp() {
+
+  const userToken = selectToken(useSelector((state) => state.user));
+  const userState = useSelector((state) => state.user);
+  const isLoggedIn = userState.loggedIn;
+
+  
 
 const MapID =  import.meta.env.VITE_MAPID || import.meta.env.VITE_MAPBOX_TOKEN 
 const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000"; 
@@ -56,13 +67,18 @@ const nahtavyysEndpoint = `${baseUrl}/api/nähtävyys`;
 const luolaEndpoint = `${baseUrl}/api/luola`;
 const lahdeEndpoint = `${baseUrl}/api/lähde`;
 const ruokailukatosEndpoint = `${baseUrl}/api/ruokailukatos`;
+const userEndpoint = `${baseUrl}/api/userpoints`;
+
 
 const [open, setOpen] = useState<boolean>(false);
 const [distance, setDistance] = useState<number | null>(null);
 const [userCoordinates, setUserCoordinates] = useState<Coordinates | null>(null);
 const [closestParkIndex, setClosestParkIndex] = useState<number | undefined>();
 const [showAddLocation, setShowAddLocation] = useState<boolean>(false);
+
 const [isLargeScreen, setIsLargeScreen] = useState<boolean>(false);
+const [showLogin, setShowLogin] = useState<boolean>(false);
+const [showRegister, setShowRegister] = useState<boolean>(false);
 
 const [FilteredData, setFilteredData] = useState<CustomPointFeature[]>([]);
 const [selectedPark, setSelectedPark]: [CustomPointFeature | null, Dispatch<SetStateAction<CustomPointFeature | null>>] = useState<CustomPointFeature | null>(null);
@@ -76,9 +92,17 @@ const [viewState, setViewState] = useState({
   latitude: 64.5, 
   zoom: 5, 
 });
-
+  
   const [showCabins, setShowCabins] = useState(true);
   const [nuotiopaikkaData]= useFetchData(async () => await fetchData(nuotiopaikkaEndpoint));
+  
+
+  const [userpointsData] = useFetchData(async () => await fetchData(userEndpoint, userToken), [userToken]);
+
+
+
+
+  const [showUser, setShowUser] = useState(true);
 
   const [autiotupaData] = useFetchData(async () => await fetchData(autiotupaEndpoint));
   const [showNuotipaikka, setShowNuotipaikka] = useState(true);
@@ -112,7 +136,6 @@ const toggleAddLocation = () => {
 };
 
 
-
 const mapRef = useRef<any>(null);
 const geoControlRef = useRef<any>(null);
 
@@ -123,7 +146,7 @@ const bounds = mapRef.current
   : null;
 
   
-   
+  
     const { clusters: varaustupa } = useCluster(varaustupaData, bounds as BBox, viewState.zoom);
     const { clusters: autiotupa } = useCluster(autiotupaData,  bounds as BBox, viewState.zoom);
     const { clusters: nuotiopaikka } = useCluster(nuotiopaikkaData,  bounds as BBox, viewState.zoom);
@@ -137,6 +160,7 @@ const bounds = mapRef.current
     const { clusters: luola } = useCluster(luolaData,  bounds as BBox, viewState.zoom);
     const { clusters: lahde } = useCluster(lahdeData,  bounds as BBox, viewState.zoom);
     const { clusters: ruokailukatos } = useCluster(ruokailukatosData,  bounds as BBox, viewState.zoom);
+    const { clusters: userpoints } = useCluster(userpointsData,  bounds as BBox, viewState.zoom);
 
    
     useEffect(() => {
@@ -165,6 +189,14 @@ const bounds = mapRef.current
         });
       });
     }, []);
+   
+      
+ 
+
+ 
+
+
+
     
     
     const calculateAndSetDistance = (park: PointFeature<CustomProperties>) => {
@@ -210,10 +242,13 @@ const toggleSidebar = () => {
   setOpen(!open);
 };
 
+
+
  return (
     <>
       <Map
         mapboxAccessToken={MapID}
+        
         {...viewState}
         onMove={evt => setViewState(evt.viewState)}
         onLoad={() => {
@@ -317,7 +352,6 @@ open={open}
 toggleSidebar={toggleSidebar}
 showCabins={showCabins}
 setShowCabins={setShowCabins}
- 
 showVaraustupas={showVaraustupas}
 setShowVaraustupas={setShowVaraustupas}
 showNuotipaikka={showNuotipaikka}
@@ -342,6 +376,13 @@ showLahde={showLahde}
 setShowLahde={setShowLahde}
 showRuokailukatos={showRuokailukatos}
 setShowRuokailukatos={setShowRuokailukatos}
+showLogin={showLogin}
+setShowLogin={setShowLogin}
+showRegister={showRegister}
+setShowRegister={setShowRegister}
+
+showUser={showUser}
+setShowUser={setShowUser}
 
 />
 
@@ -368,32 +409,21 @@ isLargeScreen={isLargeScreen}
 
 
 
-{showCabins && autiotupa.map((cluster, index) => {
-          const [longitude, latitude] = cluster.geometry.coordinates;
-          const {cluster: isCluster} = cluster.properties;
 
-          if (isCluster) {
-            return (
-            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster as ClusterData } points={autiotupaData} mapRef={mapRef}  backgroundColor="#fd0303" />
-              );
-            }
-          return (
-            <CustomMarker
-            key={index}
-            latitude={longitude}
-            longitude={latitude}
-           
-            setSelectedPark={setSelectedPark}
-            handleMarkerLeave={handleMarkerLeave}
-            park={cluster as CustomPointFeature}
-            iconUrl={autiotupaIcon}
-            distance={distance ?? 0}
-            setHoveredPark={setHoveredPark}
-            hoveredPark={hoveredPark}
-            />
-              
-          );
-        })}
+
+<RegisterPage 
+ showRegister={showRegister}
+ setShowRegister={setShowRegister}
+ showLogin={showLogin}
+setShowLogin={setShowLogin}
+ 
+ 
+/>
+ 
+
+
+
+
 
 {showVaraustupas && varaustupa.map((cluster, index) => {
           const [longitude, latitude] = cluster.geometry.coordinates;
@@ -751,6 +781,38 @@ isLargeScreen={isLargeScreen}
           );
         })}
 
+{isLoggedIn && showUser && userpoints.map((cluster, index) => {
+          const [longitude, latitude] = cluster.geometry.coordinates;
+          const {cluster: isCluster} = cluster.properties;
+        
+          if (isCluster) {
+            return (
+            <CustomClusterMarker key={`cluster-${cluster.id}`} cluster={cluster as ClusterData} mapRef={mapRef} points={lahdeData} backgroundColor="#0000FF"
+            />
+              );
+            }
+          return (
+            <CustomMarker
+            key={index}
+            latitude={latitude}
+            longitude={longitude}
+           
+            setSelectedPark={setSelectedPark}
+            handleMarkerLeave={handleMarkerLeave}
+            park={cluster as CustomPointFeature}
+            iconUrl={usermarker}
+            setHoveredPark={setHoveredPark}
+            hoveredPark={hoveredPark}
+            distance={distance ?? 0}
+            />
+            
+          );
+        }
+        )}
+        
+
+  
+
       <GeolocateControl
         positionOptions={{ enableHighAccuracy: true }}
         trackUserLocation={true}
@@ -766,7 +828,9 @@ isLargeScreen={isLargeScreen}
 
       </Map>
 
+    
 
 </>
   );
 }
+

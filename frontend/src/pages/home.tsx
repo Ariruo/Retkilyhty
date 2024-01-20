@@ -3,10 +3,13 @@ import { Link } from "react-router-dom";
 import Map from "../components/Map";
 
 
+
 function Home() {
   return (
     <div >
       <Map />
+      
+      
       
     </div>
   )

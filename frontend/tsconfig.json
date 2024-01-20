@@ -8,6 +8,5 @@
       "esModuleInterop": true,
       "moduleResolution": "node",
     },
-    "include": ["src/**/*"] // Update the include path to point to your source directory
+    "include": ["src/**/*", "../Searchbar.tsx"] // Update the include path to point to your source directory
   }
-  

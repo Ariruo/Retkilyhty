@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import {  Drawer } from '@mui/material';
 
@@ -6,6 +6,13 @@ import { SidebarProps } from '../types/props';
 import logoIcon from '../../assets/Logo_text.png'
 import envelope from '../../assets/envelope.png'
 import marker from '../../assets/sidebar-marker.png'
+import user from '../../assets/user.png'
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { selectToken, selectUserId, selectUsername, logout } from '../redux/reducers/userReducer';
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -40,10 +47,34 @@ const Sidebar: React.FC<SidebarProps> = ({
   setShowLahde,
   showRuokailukatos,
   setShowRuokailukatos,
+  setShowLogin,
+  showUser,
+  setShowUser,
+  setShowRegister,
+
 }) => {
-  const [isChecked, setIsChecked] = useState(true);
   
+
+
+  const [isChecked, setIsChecked] = useState(true);
   const [submenuOpen, setSubmenuOpen] = useState(true);
+  const [rekisteroidySubmenuOpen, setRekisteroidySubmenuOpen] = useState(false);
+
+  const dispatch = useDispatch();
+  
+  const userState = useSelector((state) => state.user);
+
+  const username = selectUsername(userState)
+  const isLoggedIn = userState.loggedIn;
+  const handleLogout = () => {
+    dispatch(logout());
+  
+    // Display toast notification for successful logout
+    toast.success('Kirjauduttu ulos!');
+  };
+  
+
+ 
 
   const toggleAll = () => {
     setIsChecked(!isChecked);
@@ -60,6 +91,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     setShowLuola(!isChecked);
     setShowLahde(!isChecked);
     setShowRuokailukatos(!isChecked);
+    setShowUser(!isChecked);
   };
   const toggleSubmenu = () => {
     setSubmenuOpen(!submenuOpen);
@@ -88,48 +120,45 @@ const handleContactClick = () => {
 
 
 
+const toggleRekisteroidySubmenu = () => {
+  setRekisteroidySubmenuOpen(!rekisteroidySubmenuOpen);
+};
 
-return (
-  <Drawer
-  anchor="left"
-  open={open}
-  onClose={toggleSidebar}
-  >
 
- 
-  
 
+
+
+  return (
+    <Drawer anchor="left" open={open} onClose={toggleSidebar}>
     <div className="min-h-screen flex flex-row bg-gray-100">
-      <div className="flex flex-col w-48 bg-white  overflow-hidden z-10">
+      <div className="flex flex-col w-48 bg-white overflow-hidden z-10">
         <div className="flex items-center justify-center h-20 shadow-md z-20">
           <img
             src={logoIcon}
             alt="logo"
-            className=" hover:bg-opacity-90 active:scale-x-75 w-20 h-20 rounded-full z-12 bg-white pt-3 bg-opacity-80"
+            className="hover:bg-opacity-90 active:scale-x-75 w-20 h-20 rounded-full z-12 bg-white pt-3 bg-opacity-80"
           />
         </div>
         <ul className="flex flex-col py-4">
           <li>
-          <a
-  href="#"
-  className="flex flex-row items-center h-12 transform hover:bg-gray-50 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
-  onClick={toggleSubmenu}
-  style={{ outline: 'none !important' }}
->
-            
+            <a
+              href="#"
+              className="flex flex-row items-center h-12 transform hover:bg-gray-50 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
+              onClick={toggleRekisteroidySubmenu}
+            >
               <span className="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400">
-                <img 
-                  src={marker}
-                  alt="Marker"
-                  style={{ width: '22px', height: '22px', marginTop: '-7px' }}
+                <img
+                  src={user}
+                  alt="Login"
+                  style={{ width: '22px', height: '22px' }}
                 />
               </span>
-
-              <span className="text-m font-medium pr-2">Kohteet</span>
-
+              <span className="text-m font-medium">
+  {isLoggedIn ? ` ${username}` : 'Kirjaudu sisään'}
+</span>
               <svg
                 sidebar-toggle-item
-                className={`flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white transform ${submenuOpen ? 'rotate-180' : 'rotate-0'}`}
+                className={`flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white transform ${rekisteroidySubmenuOpen ? 'rotate-180' : 'rotate-0'}`}
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -142,21 +171,100 @@ return (
               </svg>
             </a>
 
-            {submenuOpen && (
-              <div>
-                <label className={`relative inline-flex items-center lg:cursor-pointer left-11 top-2 pb-3 `}>
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    className="sr-only peer"
-                    onClick={toggleAll}
+            {rekisteroidySubmenuOpen && (
+  <div>
+    <div className="pl-14  ">
+      {isLoggedIn ? (
+        <div>
+          <span
+            className="text-s font-medium cursor-pointer text-gray-500 hover:text-gray-800"
+            onClick={() => {
+              toggleSidebar();
+              handleLogout();
+            }}
+          >
+            Kirjaudu ulos
+          </span>
+        </div>
+      ) : (
+        <div className=''>
+        <div>
+          <span
+            className="text-s font-medium cursor-pointer text-gray-500 hover:text-gray-800"
+            onClick={() => {
+              setShowLogin(true);
+              toggleSidebar();
+            }}
+          >
+            Kirjaudu sisään
+          </span>
+        </div>
+        <div className="pt-2 pb-1">
+          <span
+            className="text-s font-medium cursor-pointer text-gray-500 hover:text-gray-800"
+            onClick={() => {
+              setShowRegister(true);
+              toggleSidebar();
+            }}
+          >
+            Rekisteröidy
+          </span>
+        </div>
+      </div>
+      
+      )}
+    </div>
+  </div>
+)}
+
+
+          </li>
+            <li>
+              <a
+                href="#"
+                className="flex flex-row items-center h-12 transform hover:bg-gray-50 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
+                onClick={toggleSubmenu}
+                style={{ outline: 'none !important' }}
+              >
+                <span className="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400">
+                  <img 
+                    src={marker}
+                    alt="Marker"
+                    style={{ width: '22px', height: '22px', marginTop: '-7px' }}
                   />
-                  <div
-                    className={`w-11 h-6 bg-gray-700 peer rounded-full dark:black peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-800 border shadow`}
-                   
-                  ></div>
-                 
-                </label>
+                </span>
+                <span className="text-m font-medium pr-2">Kohteet</span>
+
+                <svg
+                  sidebar-toggle-item
+                  className={`flex-shrink-0 w-6 h-6 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white transform ${submenuOpen ? 'rotate-180' : 'rotate-0'}`}
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                    clipRule="evenodd"
+                  ></path>
+                </svg>
+              </a>
+
+              {submenuOpen && (
+                <div>
+                  <label className={`relative inline-flex items-center lg:cursor-pointer left-11 top-2 pb-3 `}>
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      className="sr-only peer"
+                      onClick={toggleAll}
+                    />
+                    <div
+                      className={`w-11 h-6 bg-gray-700 peer rounded-full dark:black peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-orange-800 border shadow`}
+                    
+                    ></div>
+                  
+                  </label>
   
                 <div className="pl-11 pt-3 ">
                   {renderCheckbox("Autiotupa", showCabins, setShowCabins)}
@@ -172,35 +280,41 @@ return (
                   {renderCheckbox("Luola", showLuola, setShowLuola)}
                   {renderCheckbox("Lähde", showLahde, setShowLahde)}
                   {renderCheckbox("Ruokailukatos", showRuokailukatos, setShowRuokailukatos)}
+
+                  {isLoggedIn && (
+                   renderCheckbox("Oma kohde", showUser, setShowUser)
+                   )}
+
                 </div>
               </div>
             )}
           </li>
 
           <li>
-            <a
-              href="#"
-              className="flex flex-row items-center h-12 transform hover:bg-gray-50 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
-              onClick={handleContactClick}
-            >
-              <span className="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400">
-                <img 
-                  src={envelope}
-                  alt="Marker"
-                  style={{ width: '22px', height: '22px' }}
-                />
-              </span>
-              <span className="text-m font-medium">Ota yhteyttä</span>
-            </a>
-          </li>
-        </ul>
-        <div className="mt-auto p-4 text-center text-gray-500 text-sm">
-          &copy; {new Date().getFullYear()} Retkilyhty
+              <a
+                href="#"
+                className="flex flex-row items-center h-12 transform hover:bg-gray-50 transition-transform ease-in duration-200 text-gray-500 hover:text-gray-800"
+                onClick={handleContactClick}
+              >
+                <span className="inline-flex items-center justify-center h-12 w-12 text-lg text-gray-400">
+                  <img 
+                    src={envelope}
+                    alt="Envelope"
+                    style={{ width: '22px', height: '22px' }}
+                  />
+                </span>
+                <span className="text-m font-medium">Ota yhteyttä</span>
+              </a>
+            </li>
+          </ul>
+          <div className="mt-auto p-4 text-center text-gray-500 text-sm">
+            &copy; {new Date().getFullYear()} Retkilyhty
+          </div>
         </div>
       </div>
-    </div>
-  </Drawer>
-);
+      <ToastContainer />
+    </Drawer>
+  );
 };
 
 export default Sidebar;

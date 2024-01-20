@@ -224,6 +224,12 @@ export interface SidebarProps {
   showRuokailukatos: boolean;
   setShowRuokailukatos: React.Dispatch<React.SetStateAction<boolean>>;
   setOpen : React.Dispatch<React.SetStateAction<boolean>>;
+  showLogin: boolean;
+  setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
+  showUser: boolean;
+  setShowUser: React.Dispatch<React.SetStateAction<boolean>>;
+  showRegister: boolean;
+  setShowRegister: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface CoordinateCabinProps {

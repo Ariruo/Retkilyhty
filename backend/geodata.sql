@@ -64,6 +64,19 @@ CREATE SEQUENCE public.geo_data_id_seq
 
 ALTER SEQUENCE public.geo_data_id_seq OWNER TO postgres;
 
+CREATE TABLE public.users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    profile_picture_url VARCHAR(255),
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE public.geo_data
+ADD COLUMN user_id INTEGER,
+ADD CONSTRAINT fk_user_id FOREIGN KEY (user_id) REFERENCES public.users(id);
+
 --
 -- Name: geo_data_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
