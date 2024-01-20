@@ -15,6 +15,8 @@ build_and_push_backend:
     - echo "POSTGRES_PORT=$POSTGRES_PORT" >> .env
     - echo "POSTGRES_HOST=$POSTGRES_HOST" >> .env
     - echo "APPID=$APPID" >> .env
+    - echo "JWT_SECRET=$JWT_SECRET" >> .env
+    
     - cat .env
     - docker login -u $REGISTRY_USER -p $REGISTRY_PASSWORD
 
