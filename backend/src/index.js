@@ -50,7 +50,10 @@ const optionally_protected = jwt({
 
 
 
-
+app.use(async (ctx, next) => {
+  await allowAllMethods(ctx, next);
+  await cors()(ctx, next);
+});
 
 
 
