@@ -21,7 +21,9 @@ const app = new Koa();
 const { Pool } = pkg;
 
 app.use(bodyParser());
-app.use(cors());
+app.use(cors({
+  methods: 'POST, GET, HEAD, DELETE', // Include DELETE here
+}));
 
 
 
