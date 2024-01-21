@@ -75,7 +75,7 @@ const pool = new Pool({
 
 
 // Route to generate JWT token (Login)
-router.post('/api/login', async (ctx) => {
+router.post('/api/login', cors(), allowAllMethods, async (ctx) => {
   try {
     const { username, password } = ctx.request.body;
 
@@ -164,7 +164,7 @@ router.get('/api/userpoints', async (ctx) => {
 });
 
 
-router.post('/api/register',allowAllMethods, async (ctx) => {
+router.post('/api/register', cors(), allowAllMethods, async (ctx) =>{
   try {
     const { email, username, password } = ctx.request.body;
 
