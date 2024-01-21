@@ -57,13 +57,6 @@ const optionally_protected = jwt({
 app.use(router.routes());
 app.use(router.allowedMethods());
 
-router.options('/api/register', (ctx) => {
-  // Respond to pre-flight request
-  ctx.status = 204; // No Content
-  ctx.set('Access-Control-Allow-Origin', 'https://www.retkilyhty.fi');
-  ctx.set('Access-Control-Allow-Methods', 'POST');
-  ctx.set('Access-Control-Allow-Headers', 'content-type');
-});
 
 
 
@@ -167,7 +160,7 @@ router.get('/api/userpoints', async (ctx) => {
 });
 
 
-router.post('/api/register', async (ctx) =>{
+router.post('/api/reg', async (ctx) =>{
   try {
     const { email, username, password } = ctx.request.body;
 
