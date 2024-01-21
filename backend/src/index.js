@@ -14,29 +14,6 @@ config();
 const appId = process.env.APPID || process.env.API_KEY;
 const jwtSecret = process.env.JWT_SECRET 
 const mapURI = process.env.MAP_ENDPOINT || 'http://api.openweathermap.org/data/2.5';
-const unprotectedRoutes = [
-  '/api/login',
-  '/api/register',
-  '/api/weatherbycoordinates',
-  '/api/forecastbycoordinates',
-  '/api/add',
-  '/api/:tyyppi',
-  '/api/searchbyname/:name',
-  '/api/autiotupa',
-  '/api/varaustupa',
-  '/api/nuotiopaikka',
-  '/api/laavu',
-  '/api/päivätupa',
-  '/api/nähävyys',  
-  '/api/kammi',
-  '/api/ruokailukatos',
-  '/api/lähde',
-  '/api/luola',
-  '/api/kota',
-  '/api/sauna',
-  '/api/lintutorni',
-
-]; 
 
 const port = process.env.PORT || 9000;
 const router = new Router();
@@ -44,20 +21,10 @@ const app = new Koa();
 const { Pool } = pkg;
 
 app.use(bodyParser());
-app.use(cors({
-  origin: 'https://www.retkilyhty.fi/',
-  credentials: true,
-}));
-
-// Middleware below this line is only reached if JWT token is valid
+app.use(cors());
 
 
-// app.use(jwt({ secret: jwtSecret }).unless({ path: unprotectedRoutes }));
 
-const optionally_protected = jwt({
-  secret: jwtSecret,
-  passthrough: true, // Allows requests without valid tokens to pass through
-});
 
 app.use(async (ctx, next) => {
   try {
@@ -74,6 +41,13 @@ app.use(async (ctx, next) => {
   }
 });
 
+const optionally_protected = jwt({
+  secret: jwtSecret,
+  passthrough: true, // Allows requests without valid tokens to pass through
+});
+
+
+
 
 
 
@@ -81,6 +55,15 @@ app.use(async (ctx, next) => {
 
 app.use(router.routes());
 app.use(router.allowedMethods());
+
+
+const allowAllMethods = async (ctx, next) => {
+  // Set the Allow header to allow all methods
+  ctx.set('Allow', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
+
+  // Move on to the next middleware in the stack
+  await next();
+};
 
 
 // Route to generate JWT token (Login)
@@ -173,7 +156,7 @@ router.get('/api/userpoints', async (ctx) => {
 });
 
 
-router.post('/api/register', async (ctx) => {
+router.post('/api/register',allowAllMethods, async (ctx) => {
   try {
     const { email, username, password } = ctx.request.body;
 
@@ -255,56 +238,80 @@ const pool = new Pool({
 
 
 
-router.post('/api/add', optionally_protected, async (ctx) => {
+// router.post('/api/add', optionally_protected, async (ctx) => {
+//   try {
+   
+
+//     // Check if there is a user in the context
+//     if (ctx.state.user) {
+//       const userId = ctx.state.user.id; // Assuming the user object has an 'id' property
+
+    
+
+//       const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
+
+//       // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta, user_id)
+//       const insertQuery = `
+//         INSERT INTO geo_data (geom, name, tyyppi, maakunta, user_id)
+//         VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5, $6)
+//         RETURNING id;
+//       `;
+//       const values = [latitude, longitude, name, tyyppi, maakunta, userId];
+
+//       const { rows } = await pool.query(insertQuery, values);
+
+//       ctx.status = 201; // Created
+//       ctx.body = {
+//         message: 'added successfully!',
+//         Id: rows[0].id,
+//       };
+//     } else {
+
+
+//       const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
+
+//       // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta)
+//       const insertQuery = `
+//         INSERT INTO geo_data (geom, name, tyyppi, maakunta)
+//         VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5)
+//         RETURNING id;
+//       `;
+//       const values = [latitude, longitude, name, tyyppi, maakunta];
+
+//       const { rows } = await pool.query(insertQuery, values);
+
+//       ctx.status = 201; // Created
+//       ctx.body = {
+//         message: 'added successfully!',
+//         Id: rows[0].id,
+//       };
+//     }
+//   } catch (error) {
+//     console.error('Error adding cabin:', error);
+//     ctx.throw(500, 'Internal Server Error');
+//   }
+// });
+
+router.post('/api/add', async (ctx) => {
+  console.log('Request Body:', ctx.request.body); // Log the request body
   try {
-    console.log('Request Headers:', ctx.headers); // Log headers for debugging
+    const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
 
-    // Check if there is a user in the context
-    if (ctx.state.user) {
-      const userId = ctx.state.user.id; // Assuming the user object has an 'id' property
+    // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta)
+    const insertQuery = `
+      INSERT INTO geo_data (geom, name, tyyppi, maakunta)
+      VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5)
+      RETURNING id;
+    `;
+    const values = [latitude, longitude, name, tyyppi, maakunta];
 
-      console.log('Decoded Token:', ctx.state.user); // Log decoded token for debugging
-      console.log('User ID:', userId);
+    const { rows } = await pool.query(insertQuery, values);
 
-      const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
-
-      // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta, user_id)
-      const insertQuery = `
-        INSERT INTO geo_data (geom, name, tyyppi, maakunta, user_id)
-        VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5, $6)
-        RETURNING id;
-      `;
-      const values = [latitude, longitude, name, tyyppi, maakunta, userId];
-
-      const { rows } = await pool.query(insertQuery, values);
-
-      ctx.status = 201; // Created
-      ctx.body = {
-        message: 'added successfully!',
-        Id: rows[0].id,
-      };
-    } else {
-      // If there is no user, proceed with the existing logic (without user_id)
-      console.log('No user found, proceeding without user_id.');
-
-      const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
-
-      // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta)
-      const insertQuery = `
-        INSERT INTO geo_data (geom, name, tyyppi, maakunta)
-        VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5)
-        RETURNING id;
-      `;
-      const values = [latitude, longitude, name, tyyppi, maakunta];
-
-      const { rows } = await pool.query(insertQuery, values);
-
-      ctx.status = 201; // Created
-      ctx.body = {
-        message: 'added successfully!',
-        Id: rows[0].id,
-      };
-    }
+    ctx.status = 201; // Created
+    ctx.body = {
+      message: 'added successfully!',
+      Id: rows[0].id,
+    };
   } catch (error) {
     console.error('Error adding cabin:', error);
     ctx.throw(500, 'Internal Server Error');
@@ -390,8 +397,7 @@ router.get('/api/searchbyname/:name', async (ctx) => {
 
 
 
-app.use(router.routes());
-app.use(router.allowedMethods());
+
 
 app.listen(port);
 
