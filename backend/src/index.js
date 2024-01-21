@@ -22,9 +22,9 @@ const { Pool } = pkg;
 
 app.use(bodyParser());
 app.use(cors({
-  methods: 'POST, GET, HEAD, DELETE', // Include DELETE here
+  origin: '*', // Allow requests from any origin
+  methods: 'POST, GET, HEAD, DELETE',
 }));
-
 
 
 
@@ -50,10 +50,6 @@ const optionally_protected = jwt({
 
 
 
-app.use(async (ctx, next) => {
-  await allowAllMethods(ctx, next);
-  await cors()(ctx, next);
-});
 
 
 
@@ -62,13 +58,7 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 
-const allowAllMethods = async (ctx, next) => {
-  // Set the Allow header to allow all methods
-  ctx.set('Allow', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
 
-  // Move on to the next middleware in the stack
-  await next();
-};
 
 const pool = new Pool({
   user: process.env.POSTGRES_USER,
@@ -169,7 +159,7 @@ router.get('/api/userpoints', async (ctx) => {
 });
 
 
-router.post('/api/register', allowAllMethods, async (ctx) =>{
+router.post('/api/register', async (ctx) =>{
   try {
     const { email, username, password } = ctx.request.body;
 
@@ -245,7 +235,7 @@ router.get('/api/forecastbycoordinates', async ctx => {
 
 
 
-router.post('/api/add', optionally_protected, async (ctx) => {
+router.post('/api/add',  async (ctx) => {
   try {
    
 
