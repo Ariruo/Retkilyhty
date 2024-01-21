@@ -65,6 +65,14 @@ const allowAllMethods = async (ctx, next) => {
   await next();
 };
 
+const pool = new Pool({
+  user: process.env.POSTGRES_USER,
+  host: process.env.POSTGRES_HOST,
+  database: process.env.POSTGRES_DB,
+  password: process.env.POSTGRES_PASSWORD,
+  port: process.env.POSTGRES_PORT 
+});
+
 
 // Route to generate JWT token (Login)
 router.post('/api/login', async (ctx) => {
@@ -228,90 +236,58 @@ router.get('/api/forecastbycoordinates', async ctx => {
   }
 });
 
-const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DB,
-  password: process.env.POSTGRES_PASSWORD,
-  port: process.env.POSTGRES_PORT 
-});
 
 
 
-// router.post('/api/add', optionally_protected, async (ctx) => {
-//   try {
+
+router.post('/api/add', optionally_protected, async (ctx) => {
+  try {
    
 
-//     // Check if there is a user in the context
-//     if (ctx.state.user) {
-//       const userId = ctx.state.user.id; // Assuming the user object has an 'id' property
+    // Check if there is a user in the context
+    if (ctx.state.user) {
+      const userId = ctx.state.user.id; // Assuming the user object has an 'id' property
 
     
 
-//       const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
+      const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
 
-//       // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta, user_id)
-//       const insertQuery = `
-//         INSERT INTO geo_data (geom, name, tyyppi, maakunta, user_id)
-//         VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5, $6)
-//         RETURNING id;
-//       `;
-//       const values = [latitude, longitude, name, tyyppi, maakunta, userId];
+      // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta, user_id)
+      const insertQuery = `
+        INSERT INTO geo_data (geom, name, tyyppi, maakunta, user_id)
+        VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5, $6)
+        RETURNING id;
+      `;
+      const values = [latitude, longitude, name, tyyppi, maakunta, userId];
 
-//       const { rows } = await pool.query(insertQuery, values);
+      const { rows } = await pool.query(insertQuery, values);
 
-//       ctx.status = 201; // Created
-//       ctx.body = {
-//         message: 'added successfully!',
-//         Id: rows[0].id,
-//       };
-//     } else {
+      ctx.status = 201; // Created
+      ctx.body = {
+        message: 'added successfully!',
+        Id: rows[0].id,
+      };
+    } else {
 
 
-//       const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
+      const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
 
-//       // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta)
-//       const insertQuery = `
-//         INSERT INTO geo_data (geom, name, tyyppi, maakunta)
-//         VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5)
-//         RETURNING id;
-//       `;
-//       const values = [latitude, longitude, name, tyyppi, maakunta];
+      // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta)
+      const insertQuery = `
+        INSERT INTO geo_data (geom, name, tyyppi, maakunta)
+        VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5)
+        RETURNING id;
+      `;
+      const values = [latitude, longitude, name, tyyppi, maakunta];
 
-//       const { rows } = await pool.query(insertQuery, values);
+      const { rows } = await pool.query(insertQuery, values);
 
-//       ctx.status = 201; // Created
-//       ctx.body = {
-//         message: 'added successfully!',
-//         Id: rows[0].id,
-//       };
-//     }
-//   } catch (error) {
-//     console.error('Error adding cabin:', error);
-//     ctx.throw(500, 'Internal Server Error');
-//   }
-// });
-
-router.post('/api/add', async (ctx) => {
-  console.log('Request Body:', ctx.request.body); // Log the request body
-  try {
-    const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
-
-    // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta)
-    const insertQuery = `
-      INSERT INTO geo_data (geom, name, tyyppi, maakunta)
-      VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5)
-      RETURNING id;
-    `;
-    const values = [latitude, longitude, name, tyyppi, maakunta];
-
-    const { rows } = await pool.query(insertQuery, values);
-
-    ctx.status = 201; // Created
-    ctx.body = {
-      message: 'added successfully!',
-      Id: rows[0].id,
-    };
+      ctx.status = 201; // Created
+      ctx.body = {
+        message: 'added successfully!',
+        Id: rows[0].id,
+      };
+    }
   } catch (error) {
     console.error('Error adding cabin:', error);
     ctx.throw(500, 'Internal Server Error');
