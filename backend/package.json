@@ -19,6 +19,7 @@
     "koa-bodyparser": "^4.4.1",
     "koa-json": "^2.0.2",
     "koa-jwt": "^4.0.4",
+    "koa-proxies": "^0.12.4",
     "koa-router": "^12.0.1",
     "koa-session": "^6.4.0",
     "node-fetch": "^3.1.0",

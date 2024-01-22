@@ -7,6 +7,7 @@ import pkg from 'pg';
 import jwt from 'koa-jwt';
 import jsonwebtoken from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import proxy from 'koa-proxies';
 
 import { config } from 'dotenv';
 config();
@@ -33,6 +34,16 @@ app.use(async (ctx, next) => {
   await next();
 });
 
+app.use(
+  proxy('/', {
+    target: 'http://localhost:9000', // Replace with your Koa app's actual address
+    changeOrigin: true,
+    secure: true, // Disables SSL certificate validation, only use in development
+    logs: true,
+    xfwd: true,
+  })
+);
+
 app.use(async (ctx, next) => {
   try {
     // If it's the protected route, check for the JWT token
@@ -48,6 +59,11 @@ app.use(async (ctx, next) => {
   }
 });
 
+
+app.proxy = true; // Enables Koa to trust X-Forwarded-* headers
+app.keys = [jwtSecret]; // Set a secret key for Koa's cookie handling
+
+
 const optionally_protected = jwt({
   secret: jwtSecret,
   passthrough: true, // Allows requests without valid tokens to pass through
@@ -55,6 +71,7 @@ const optionally_protected = jwt({
 
 app.use(router.routes());
 app.use(router.allowedMethods());
+app.use(session({ secure: app.env === 'production' }))
 
 const pool = new Pool({
   user: process.env.POSTGRES_USER,
