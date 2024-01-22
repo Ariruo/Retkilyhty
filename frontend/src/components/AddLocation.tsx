@@ -116,13 +116,13 @@ const AddLocation: React.FC<AddLocationProps> = ({ initialLongitude, initialLati
         
       };
      
-console.log(dataToSend)
+
       try {
         
   
         const response = await fetch(addendpoint, {
           method: 'POST',
-          headers: {
+          headers: { 
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${userToken}`, // Include the token in the Authorization header
           },
