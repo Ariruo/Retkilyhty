@@ -119,8 +119,7 @@ router.get('/api/userpoints', async (ctx) => {
 
     if (ctx.state.user) {
       const { id } = ctx.state.user;
-      console.log('Decoded Token:', ctx.state.user);
-      console.log('User ID:', id);
+  
 
       const query = `
   SELECT
@@ -246,7 +245,7 @@ router.post('/api/add', optionally_protected, async (ctx) => {
 
       const { rows } = await pool.query(insertQuery, values);
 
-      console.log('Rows returned:', rows);
+      console.log('add:', rows);
 
       ctx.status = 201; // Created
       ctx.body = {
@@ -264,12 +263,12 @@ router.post('/api/add', optionally_protected, async (ctx) => {
       `;
       const values = [latitude, longitude, name, tyyppi, maakunta];
 
-      console.log('Insert Query:', insertQuery);
-      console.log('Values:', values);
+      console.log('addd query:', insertQuery);
+      console.log(' addd Values:', values);
 
       const { rows } = await pool.query(insertQuery, values);
 
-      console.log('Rows returned:', rows);
+      console.log('addd rows:', rows);
 
       ctx.status = 201; // Created
       ctx.body = {
