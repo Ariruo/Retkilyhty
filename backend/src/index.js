@@ -7,7 +7,7 @@ import pkg from 'pg';
 import jwt from 'koa-jwt';
 import jsonwebtoken from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import proxy from 'koa-proxies';
+
 
 import { config } from 'dotenv';
 config();
@@ -22,27 +22,9 @@ const app = new Koa();
 const { Pool } = pkg;
 
 app.use(bodyParser());
-app.use(cors({
-  origin: '*', // Allow requests from any origin
-  methods: 'POST, GET, HEAD, DELETE',
-}));
+app.use(cors());
 
-app.use(async (ctx, next) => {
-  ctx.set('Access-Control-Allow-Origin', 'https://www.retkilyhty.fi');
-  ctx.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  ctx.set('Access-Control-Allow-Headers', 'Content-Type');
-  await next();
-});
 
-app.use(
-  proxy('/', {
-    target: 'http://localhost:9000', // Replace with your Koa app's actual address
-    changeOrigin: true,
-    secure: true, // Disables SSL certificate validation, only use in development
-    logs: true,
-    xfwd: true,
-  })
-);
 
 app.use(async (ctx, next) => {
   try {
@@ -60,8 +42,7 @@ app.use(async (ctx, next) => {
 });
 
 
-app.proxy = true; // Enables Koa to trust X-Forwarded-* headers
-app.keys = [jwtSecret]; // Set a secret key for Koa's cookie handling
+
 
 
 const optionally_protected = jwt({
@@ -71,7 +52,7 @@ const optionally_protected = jwt({
 
 app.use(router.routes());
 app.use(router.allowedMethods());
-app.use(session({ secure: app.env === 'production' }))
+
 
 const pool = new Pool({
   user: process.env.POSTGRES_USER,
@@ -243,11 +224,7 @@ router.get('/api/forecastbycoordinates', async ctx => {
   }
 });
 
-
-
-
-
-router.post('/api/add',  async (ctx) => {
+router.post('/api/add', optionally_protected,  async (ctx) => {
   try {
    
 
