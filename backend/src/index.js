@@ -224,15 +224,11 @@ router.get('/api/forecastbycoordinates', async ctx => {
   }
 });
 
-router.post('/api/add', optionally_protected,  async (ctx) => {
+router.post('/api/add', optionally_protected, async (ctx) => {
   try {
-   
-
     // Check if there is a user in the context
     if (ctx.state.user) {
       const userId = ctx.state.user.id; // Assuming the user object has an 'id' property
-
-    
 
       const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
 
@@ -244,7 +240,13 @@ router.post('/api/add', optionally_protected,  async (ctx) => {
       `;
       const values = [latitude, longitude, name, tyyppi, maakunta, userId];
 
+      console.log('User ID:', userId);
+      console.log('Insert Query:', insertQuery);
+      console.log('Values:', values);
+
       const { rows } = await pool.query(insertQuery, values);
+
+      console.log('Rows returned:', rows);
 
       ctx.status = 201; // Created
       ctx.body = {
@@ -252,8 +254,6 @@ router.post('/api/add', optionally_protected,  async (ctx) => {
         Id: rows[0].id,
       };
     } else {
-
-
       const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
 
       // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta)
@@ -264,7 +264,12 @@ router.post('/api/add', optionally_protected,  async (ctx) => {
       `;
       const values = [latitude, longitude, name, tyyppi, maakunta];
 
+      console.log('Insert Query:', insertQuery);
+      console.log('Values:', values);
+
       const { rows } = await pool.query(insertQuery, values);
+
+      console.log('Rows returned:', rows);
 
       ctx.status = 201; // Created
       ctx.body = {
