@@ -26,7 +26,12 @@ app.use(cors({
   methods: 'POST, GET, HEAD, DELETE',
 }));
 
-
+app.use(async (ctx, next) => {
+  ctx.set('Access-Control-Allow-Origin', 'https://www.retkilyhty.fi');
+  ctx.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  ctx.set('Access-Control-Allow-Headers', 'Content-Type');
+  await next();
+});
 
 app.use(async (ctx, next) => {
   try {
@@ -48,18 +53,8 @@ const optionally_protected = jwt({
   passthrough: true, // Allows requests without valid tokens to pass through
 });
 
-
-
-
-
-
-
 app.use(router.routes());
 app.use(router.allowedMethods());
-
-
-
-
 
 const pool = new Pool({
   user: process.env.POSTGRES_USER,
@@ -70,7 +65,7 @@ const pool = new Pool({
 });
 
 
-// Route to generate JWT token (Login)
+// Route to generate JWT token (Login)d
 router.post('/api/login',  async (ctx) => {
   try {
     const { username, password } = ctx.request.body;
@@ -164,8 +159,7 @@ router.post('/api/register', async (ctx) =>{
   try {
     const { email, username, password } = ctx.request.body;
 
-    // You should hash the password before storing it in the database for security
-    // For simplicity, you can use a library like bcrypt
+   
 
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
