@@ -41,6 +41,7 @@ const RegisterPage: React.FC<RegisterPageProps> = ({ setShowRegister, setShowLog
       
         const { token, user_id, username } = data;
         console.log(token, user_id, username);
+        
       
         setShowLogin(false);
         dispatch(login({ token, user_id, username })),

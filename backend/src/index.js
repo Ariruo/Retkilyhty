@@ -322,22 +322,28 @@ router.get('/api/:tyyppi', async ctx => {
   await apirespond(ctx, decodedTyyppi);
 });
 
-const searchByName = async (name) => {
+
+
+const searchByName = async (user_id, name) => {
   try {
     const query = `
       SELECT
-      id,
-      ST_X(geom::geometry) AS longitude,
-      ST_Y(geom::geometry) AS latitude,
-      name,
-      tyyppi,
-      maakunta
+        id,
+        ST_X(geom::geometry) AS longitude,
+        ST_Y(geom::geometry) AS latitude,
+        name,
+        tyyppi,
+        maakunta,
+        user_id
       FROM
         geo_data
       WHERE
-        name ILIKE $1; -- ILIKE performs a case-insensitive search
+        (user_id = $1 AND tyyppi = 'Oma kohde') OR
+        (user_id IS NULL AND tyyppi != 'Oma kohde') AND
+        name ILIKE $2; -- ILIKE performs a case-insensitive search
     `;
-    const { rows } = await pool.query(query, [`%${name}%`]);
+
+    const { rows } = await pool.query(query, [user_id, `%${name}%`]);
     return rows;
   } catch (error) {
     console.error('Error searching places by name:', error);
@@ -347,10 +353,15 @@ const searchByName = async (name) => {
 
 
 
-router.get('/api/searchbyname/:name', async (ctx) => {
+
+
+
+router.get('/api/searchbyname/:name', optionally_protected, async (ctx) => {
+  const userId = ctx.state.user ? ctx.state.user.id : null; // Extracted from JWT token if available
   const { name } = ctx.params;
+
   try {
-    const searchResults = await searchByName(name);
+    const searchResults = await searchByName(userId, name);
     ctx.type = 'application/json';
     ctx.body = searchResults;
   } catch (error) {
@@ -358,10 +369,6 @@ router.get('/api/searchbyname/:name', async (ctx) => {
     ctx.throw(500, 'Internal Server Error');
   }
 });
-
-
-
-
 
 app.listen(port);
 
