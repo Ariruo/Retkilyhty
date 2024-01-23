@@ -22,8 +22,8 @@ deploy_backend:
    
   script:
   - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo wget -O /usr/local/bin/docker-compose-dev.yml https://gitlab.com/Ariruo/Retkilyhty/-/raw/main/backend/docker-compose-dev.yml"
-  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo docker docker pull ariru/trailtorchbackend:backend-latest"
-  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo docker docker pull ariru/trailtorchbackend:postgis-latest"
+  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo docker  pull ariru/trailtorchbackend:backend-latest"
+  - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo docker  pull ariru/trailtorchbackend:postgis-latest"
   - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo /usr/local/bin/docker-compose -f /usr/local/bin/docker-compose-dev.yml down"
   - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo docker image prune -a --filter 'until=24h'"
   - ssh -i ~/.ssh/$KEY.pem ec2-user@$BACKEND_IP "sudo /usr/local/bin/docker-compose -f /usr/local/bin/docker-compose-dev.yml up -d"
