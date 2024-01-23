@@ -14,7 +14,7 @@ interface RegisterProps {
 }
 
 const Register: React.FC<RegisterProps> = ({ setShowRegister, setEmail, setUsername, setPassword, handleRegister, password }) => {
-  
+  const [confirmPassword, setConfirmPassword] = useState<string>('');
   const [passwordsMatch, setPasswordsMatch] = useState<boolean>(true);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
