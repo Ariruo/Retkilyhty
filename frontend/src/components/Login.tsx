@@ -1,18 +1,19 @@
 // Login.tsx
-import React from 'react';
-import { Button, TextField, Typography, IconButton } from '@mui/material';
+import React, { useState } from 'react';
+import { Button, TextField, Typography, IconButton, InputAdornment } from '@mui/material';
 
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaEye, FaEyeSlash } from 'react-icons/fa';
 
 interface LoginProps {
   setShowRegister: React.Dispatch<React.SetStateAction<boolean>>;
   setShowLogin: React.Dispatch<React.SetStateAction<boolean>>;
-  setUsername: React.Dispatch<React.SetStateAction<string>>; // Prop to set the username
-  setPassword: React.Dispatch<React.SetStateAction<string>>; // Prop to set the password
-  handleLogin: () => Promise<void>; // Function to handle login
+  setUsername: React.Dispatch<React.SetStateAction<string>>;
+  setPassword: React.Dispatch<React.SetStateAction<string>>;
+  handleLogin: () => Promise<void>;
 }
 
-const Login: React.FC<LoginProps> = ({ setShowRegister,  setShowLogin, setUsername, setPassword, handleLogin }) => {
+const Login: React.FC<LoginProps> = ({ setShowRegister, setShowLogin, setUsername, setPassword, handleLogin }) => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const handleShowRegister = () => {
     setShowLogin(false);
@@ -23,6 +24,10 @@ const Login: React.FC<LoginProps> = ({ setShowRegister,  setShowLogin, setUserna
     e.preventDefault();
     // Perform client-side validation if needed
     handleLogin();
+  };
+
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
   };
 
   return (
@@ -38,18 +43,18 @@ const Login: React.FC<LoginProps> = ({ setShowRegister,  setShowLogin, setUserna
     }}>
       <div style={{ display: 'flex', zIndex: '10', }}>
         <form onSubmit={handleSubmit} style={{ background: 'white', padding: '15px', borderRadius: '8px', boxShadow: '0px 0px 8px rgba(0, 0, 0, 0.1)', marginTop: '20px' }}>
-        <IconButton
-  aria-label="close"
-  onClick={() => setShowLogin(false)}
-  style={{
-    position: 'absolute',
-    top: '14px',
-    right: '0px',
-    margin: '10px',
-  }}
->
-  <FaTimes className="h-5 w-5 text-black active:scale-x-90" />
-</IconButton>
+          <IconButton
+            aria-label="close"
+            onClick={() => setShowLogin(false)}
+            style={{
+              position: 'absolute',
+              top: '14px',
+              right: '0px',
+              margin: '10px',
+            }}
+          >
+            <FaTimes className="h-5 w-5 text-black active:scale-x-90" />
+          </IconButton>
           <Typography variant="h6" gutterBottom>
             Login
           </Typography>
@@ -57,23 +62,32 @@ const Login: React.FC<LoginProps> = ({ setShowRegister,  setShowLogin, setUserna
             required
             id="username"
             name="username"
-            label="Username or Email"
+            label="Käyttäjänimi tai Sähköposti"
             fullWidth
-            onChange={(e) => setUsername(e.target.value)} // Set the username using the prop
+            onChange={(e) => setUsername(e.target.value)}
             style={{ marginBottom: '10px' }}
           />
           <TextField
             required
             id="password"
             name="password"
-            label="Password"
-            type="password"
+            label="Salasana"
+            type={showPassword ? 'text' : 'password'}
             fullWidth
-            onChange={(e) => setPassword(e.target.value)} // Set the password using the prop
+            onChange={(e) => setPassword(e.target.value)}
             style={{ marginBottom: '15px' }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton onClick={togglePasswordVisibility} edge="end" style={{ fontSize: '1rem' }}>
+                    {showPassword ? <FaEyeSlash /> : <FaEye />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
           <Button type="submit" variant="contained" color="primary">
-            Login
+            Kirjaudu
           </Button>
 
           <p style={{ marginTop: '10px', textAlign: 'center', cursor: 'pointer', color: 'blue', zIndex: "10" }} onClick={handleShowRegister}>

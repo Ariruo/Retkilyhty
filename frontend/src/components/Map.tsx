@@ -29,7 +29,7 @@ import ruokailukatosIcon from '../../assets/ruokailukatos.png'
 import Addlocationbutton from "./AddLocationButton";
 import RegisterPage from "./RegisterPage";
 import usermarker from '../../assets/user_marker.png'
-import Login from "./Login";
+
 
 import { CustomPointFeature,ClusterData,CustomProperties } from "../types/api";
 import { Coordinates, userCoordinates, } from "../types/props";

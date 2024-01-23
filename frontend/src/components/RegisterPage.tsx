@@ -107,11 +107,12 @@ const handleRegister = async (e: React.FormEvent) => {
         <Register
           
           setShowRegister={setShowRegister}
-          setShowLogin={setShowLogin}
+          
           setEmail={setEmail}
           setUsername={setUsername}
           setPassword={setPassword}
           handleRegister={handleRegister}
+          password={password}
         />
       )}
       <ToastContainer />
