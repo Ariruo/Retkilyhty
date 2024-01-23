@@ -3,21 +3,18 @@ import axios from "axios";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"; 
 import { SearchbarProps } from "../types/props";
-import { ApiData } from "../types/api";
 import SearchResultList from "./SearchResultList";
-
+import { useSelector } from 'react-redux';
+import { selectToken } from '../redux/reducers/userReducer';
 
 const Searchbar: React.FC<SearchbarProps> = ({
   setResults,
   setInput,
   input,
   setShowSearchResults,
-  open,
-  setOpen,
-  toggleSidebar,
-  viewState,
-  results,
   mapRef,
+  FilteredData,
+  viewState,
   selectedPark,
   setShowCabins,
   setShowKammi,
@@ -32,9 +29,8 @@ const Searchbar: React.FC<SearchbarProps> = ({
   setShowKota,
   setShowLaavu,
   setShowLuola,
-  FilteredData,
+  showSearchResults,
   setSelectedPark,
-  showSearchResults
 }) => {
   const baseUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:9000";
 
@@ -43,13 +39,17 @@ const Searchbar: React.FC<SearchbarProps> = ({
   const placeholderText = searchBarOpen ? "Etsi kohteita" : "";
   const iconSize = searchBarOpen ? "text-gray-500" : "text-gray-500 text-xl";
 
-  
+  const userToken = useSelector((state) => selectToken(state.user));
 
   async function filterData(value: string) {
     try {
-      const response = await axios.get(`${baseUrl}/api/searchbyname/${value}`);
+      const response = await axios.get(`${baseUrl}/api/searchbyname/${value}`, {
+        headers: {
+          Authorization: `Bearer ${userToken}`,
+        },
+      });
+
       const fetchedData = response.data;
-    
 
       const preparedData = fetchedData.map((item: ApiData) => ({
         type: "Feature",
@@ -155,9 +155,7 @@ const Searchbar: React.FC<SearchbarProps> = ({
       </div>
     )}
   </div>
-    
   );
 };
-
 
 export default Searchbar;
