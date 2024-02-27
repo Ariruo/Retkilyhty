@@ -1,25 +1,22 @@
 import Koa from 'koa';
 import Router from 'koa-router';
 import bodyParser from 'koa-bodyparser';
-import fetch from 'node-fetch';
 import cors from 'kcors';
-import pkg from 'pg';
 import jwt from 'koa-jwt';
-import jsonwebtoken from 'jsonwebtoken';
-import bcrypt from 'bcrypt';
-
-
+import { registerUser, loginUser } from './contollers/authcontroller.js';
+import { searchByName,getUserPoints, addPoint, getWeatherByCoordinates,apirespond, getForecastByCoordinates } from './contollers/geoDataController.js';
 import { config } from 'dotenv';
+
 config();
 
-const appId = process.env.APPID || process.env.API_KEY;
+
 const jwtSecret = process.env.JWT_SECRET 
-const mapURI = process.env.MAP_ENDPOINT || 'http://api.openweathermap.org/data/2.5';
+
 
 const port = process.env.PORT || 9000;
 const router = new Router();
 const app = new Koa();
-const { Pool } = pkg;
+
 
 app.use(bodyParser());
 app.use(cors());
@@ -54,263 +51,20 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 
 
-const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DB,
-  password: process.env.POSTGRES_PASSWORD,
-  port: process.env.POSTGRES_PORT 
-});
-
-
-// Route to generate JWT token (Login)d
-router.post('/api/login',  async (ctx) => {
-  try {
-    const { username, password } = ctx.request.body;
-
-    // Find the user by their username or email in the database
-    const userQuery = `
-      SELECT id, username, password_hash
-      FROM users
-      WHERE username = $1 OR email = $1;
-    `;
-    const userResult = await pool.query(userQuery, [username]);
-
-    if (userResult.rows.length === 0) {
-      ctx.status = 401; // Unauthorized
-      ctx.body = { error: 'Invalid username or email' };
-      return;
-    }
-
-    const user = userResult.rows[0];
-
-    // Compare the provided password with the hashed password in the database
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-
-    if (!isPasswordValid) {
-      ctx.status = 401; // Unauthorized
-      ctx.body = { error: 'Invalid password' };
-      return;
-    }
-
-    // Generate JWT token
-    const token = jsonwebtoken.sign(
-      { id: user.id, username: user.username },
-      jwtSecret,
-      { expiresIn: '1h' }
-    );
-
-    // Include user_id and username in the response
-    ctx.body = {
-      token,
-      user_id: user.id,
-      username: user.username,
-    };
-  } catch (error) {
-    console.error('Error during login:', error);
-    ctx.throw(500, 'Internal Server Error');
-  }
-});
-
-
-router.get('/api/userpoints', async (ctx) => {
-  try {
-    console.log('Request Headers:', ctx.headers);
-
-    if (ctx.state.user) {
-      const { id } = ctx.state.user;
-  
-
-      const query = `
-  SELECT
-    id,
-    ST_X(geom::geometry) AS longitude,
-    ST_Y(geom::geometry) AS latitude,
-    name,
-    tyyppi,
-    maakunta
-  FROM
-    geo_data
-  WHERE
-    user_id = $1 AND
-    tyyppi = 'Oma kohde';
-`;
-
-
-      const { rows } = await pool.query(query, [id]);
-
-      ctx.type = 'application/json';
-      ctx.body = rows;
-    } else {
-      ctx.status = 401; // Unauthorized
-      ctx.body = { error: 'User not authenticated' };
-    }
-  } catch (error) {
-    console.error('Error fetching geopoints for user:', error);
-    ctx.throw(500, 'Internal Server Error');
-  }
-});
-
-
-router.post('/api/register', async (ctx) =>{
-  try {
-    const { email, username, password } = ctx.request.body;
-
-   
-
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    // Insert the user into the 'users' table
-    const insertUserQuery = `
-      INSERT INTO users (email, username, password_hash)
-      VALUES ($1, $2, $3)
-      RETURNING id;
-    `;
-    const values = [email, username, hashedPassword];
-
-    const { rows } = await pool.query(insertUserQuery, values);
-
-    ctx.status = 201; // Created
-    ctx.body = {
-      message: 'User registered successfully!',
-      userId: rows[0].id,
-      username: username,
-    };
-  } catch (error) {
-    console.error('Error registering user:', error);
-    ctx.throw(500, 'Internal Server Error');
-  }
-});
-
-
-const fetchWeatherByCoordinates = async (lon, lat) => {
-  const endpoint = `${mapURI}/weather?lat=${lat}&lon=${lon}&appid=${appId}&units=metric`;
-  const response = await fetch(endpoint);
-
-  return response ? response.json() : {};
-};
-
-router.get('/api/weatherbycoordinates', async ctx => {
-  if (ctx.request.query.lon && ctx.request.query.lat) {
-    const { lon, lat, } = ctx.request.query;
-    const weatherData = await fetchWeatherByCoordinates(lon, lat);
-    ctx.type = 'application/json; charset=utf-8';
-    ctx.body = weatherData.weather ? weatherData : {};
-  }
-});
-
-const fetchForecastByCoordinates = async (lon, lat) => {
-  const endpoint = `${mapURI}/forecast?lat=${lat}&lon=${lon}&appid=${appId}&units=metric`;
-  const response = await fetch(endpoint);
-
-
-  return response ? response.json() : {};
-};
-
-router.get('/api/forecastbycoordinates', async ctx => {
-  if (ctx.request.query.lon && ctx.request.query.lat) {
-    const { lon, lat, } = ctx.request.query;
-    const weatherData = await fetchForecastByCoordinates(lon, lat);
-    ctx.type = 'application/json; charset=utf-8';
-    ctx.body = weatherData.list
-      ? {
-        weather: weatherData.list[1].weather[0],
-        time: weatherData.list[1].dt_txt,
-        cityName: weatherData.city.name
-      }
-      : {};
-  }
-});
-
-router.post('/api/add', optionally_protected, async (ctx) => {
-  try {
-    // Check if there is a user in the context
-    if (ctx.state.user) {
-      const userId = ctx.state.user.id; // Assuming the user object has an 'id' property
-
-      const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
-
-      // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta, user_id)
-      const insertQuery = `
-        INSERT INTO geo_data (geom, name, tyyppi, maakunta, user_id)
-        VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5, $6)
-        RETURNING id;
-      `;
-      const values = [latitude, longitude, name, tyyppi, maakunta, userId];
-
-      console.log('User ID:', userId);
-      console.log('Insert Query:', insertQuery);
-      console.log('Values:', values);
-
-      const { rows } = await pool.query(insertQuery, values);
-
-      console.log('add:', rows);
-
-      ctx.status = 201; // Created
-      ctx.body = {
-        message: 'added successfully!',
-        Id: rows[0].id,
-      };
-    } else {
-      const { latitude, longitude, name, tyyppi, maakunta } = ctx.request.body;
-
-      // Assuming your database table is named 'geo_data' with columns (id, geom, name, tyyppi, maakunta)
-      const insertQuery = `
-        INSERT INTO geo_data (geom, name, tyyppi, maakunta)
-        VALUES (ST_SetSRID(ST_MakePoint($1, $2), 4326), $3, $4, $5)
-        RETURNING id;
-      `;
-      const values = [latitude, longitude, name, tyyppi, maakunta];
-
-      console.log('addd query:', insertQuery);
-      console.log(' addd Values:', values);
-
-      const { rows } = await pool.query(insertQuery, values);
-
-      console.log('addd rows:', rows);
-
-      ctx.status = 201; // Created
-      ctx.body = {
-        message: 'added successfully!',
-        Id: rows[0].id,
-      };
-    }
-  } catch (error) {
-    console.error('Error adding cabin:', error);
-    ctx.throw(500, 'Internal Server Error');
-  }
-});
 
 
 
-async function apirespond(ctx, tyyppi) {
-  try {
-    // Capitalize the first letter of tyyppi
-    const capitalizedTyyppi = tyyppi.charAt(0).toUpperCase() + tyyppi.slice(1);
+router.post('/api/register', registerUser);
+router.post('/api/login', loginUser);
 
-    const query = `
-    SELECT
-    id,
-    ST_X(geom::geometry) AS longitude,
-    ST_Y(geom::geometry) AS latitude,
-    name,
-    tyyppi,
-    maakunta
-  FROM
-   geo_data
-  WHERE
-    tyyppi = $1;
-`;
-    const { rows } = await pool.query(query, [capitalizedTyyppi]);
 
-    ctx.type = 'application/json';
-    ctx.body = rows;
-  } catch (error) {
-    console.error(`Error fetching ${tyyppi} data:`, error);
-    ctx.throw(500, 'Internal Server Error');
-  }
-}
+
+router.get('/api/userpoints', getUserPoints);
+router.get('/api/weatherbycoordinates', getWeatherByCoordinates);
+router.post('/api/add', optionally_protected, addPoint);
+
+
+
 
 //Usage in your router
 router.get('/api/:tyyppi', async ctx => {
@@ -322,53 +76,8 @@ router.get('/api/:tyyppi', async ctx => {
   await apirespond(ctx, decodedTyyppi);
 });
 
+router.get('/api/searchbyname/:name', optionally_protected, searchByName);
 
-
-const searchByName = async (user_id, name) => {
-  try {
-    const query = `
-      SELECT
-        id,
-        ST_X(geom::geometry) AS longitude,
-        ST_Y(geom::geometry) AS latitude,
-        name,
-        tyyppi,
-        maakunta,
-        user_id
-      FROM
-        geo_data
-      WHERE
-        (user_id = $1 AND tyyppi = 'Oma kohde') OR
-        (user_id IS NULL AND tyyppi != 'Oma kohde') AND
-        name ILIKE $2; -- ILIKE performs a case-insensitive search
-    `;
-
-    const { rows } = await pool.query(query, [user_id, `%${name}%`]);
-    return rows;
-  } catch (error) {
-    console.error('Error searching places by name:', error);
-    throw new Error('Error searching places by name');
-  }
-};
-
-
-
-
-
-
-router.get('/api/searchbyname/:name', optionally_protected, async (ctx) => {
-  const userId = ctx.state.user ? ctx.state.user.id : null; // Extracted from JWT token if available
-  const { name } = ctx.params;
-
-  try {
-    const searchResults = await searchByName(userId, name);
-    ctx.type = 'application/json';
-    ctx.body = searchResults;
-  } catch (error) {
-    console.error('Error searching places by name:', error);
-    ctx.throw(500, 'Internal Server Error');
-  }
-});
 
 app.listen(port);
 

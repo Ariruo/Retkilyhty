@@ -57,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 
 
   const [isChecked, setIsChecked] = useState(true);
-  const [submenuOpen, setSubmenuOpen] = useState(true);
+  const [submenuOpen, setSubmenuOpen] = useState(false);
   const [rekisteroidySubmenuOpen, setRekisteroidySubmenuOpen] = useState(false);
 
   const dispatch = useDispatch();
